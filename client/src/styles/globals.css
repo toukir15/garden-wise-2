@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-quill .ql-editor::before {
+  color: rgb(144, 144, 144) !important ;
+  opacity: 1;
+}
+
+.follow_box::-webkit-scrollbar {
+  width: 6px !important;
+  height: 2px !important;
+}
+
+.follow_box::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 75, 75, 0.731);
+  border-radius: 10px;
+}
+
+.follow_box::-webkit-scrollbar-track {
+  background: hsla(0, 7%, 8%, 0.762);
+  border-radius: 10px;
+}
+
+.followers_scroll::-webkit-scrollbar {
+  width: 6px !important;
+  height: 4px !important;
+}
+
+.followers_scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 75, 75, 0.731);
+  border-radius: 10px;
+}
+
+.followers_scroll::-webkit-scrollbar-track {
+  background: hsla(0, 7%, 8%, 0.762);
+  border-radius: 10px;
+}
+
+.post_scroll::-webkit-scrollbar {
+  width: 6px !important;
+  height: 4px !important;
+}
+
+.post_scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(104, 104, 104, 0.731);
+  border-radius: 10px;
+}
+
+.post_scroll::-webkit-scrollbar-track {
+  background: hsla(0, 7%, 8%, 0.762);
+  border-radius: 10px;
+}
+
+.comment_scroll::-webkit-scrollbar {
+  width: 6px !important;
+  height: 4px !important;
+}
+
+.comment_scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 75, 75, 0.731);
+  border-radius: 10px;
+}
+
+.comment_scroll::-webkit-scrollbar-track {
+  background: hsla(0, 7%, 8%, 0.762);
+  border-radius: 10px;
+}
+
+.custom-quill .ql-toolbar button:hover,
+.custom-quill .ql-toolbar button:focus,
+.custom-quill .ql-toolbar .ql-picker-label:hover,
+.custom-quill .ql-toolbar .ql-picker-label.ql-active,
+.custom-quill .ql-toolbar .ql-picker-item:hover,
+.custom-quill .ql-toolbar .ql-picker-item.ql-selected {
+  color: green !important; /* Change text/icon color on hover */
+  border-color: green !important; /* Change border color */
+}
+
+.custom-quill .ql-toolbar button .ql-stroke {
+  stroke: green !important; /* For icons with stroke (like bold/italic) */
+}
+
+.custom-quill .ql-toolbar button .ql-fill {
+  fill: green !important; /* For icons that are filled */
+}
