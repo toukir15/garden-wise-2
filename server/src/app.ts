@@ -8,7 +8,13 @@ import notFound from './app/middlewares/notFound'
 
 const app: Application = express()
 
-app.use(cors({ origin: ['http://localhost:3000'] }))
+app.use(
+  cors({
+    origin: [
+      'https://garden-wise-aficmogxb-toukirdeveloperbdgmailcoms-projects.vercel.app',
+    ],
+  }),
+)
 app.use(cookieParser())
 
 // Parser
