@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 // Create the Axios instance
 const axiosInstance = axios.create({
-  baseURL: "https://garden-wise.onrender.com/api/v1",
+  baseURL: "https://garden-wise-2-2.onrender.com/api/v1",
 });
 
 axiosInstance.interceptors.request.use(

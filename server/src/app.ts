@@ -11,7 +11,7 @@ const app: Application = express()
 app.use(
   cors({
     origin: [
-      'https://garden-wise-aficmogxb-toukirdeveloperbdgmailcoms-projects.vercel.app',
+      'https://garden-wise-p1wa5rrze-toukirdeveloperbdgmailcoms-projects.vercel.app',
     ],
   }),
 )
