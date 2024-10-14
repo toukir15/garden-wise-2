@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { SubmitHandler } from "react-hook-form";
 import Image from "next/image";
@@ -9,6 +9,8 @@ import { registerValidationSchema } from "@/src/schemas/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserRegister } from "@/src/hooks/auth.hook";
 import logo from "../../../public/plant.png";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type TSignupData = {
   name: string;
@@ -21,23 +23,48 @@ type TSignupData = {
 export default function SignupPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const { mutate: handleUserRegister } = useUserRegister();
+  const [toastId, setToastId] = useState<string | null>(null); // Manage toast ID in state
+  const router = useRouter();
 
+  // Use mutation for registering the user
+  const {
+    mutate: handleUserRegister,
+    isSuccess,
+    isLoading,
+    isError,
+  } = useUserRegister();
+
+  // Submit handler
   const onSubmit: SubmitHandler<TSignupData> = (data) => {
     const formData = new FormData();
+    // Show loading toast and store its ID
+    const id = toast.loading("Signing up...");
+    setToastId(id as string);
 
-    // Append form fields (convert data object to JSON)
     formData.append("data", JSON.stringify(data));
-
-    // Append the file to the form data
     if (files.length > 0) {
       formData.append("file", files[0]); // Ensure the key matches backend expectations
     }
 
-    // Pass formData (which includes both form data and file) to the mutation
+    // Call the mutation
     handleUserRegister(formData);
   };
 
+  // Handle side effects when success or error occurs
+  useEffect(() => {
+    if (!isLoading && toastId) {
+      if (isSuccess) {
+        toast.success("Signed up successfully!", { id: toastId });
+        router.push("/login");
+      }
+
+      if (isError) {
+        toast.error("Registration failed. Please try again.", { id: toastId });
+      }
+    }
+  }, [isLoading, isSuccess, isError, toastId, router]);
+
+  // Handle file changes for image preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -93,7 +120,7 @@ export default function SignupPage() {
                 type="file"
                 id="profilePhoto"
                 className="hidden"
-                onChange={handleFileChange} // Attach the onChange handler
+                onChange={handleFileChange}
               />
             </div>
             {/* Image Previews */}
@@ -129,9 +156,12 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 transition duration-200 text-white py-[10px] px-12 rounded-xl font-bold mt-2"
+            className={`bg-green-500 hover:bg-green-600 transition duration-200 text-white py-[10px] px-12 rounded-xl font-bold mt-2 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading} // Disable the button while loading
           >
-            Sign Up
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
           <p className="text-[#b5b4b4] mt-3 md:mt-4">
             Already have an account?{" "}

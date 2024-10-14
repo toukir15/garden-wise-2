@@ -6,11 +6,7 @@ export const getPosts = async () => {
       tags: ["posts"],
     },
   };
-  // const res = await fetch(`${envConfig.baseApi}/posts`, fetchOption);
-  const res = await fetch(
-    `https://garden-wise-2-2.onrender.com/api/v1/posts`,
-    fetchOption
-  );
+  const res = await fetch(`${envConfig.baseApi}/posts`, fetchOption);
   return await res.json();
 };
 

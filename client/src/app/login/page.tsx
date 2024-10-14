@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SubmitHandler } from "react-hook-form";
@@ -8,6 +8,8 @@ import GWForm from "@/src/components/form/GWForm";
 import { useUserLogin } from "@/src/hooks/auth.hook";
 import { loginValidationSchema } from "@/src/schemas/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import logo from "../../../public/plant.png";
 
 type TLoginData = {
@@ -16,11 +18,37 @@ type TLoginData = {
 };
 
 export default function LoginPage() {
-  const { mutate: handleUserLogin } = useUserLogin();
+  const [toastId, setToastId] = useState<string | null>(null); // Manage toast ID in state
+  const router = useRouter();
+  const {
+    mutate: handleUserLogin,
+    isSuccess,
+    isLoading,
+    isError,
+    error,
+  } = useUserLogin();
 
+  // Form submission handler
   const onSubmit: SubmitHandler<TLoginData> = (data) => {
+    const id = toast.loading("Logging in...");
+    setToastId(id as string);
     handleUserLogin(data);
   };
+
+  // Side effects for login success or error handling
+  useEffect(() => {
+    if (isSuccess && toastId) {
+      toast.success("Logged in successfully!", { id: toastId, duration: 2000 });
+      router.push("/");
+    }
+
+    if (isError && toastId) {
+      toast.error(`Login failed: ${error?.message || "Unknown error"}`, {
+        id: toastId,
+        duration: 3000,
+      });
+    }
+  }, [isSuccess, isError, error, toastId, router]);
 
   return (
     <div className="h-screen flex justify-center items-center">
@@ -48,8 +76,9 @@ export default function LoginPage() {
           <button
             type="submit"
             className="bg-green-500 hover:bg-green-600 transition duration-200 text-white py-[10px] px-12 rounded-xl font-bold mt-2"
+            disabled={isLoading} // Disable button during loading
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </button>
           <p className="text-[#b5b4b4] mt-3 md:mt-4">
             Don&apos;t have an account?{" "}

@@ -29,7 +29,7 @@ export default function ViewComment({
         className="w-[95%] md:w-[600px] lg:w-[660px] bg-[#121212] rounded-md absolute right-[52%] translate-x-1/2 top-[18%] md:top-[12%] flex flex-col justify-between "
       >
         {/* hade and body  */}
-        <div className="">
+        <div className="w-full">
           <div className="relative flex justify-center items-center py-3 px-2 border-b border-gray-600">
             <h3 className="text-xl">Comments</h3>
             <button
