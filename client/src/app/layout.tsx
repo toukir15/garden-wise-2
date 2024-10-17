@@ -40,7 +40,7 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="container mx-auto h-screen py-2">{children}</div>
+          <div className="container mx-auto h-screen">{children}</div>
         </Providers>
       </body>
     </html>

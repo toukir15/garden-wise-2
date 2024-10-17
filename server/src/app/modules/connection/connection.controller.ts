@@ -35,7 +35,31 @@ const updateUnfollowConnection = catchAsync(async (req, res) => {
   })
 })
 
+const getFollowers = catchAsync(async (req, res) => {
+  const userId = req.user?._id
+  const result = await ConnectionServices.getFollowersFromDB(userId)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Followers retrive successfully!',
+    data: result,
+  })
+})
+
+const getFollowings = catchAsync(async (req, res) => {
+  const userId = req.user?._id
+  const result = await ConnectionServices.getFollowingsFromDB(userId)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Followings retrive successfully!',
+    data: result,
+  })
+})
+
 export const ConnectionController = {
   updateFollowConnection,
   updateUnfollowConnection,
+  getFollowers,
+  getFollowings,
 }

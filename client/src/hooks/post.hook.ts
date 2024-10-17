@@ -1,39 +1,47 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { createPost, downvote, sharePost, upvote } from "../services/posts";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
-import { revalidateTag } from "next/cache";
-
-export const useCreatePost = () => {
-  return useMutation<any, Error, FieldValues>({
-    mutationKey: ["POST"],
-    mutationFn: async (data) => await createPost(data),
-    // onMutate: () => {
-    //   const toastId = toast.loading("Creating post...", {
-    //     duration: Infinity,
-    //     position: "top-right",
-    //   });
-    //   return { toastId };
-    // },
-    // onSuccess: (_data, _variables, context: any) => {
-    //   toast.success("Post created successfully!", {
-    //     id: context?.toastId,
-    //     duration: 2000,
-    //   });
-    // },
-    // onError: (_error, _variables, context: any) => {
-    //   toast.error("Failed to create post. Please try again.", {
-    //     id: context?.toastId,
-    //     duration: 2000,
-    //   });
-    // },
-  });
-};
 
 type SharePostVariables = {
   description: string;
   postId: string;
 };
+
+export const useCreatePost = () => {
+  // Get the instance of the query client
+  const queryClient = useQueryClient();
+
+  return useMutation<any, Error, FieldValues>({
+    mutationKey: ["POST"],
+    mutationFn: async (data) => await createPost(data),
+    // On success, update the cache or re-fetch
+    onSuccess: (data, variables, context) => {
+      // Access the cached posts data
+      const responseData = data.data.data;
+      console.log(responseData);
+      const previousPosts = queryClient.getQueryData(["posts"]);
+
+      // Optimistically update the cache
+      queryClient.setQueryData(["posts"], (old: any) => {
+        if (!old) return old;
+        // Return the new updated structure
+        return {
+          ...old,
+          data: [...old.data, responseData],
+        };
+      });
+
+      // Optionally return context if you need to rollback
+      return { previousPosts };
+    },
+  });
+};
+
 export const useSharePost = () => {
   return useMutation<any, Error, SharePostVariables>({
     mutationKey: ["POST"],

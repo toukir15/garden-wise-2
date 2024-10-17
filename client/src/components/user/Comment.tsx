@@ -141,12 +141,12 @@ export default function Comment({ postId }: { postId: string }) {
                     className=" rounded-full"
                     height={25}
                     width={25}
-                    src={toukir}
+                    src={comment.user.profilePhoto}
                     alt="user image"
                   />
                 </div>
                 <div>
-                  <div className=" bg-[#1d1c1c] py-1 px-2 rounded">
+                  <div className=" bg-[#1d1c1c] py-1 px-2 text-start rounded">
                     <p>
                       <span className="font-semibold  text-sm">
                         {comment.user?.name}

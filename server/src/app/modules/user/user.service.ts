@@ -4,6 +4,7 @@ import config from '../../config'
 import { TUser } from './user.interface'
 import bcrypt from 'bcryptjs'
 import AppError from '../../errors/AppError'
+import { Connection } from '../connection/connection.model'
 
 const createUserIntoDB = async (payload: TUser) => {
   // check user is exist or not
@@ -23,15 +24,31 @@ const createUserIntoDB = async (payload: TUser) => {
   return result
 }
 
-const getUserFromDB = async () => {
-  const result = await User.find({ role: 'user' }).select({
-    name: 1,
-    email: 1,
-    address: 1,
-    profilePhoto: 1,
-    role: 1,
+const getFollowSuggetionUsersFromDB = async (userId: string) => {
+  // Find the user by ID
+  const findUser = await User.findById(userId)
+
+  if (!findUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User not found')
+  }
+
+  // Find the connection by ID
+  const findConnection = await Connection.findById(findUser.connection)
+  if (!findConnection) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Connection not found')
+  }
+
+  // Ensure followers and followings are arrays to avoid undefined values
+  const followers = findConnection.followers || []
+  const followings = findConnection.followings || []
+
+  // Fetch users that are NOT in the followers and followings arrays
+  const usersNotConnected = await User.find({
+    _id: { $nin: [...followers, ...followings, userId] },
   })
-  return result
+
+  // Return the result
+  return usersNotConnected
 }
 
 const updateUserIntoDB = async (id: string) => {
@@ -45,6 +62,6 @@ const updateUserIntoDB = async (id: string) => {
 
 export const UserServices = {
   createUserIntoDB,
-  getUserFromDB,
+  getFollowSuggetionUsersFromDB,
   updateUserIntoDB,
 }

@@ -77,7 +77,7 @@ export default function CreatePost() {
   return (
     <>
       {isLoading && <Loading />}
-      <div className="w-full border-b h-fit border-gray-700 py-4 ">
+      <div className="w-full border-b h-fit border-gray-700 py-5 ">
         <div className="flex gap-3 items-center px-4">
           <Image
             alt="Profile image"

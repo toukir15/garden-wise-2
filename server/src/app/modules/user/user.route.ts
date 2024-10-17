@@ -1,10 +1,16 @@
 import express from 'express'
-import { UserValidations } from './user.validation'
 import { UserControllers } from './user.controller'
+import auth from '../../middlewares/auth'
+import { USER_ROLE } from './user.const'
 const router = express.Router()
 
 router.post('/signup', UserControllers.createUser)
-router.get('/', UserControllers.getUsers)
+router.get(
+  '/follow-suggetion',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  UserControllers.getFollowSuggetionUsers,
+)
+// router.get('/:userId', UserControllers.getUsers)
 router.post('/:id', UserControllers.updateUser)
 
 export const UserRouter = router

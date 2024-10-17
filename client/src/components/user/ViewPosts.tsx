@@ -32,6 +32,7 @@ import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { useUser } from "@/src/context/user.provider";
 import { TPost } from "../../../types";
 import ComponentLoading from "../ComponentLoading";
+import { useGetFollowers, useGetFollowings } from "@/src/hooks/connection.hook";
 
 // Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), {

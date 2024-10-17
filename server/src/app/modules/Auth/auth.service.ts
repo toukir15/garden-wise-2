@@ -38,7 +38,7 @@ const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
     name: newUser?.name,
     email: newUser.email,
     role: newUser?.role,
-    profilePhote: newUser.profilePhoto,
+    profilePhote: newUser?.profilePhoto,
   }
 
   const accessToken = createToken(
@@ -73,13 +73,14 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched')
 
   //create token and sent to the  client
-
   const jwtPayload = {
     _id: user?._id.toString(),
     name: user?.name,
     email: user.email,
     role: user?.role,
+    profilePhoto: user?.profilePhoto,
   }
+  console.log(jwtPayload)
 
   const accessToken = createToken(
     jwtPayload,
@@ -164,7 +165,7 @@ const refreshToken = async (token: string) => {
     name: user?.name,
     email: user.email,
     role: user?.role,
-    profilePhoto: user.profilePhoto,
+    profilePhoto: user?.profilePhoto,
   }
 
   const accessToken = createToken(

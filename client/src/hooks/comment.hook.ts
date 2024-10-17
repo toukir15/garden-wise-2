@@ -13,9 +13,9 @@ export const useUpvote = () => {
   return useMutation({
     mutationFn: async ({
       voteId,
-      postId,
-      userId,
-      commentId,
+      // postId,
+      // userId,
+      // commentId,
     }: {
       voteId: string;
       postId: string;
@@ -27,12 +27,9 @@ export const useUpvote = () => {
     },
 
     // Optimistic update logic
-    onMutate: async ({ voteId, postId, userId, commentId, replyId }) => {
+    onMutate: async ({ postId, userId, commentId, replyId }) => {
       // Cancel any outgoing queries for this specific post to prevent conflict
       await queryClient.cancelQueries(["post", postId]);
-
-      // Snapshot the previous post data (specific to postId)
-      const previousPost = queryClient.getQueryData(["post", postId]);
 
       // Optimistically update the cache with the new upvote
       queryClient.setQueryData(["post", postId], (old: any) => {

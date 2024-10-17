@@ -18,13 +18,16 @@ const createUser = catchAsync(
     })
   },
 )
-const getUsers = catchAsync(
+
+const getFollowSuggetionUsers = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await UserServices.getUserFromDB()
+    const userId = req.user._id
+    console.log(userId)
+    const result = await UserServices.getFollowSuggetionUsersFromDB(userId)
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'User retrive successfully',
+      message: 'Follow suggetion user retrive successfully',
       data: result,
     })
   },
@@ -45,6 +48,6 @@ const updateUser = catchAsync(
 
 export const UserControllers = {
   createUser,
-  getUsers,
+  getFollowSuggetionUsers,
   updateUser,
 }

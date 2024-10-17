@@ -16,4 +16,16 @@ router.patch(
   ConnectionController.updateUnfollowConnection,
 )
 
+router.get(
+  '/followers',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  ConnectionController.getFollowers,
+)
+
+router.get(
+  '/followings',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  ConnectionController.getFollowings,
+)
+
 export const ConnectionRouter = router

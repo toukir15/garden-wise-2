@@ -21,6 +21,20 @@
   background: hsla(0, 7%, 8%, 0.762);
   border-radius: 10px;
 }
+.scroll_box::-webkit-scrollbar {
+  width: 6px !important;
+  height: 2px !important;
+}
+
+.scroll_box::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 75, 75, 0.731);
+  border-radius: 10px;
+}
+
+.scroll_box::-webkit-scrollbar-track {
+  background: hsla(0, 7%, 8%, 0.762);
+  border-radius: 10px;
+}
 
 .followers_scroll::-webkit-scrollbar {
   width: 6px !important;
