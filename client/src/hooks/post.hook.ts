@@ -3,9 +3,15 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { createPost, downvote, sharePost, upvote } from "../services/posts";
+import {
+  createPost,
+  deletePost,
+  downvote,
+  editPost,
+  sharePost,
+  upvote,
+} from "../services/posts";
 import { FieldValues } from "react-hook-form";
-import { toast } from "sonner";
 
 type SharePostVariables = {
   description: string;
@@ -21,9 +27,7 @@ export const useCreatePost = () => {
     mutationFn: async (data) => await createPost(data),
     // On success, update the cache or re-fetch
     onSuccess: (data, variables, context) => {
-      // Access the cached posts data
       const responseData = data.data.data;
-      console.log(responseData);
       const previousPosts = queryClient.getQueryData(["posts"]);
 
       // Optimistically update the cache
@@ -43,28 +47,62 @@ export const useCreatePost = () => {
 };
 
 export const useSharePost = () => {
+  const queryClient = useQueryClient();
+
   return useMutation<any, Error, SharePostVariables>({
     mutationKey: ["POST"],
     mutationFn: async ({ description, postId }) =>
       await sharePost(description, postId),
-    onMutate: () => {
-      const toastId = toast.loading("Sharing post...", {
-        duration: Infinity,
-        position: "top-right",
-      });
-      return { toastId };
-    },
-    onSuccess: (_data, _variables, context: any) => {
-      toast.success("Shared post successfully!", {
-        id: context?.toastId,
-        duration: 2000,
+    onSuccess: (data, variables, context: any) => {
+      const responseData = data.data.data;
+      queryClient.setQueryData(["posts"], (old: any) => {
+        if (!old) return old;
+        const updatedData = {
+          ...old,
+          data: [...old.data, responseData],
+        };
+        return updatedData;
       });
     },
-    onError: (_error, _variables, context: any) => {
-      toast.error("Failed to share post. Please try again.", {
-        id: context?.toastId,
-        duration: 2000,
+  });
+};
+
+export const useDeletePost = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<any, Error, { postId: string }>({
+    mutationKey: ["DELETE_POST"],
+    mutationFn: async ({ postId }: { postId: string }) =>
+      await deletePost(postId),
+    onSuccess: (_data, variables, _context: any) => {
+      queryClient.setQueryData(["posts"], (old: any) => {
+        if (!old) return old;
+        const removePost = old.data.filter(
+          (post: { _id: string }) => post._id !== variables.postId
+        );
+        const updatedData = {
+          ...old,
+          data: [...removePost],
+        };
+        return updatedData;
       });
+    },
+  });
+};
+
+export const useEditPost = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    any,
+    Error,
+    { postId: string; payload: { description: string } }
+  >({
+    mutationKey: ["EDIT_POST"],
+    mutationFn: async ({ postId, payload }) => {
+      return await editPost(postId, payload);
+    },
+    onSuccess: (_data, variables, _context: any) => {
+      queryClient.invalidateQueries(["posts"]);
     },
   });
 };

@@ -13,11 +13,13 @@ router.post(
   // validateRequest(AuthValidation.registerValidationSchema),
   PostControllers.createPost,
 )
+router.delete('/:postId', PostControllers.deletePost)
 router.post(
   '/share-post/:postId',
   auth(USER_ROLE.user, USER_ROLE.admin),
   PostControllers.createSharePost,
 )
+router.patch('/:postId', PostControllers.updatePost)
 router.get('/', PostControllers.getPosts)
 router.get('/:postId', PostControllers.getPost)
 router.post(

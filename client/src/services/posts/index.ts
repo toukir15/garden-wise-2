@@ -24,6 +24,27 @@ export const sharePost = async (postData: string, postId: string) => {
   }
 };
 
+export const deletePost = async (postId: string) => {
+  try {
+    const { data } = await axiosInstance.delete(`/posts/${postId}`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const editPost = async (
+  postId: string,
+  payload: { description: string }
+) => {
+  try {
+    const { data } = await axiosInstance.patch(`/posts/${postId}`, payload);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const upvote = async (voteId: string) => {
   try {
     const { data } = await axiosInstance.patch(

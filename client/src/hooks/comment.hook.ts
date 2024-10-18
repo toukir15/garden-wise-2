@@ -235,7 +235,6 @@ export const useComment = () => {
         } else {
           postData.comments = [...postData.comments, commentData];
         }
-        console.log(postData);
         return { ...old, data: postData };
       });
     },

@@ -32,6 +32,31 @@ const createSharePost = catchAsync(async (req, res) => {
   })
 })
 
+const updatePost = catchAsync(async (req, res) => {
+  const postId = req.params.postId
+  const payload = req.body
+  const result = await PostServices.updatePostIntoDB(postId, payload)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'update post successfully!',
+    data: result,
+  })
+})
+
+const deletePost = catchAsync(async (req, res) => {
+  const postId = req.params.postId
+  const result = await PostServices.deletePostFromDB(postId)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Delete post successfully!',
+    data: result,
+  })
+})
+
 const getPosts = catchAsync(async (req, res) => {
   const result = await PostServices.getPostsFromDB()
   sendResponse(res, {
@@ -115,9 +140,11 @@ export const PostControllers = {
   createPost,
   createComment,
   createCommentReply,
+  deletePost,
   updateUpvote,
   updateDownvote,
   getPosts,
   createSharePost,
   getPost,
+  updatePost,
 }

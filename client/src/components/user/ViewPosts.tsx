@@ -22,17 +22,21 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Spinner,
   useDisclosure,
 } from "@nextui-org/react";
-import { useDownvote, useSharePost, useUpvote } from "@/src/hooks/post.hook";
+import {
+  useDeletePost,
+  useDownvote,
+  useEditPost,
+  useSharePost,
+  useUpvote,
+} from "@/src/hooks/post.hook";
 import { useGetPosts } from "@/src/hooks/recentPosts.hook";
 import ViewComment from "./ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { useUser } from "@/src/context/user.provider";
 import { TPost } from "../../../types";
 import ComponentLoading from "../ComponentLoading";
-import { useGetFollowers, useGetFollowings } from "@/src/hooks/connection.hook";
 
 // Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -63,7 +67,13 @@ export default function ViewPost() {
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [isOpenSharedComment, setOpenSharedComment] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: editOnOpen,
+    onOpenChange: editOnOpenChange,
+  } = useDisclosure();
   const [description, setDescription] = useState<string>("");
+  const [editPostDescription, setEditPostDescription] = useState("");
   const {
     data: postsData,
     isLoading: isPostsDataLoading,
@@ -105,6 +115,18 @@ export default function ViewPost() {
     handleSharePost({ description, postId });
   };
 
+  const { mutate: handleDelete } = useDeletePost();
+  const handlePostDelete = (postId: string) => {
+    handleDelete({ postId });
+  };
+
+  const { mutate: handleEdit } = useEditPost();
+  const handlePostEdit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const payload = { description: editPostDescription };
+    handleEdit({ postId, payload });
+  };
+
   return (
     <>
       {isPostsDataLoading && <ComponentLoading />}
@@ -139,9 +161,9 @@ export default function ViewPost() {
                         src={toukir}
                         alt=""
                       />
-                      <div>
+                      <div className="text-start">
                         <p className="font-medium">{data.post.user?.name}</p>
-                        <p className="text-sm text-start text-green-500">
+                        <p className="text-sm text-green-500">
                           {dayjs(data?.createdAt).fromNow()}
                         </p>
                       </div>
@@ -167,6 +189,18 @@ export default function ViewPost() {
                               >
                                 {(item) => (
                                   <DropdownItem
+                                    onClick={() => {
+                                      if (item.key === "delete") {
+                                        handlePostDelete(postId);
+                                      }
+                                      if (item.key === "edit") {
+                                        editOnOpen();
+                                        setEditPostDescription(
+                                          data.post.description
+                                        );
+                                        setPostId(data._id);
+                                      }
+                                    }}
                                     key={item.key}
                                     color={
                                       item.key === "delete"
@@ -190,7 +224,7 @@ export default function ViewPost() {
                   {/* <p className="ml-4 text-sm rounded text-green-500 bg-[#1a2a17d4] w-fit px-3 py-[4px] my-1 ">
                   Vegitable
                 </p> */}
-                  <div className="mx-4 text-gray-400 break-words">
+                  <div className="mx-4 text-gray-200 break-words">
                     <div
                       dangerouslySetInnerHTML={{
                         __html: data.post.description || "",
@@ -313,6 +347,18 @@ export default function ViewPost() {
                                   >
                                     {(item) => (
                                       <DropdownItem
+                                        onClick={() => {
+                                          if (item.key === "delete") {
+                                            handlePostDelete(postId);
+                                          }
+                                          if (item.key === "edit") {
+                                            editOnOpen();
+                                            setEditPostDescription(
+                                              data.description
+                                            );
+                                            setPostId(data._id);
+                                          }
+                                        }}
                                         key={item.key}
                                         color={
                                           item.key === "delete"
@@ -382,8 +428,8 @@ export default function ViewPost() {
                         >
                           <FaUpLong className={`text-[20px] `} />
                           <p>
-                            {data.votes.upvote.length
-                              ? data.votes.upvote.length
+                            {data.votes.upvote?.length
+                              ? data.votes.upvote?.length
                               : 0}
                           </p>
                         </button>
@@ -395,8 +441,8 @@ export default function ViewPost() {
                         >
                           <FaDownLong className={`text-[20px]`} />
                           <p>
-                            {data.votes?.downvote.length
-                              ? data.votes?.downvote.length
+                            {data.votes?.downvote?.length
+                              ? data.votes?.downvote?.length
                               : 0}
                           </p>
                         </button>
@@ -430,6 +476,8 @@ export default function ViewPost() {
             </div>
           );
         })}
+
+        {/* share post  */}
         <Modal
           className="bg-[#121212]"
           isOpen={isOpen}
@@ -441,7 +489,7 @@ export default function ViewPost() {
               {(onClose) => (
                 <>
                   <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">
-                    Create post
+                    Share post
                   </ModalHeader>
                   <ModalBody>
                     {/* Rich Text Editor */}
@@ -469,6 +517,48 @@ export default function ViewPost() {
             </ModalContent>
           </form>
         </Modal>
+
+        {/* edit post  */}
+        <Modal
+          className="bg-[#121212]"
+          isOpen={isEditOpen}
+          size="2xl"
+          onOpenChange={editOnOpenChange}
+        >
+          <form onSubmit={handlePostEdit}>
+            <ModalContent className="absolute top-8 -translate-x-9">
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">
+                    Edit Post
+                  </ModalHeader>
+                  <ModalBody>
+                    {/* Rich Text Editor */}
+                    <div className="mt-3">
+                      <ReactQuill
+                        placeholder="Add a description..."
+                        className="text-white custom-quill"
+                        defaultValue={editPostDescription}
+                        onChange={setEditPostDescription}
+                        style={{ height: "150px" }}
+                      />
+                    </div>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      className="bg-green-500 py-2 mt-10 font-medium rounded-full w-full"
+                      type="submit"
+                      onPress={onClose}
+                    >
+                      Edit Post
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </form>
+        </Modal>
+
         {(isOpenComment || isOpenSharedComment) && (
           <ViewComment
             postId={postId}

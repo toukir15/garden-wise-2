@@ -13,11 +13,12 @@ const createPostIntoDB = async (
   userId: string,
 ) => {
   const createVotes = await Vote.create({})
+  const findVote = await Vote.findById(createVotes._id)
   const postData = {
     post: {
       ...payload,
       user: userId,
-      votes: createVotes?._id,
+      votes: findVote,
       images: postImages,
     },
   }
@@ -31,7 +32,7 @@ const createSharePostIntoDB = async (
   payload: { description: string },
 ) => {
   const createVotes = await Vote.create({})
-
+  const findVote = await Vote.findById(createVotes._id)
   const findPost = await Post.findById(postId)
 
   const sharePostData = {
@@ -39,7 +40,7 @@ const createSharePostIntoDB = async (
     isShared: true,
     post: findPost!.post,
     sharedUser: userId,
-    votes: createVotes?._id,
+    votes: findVote,
   }
 
   const result = await Post.create(sharePostData)
@@ -245,6 +246,34 @@ const getPostFromDB = async (postId: string) => {
   return result
 }
 
+const deletePostFromDB = async (postId: string) => {
+  const result = await Post.findByIdAndDelete(postId)
+  return result
+}
+
+const updatePostIntoDB = async (
+  postId: string,
+  payload: { description: string },
+) => {
+  const findPost = await Post.findById(postId)
+  const findPostObject = findPost?.toObject()
+  if (!findPost) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Post does not exist')
+  }
+  let updatedData
+  if (findPost.isShared) {
+    updatedData = payload
+  } else {
+    updatedData = {
+      post: { ...findPostObject!.post, ...payload },
+    }
+  }
+  const result = await Post.findByIdAndUpdate(postId, updatedData, {
+    new: true,
+  })
+  return result
+}
+
 const createCommentIntoDB = async (
   payload: TComments,
   postId: string,
@@ -413,6 +442,8 @@ export const PostServices = {
   createPostIntoDB,
   createCommentIntoDB,
   createCommentReplyIntoDB,
+  deletePostFromDB,
+  updatePostIntoDB,
   updateUpvoteIntoDB,
   updateDownvoteIntoDB,
   getPostsFromDB,

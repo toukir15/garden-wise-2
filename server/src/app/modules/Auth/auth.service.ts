@@ -80,7 +80,6 @@ const loginUser = async (payload: TLoginUser) => {
     role: user?.role,
     profilePhoto: user?.profilePhoto,
   }
-  console.log(jwtPayload)
 
   const accessToken = createToken(
     jwtPayload,

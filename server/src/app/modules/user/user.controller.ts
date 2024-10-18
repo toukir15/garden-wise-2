@@ -22,7 +22,6 @@ const createUser = catchAsync(
 const getFollowSuggetionUsers = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user._id
-    console.log(userId)
     const result = await UserServices.getFollowSuggetionUsersFromDB(userId)
     sendResponse(res, {
       statusCode: httpStatus.OK,
