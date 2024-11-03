@@ -14,12 +14,13 @@ import {
 import { Button } from "@nextui-org/button";
 import { Checkbox, Select, SelectItem, Spinner } from "@nextui-org/react";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import categories from "../../assets/json/category.json";
 import profile from "../../../public/toukir.jpg";
 import { useCreatePost } from "@/src/hooks/post.hook";
 import { FaRegImage } from "react-icons/fa";
 import Loading from "../Loading";
+import { PostContext } from "@/src/context/post.provider";
 
 // Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -32,12 +33,13 @@ export default function CreatePost() {
   const [description, setDescription] = useState<string>(""); // Rich text description state
   const [files, setFiles] = useState<File[]>([]); // Image file state
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Image preview state
+  const { queryTerm, searchTerm } = useContext(PostContext);
   const {
     mutate: handleCreatePost,
     isLoading,
     isError,
     isSuccess,
-  } = useCreatePost(); // Mutation to handle post submission
+  } = useCreatePost({ queryTerm, searchTerm });
 
   const {
     register,

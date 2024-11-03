@@ -7,6 +7,7 @@ import { AuthControllers } from './auth.controller'
 import { AuthValidation } from './auth.validation'
 import { USER_ROLE } from '../user/user.const'
 import { multerUpload } from '../../config/multer.config'
+import { parseBody } from '../../middlewares/bodyParser'
 
 const router = express.Router()
 
@@ -27,6 +28,14 @@ router.post(
   // auth(USER_ROLE.USER as st, USER_ROLE.ADMIN),
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.changePassword,
+)
+
+router.patch(
+  '/edit-profile',
+  multerUpload.single('profilePhoto'),
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  // parseBody,
+  AuthControllers.editProfile,
 )
 
 router.post(

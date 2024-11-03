@@ -4,6 +4,7 @@ import { ConnectionRouter } from '../modules/connection/connection.route'
 import { UserRouter } from '../modules/user/user.route'
 import { AuthRouter } from '../modules/Auth/auth.route'
 import { ProfileRouter } from '../modules/profile/profile.route'
+import { PaymentRouter } from '../modules/payment/payment.route'
 
 const router = express.Router()
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/connections',
     route: ConnectionRouter,
+  },
+  {
+    path: '/payments',
+    route: PaymentRouter,
   },
 ]
 

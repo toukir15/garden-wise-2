@@ -33,19 +33,37 @@ export const userLogin = async (userData: FieldValues) => {
   }
 };
 
+export const editProfile = async (userData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.patch("/auth/edit-profile", userData);
+
+    if (data.success) {
+      cookies().set("accessToken", data?.data?.accessToken);
+      cookies().set("refreshToken", data?.data?.refreshToken);
+    }
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const getCurrentUser = async () => {
   const accessToken = cookies().get("accessToken")?.value;
   let decodedToken = null;
   if (accessToken) {
     decodedToken = await jwtDecode(accessToken);
   }
-  return {
+
+  const decodedUser = {
     _id: decodedToken?._id,
     name: decodedToken?.name,
     role: decodedToken?.role,
     email: decodedToken?.email,
     profilePhoto: decodedToken?.profilePhoto,
+    isVerified: decodedToken?.isVerified,
   };
+  return decodedUser;
 };
 
 export const logout = () => {

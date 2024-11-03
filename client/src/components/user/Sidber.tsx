@@ -13,7 +13,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/modal";
@@ -21,6 +20,8 @@ import { Button } from "@nextui-org/button";
 import { useUser } from "@/src/context/user.provider";
 import { IUser } from "../../../types";
 import { BsThreeDots } from "react-icons/bs";
+import Link from "next/link";
+import badge from "../../../public/medal.png";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -59,50 +60,70 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="flex flex-col justify-between h-screen">
+      <div className="flex flex-col h-screen">
         <div>
           <div className="border-[0.5px] border-gray-600 p-3 rounded-lg">
-            <Image
-              alt="image"
-              className="rounded-full"
-              src={
-                user?.profilePhoto ||
-                "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-              }
-              height={80}
-              width={80}
-            />
-            <p className="mt-2">{user?.name}</p>
-            <p className="mt-1 text-sm">{user?.email}</p>
+            <Link className="w-fit" href={"/profile"}>
+              <div className="relative w-fit">
+                <Image
+                  alt="image"
+                  className="rounded-full"
+                  src={
+                    user?.profilePhoto ||
+                    "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                  }
+                  height={80}
+                  width={80}
+                />
+                {user?.isVerified && (
+                  <Image
+                    alt="image"
+                    className="rounded-full absolute bottom-0 right-0"
+                    src={badge}
+                    height={25}
+                    width={25}
+                  />
+                )}
+              </div>
+              <p className="mt-2">{user?.name}</p>
+              <p className="mt-1 text-sm">{user?.email}</p>
+            </Link>
           </div>
           <div className="flex flex-col border border-gray-600  mt-4 rounded-lg">
             <button
               onClick={onFollowersOpen} // Trigger followers modal
               className="py-3  text-green-600 border-b hover:bg-[#48484d7f] transition duration-200 border-gray-600 rounded-t-lg rounded-b-none"
             >
-              Followers ({followersUsersData?.data.data.followers.length})
+              Followers ({followersUsersData?.data.data.followers.length || 0})
             </button>
             <button
               onClick={onOpen} // Trigger followings modal
               className="py-3 text-green-600 rounded-none rounded-b-lg hover:bg-[#48484d7f] transition duration-200 rounded-t-none"
             >
-              Followings ({followingsUsersData?.data.data.followings.length})
+              Followings (
+              {followingsUsersData?.data.data.followings.length || 0})
             </button>
           </div>
-          <div className="border-[0.5px] mt-4 border-gray-600 p-3 rounded-lg">
-            <p className="text-sm text-green-500 font-medium">
-              Unlock premium posts
-            </p>
-            <div className="flex gap-2 items-center">
-              <Image src={premium} height={16} width={16} alt="premium" />
-              <p className="text-sm mt-1 text-gray-300">Try for BDT 500</p>
+          {!user?.isVerified && (
+            <div className="border-[0.5px] mt-4 border-gray-600 p-3 rounded-lg">
+              <Link href={"/profile"}>
+                <p className="text-sm text-green-500 font-medium">
+                  Unlock premium posts
+                </p>
+                <div className="flex gap-2 items-center">
+                  <Image src={premium} height={16} width={16} alt="premium" />
+                  <p className="text-sm mt-1 text-gray-300">Try for $5.00</p>
+                </div>
+              </Link>
             </div>
-          </div>
+          )}
         </div>
         <div className="mb-3">
           <Button
+            color="danger"
+            variant="faded"
             onClick={handleLogout}
-            className="border border-green-600  text-green-600 w-full py-3 rounded-lg"
+            className="  w-full py-3 mt-4"
           >
             Logout
           </Button>

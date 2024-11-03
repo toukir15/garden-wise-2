@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { comment, commentReply, downvote, upvote } from "../services/comment";
-import { IUser } from "../../types";
+import { IUser, TQueryAndSearch } from "../../types";
 
 type TCommentPayload = {
   postId: string;
@@ -13,9 +13,6 @@ export const useUpvote = () => {
   return useMutation({
     mutationFn: async ({
       voteId,
-      // postId,
-      // userId,
-      // commentId,
     }: {
       voteId: string;
       postId: string;
@@ -197,7 +194,7 @@ export const useDownvote = () => {
   });
 };
 
-export const useComment = () => {
+export const useComment = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -205,110 +202,22 @@ export const useComment = () => {
       return await comment(postId, text);
     },
 
-    onSuccess: (serverResponse, variables) => {
-      const { postId, text, user } = variables;
-      const currentTimestamp = new Date().toISOString();
-      const commentData = {
-        _id: serverResponse.data._id,
-        text: text,
-        replies: [],
-        user: {
-          _id: user?._id,
-          name: user?.name,
-          profilePhoto: user?.profilePhoto,
-        },
-        votes: { _id: serverResponse.data.votes, upvote: [], downvote: [] },
-        createdAt: currentTimestamp,
-      };
-      // Update the query cache for the specific post with the new comment from the server
-      queryClient.setQueryData(["post", postId], (old: any) => {
-        if (!old) return old;
+    onSuccess: (_serverResponse, variables) => {
+      const { postId } = variables;
 
-        // Create a new post object to avoid mutation
-        const postData = { ...old.data };
+      // invalide post tag
+      queryClient.invalidateQueries(["post", postId], {
+        exact: true,
+      });
 
-        if (!postData.isShared) {
-          postData.post = {
-            ...postData.post,
-            comments: [...postData.post.comments, commentData],
-          };
-        } else {
-          postData.comments = [...postData.comments, commentData];
-        }
-        return { ...old, data: postData };
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
+      });
+
+      // invalide posts tag
+      queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
+        exact: true,
       });
     },
   });
 };
-
-// type TCommentReplyPayload = {
-//   commentId: string;
-//   text: string;
-//   user: IUser | null;
-//   postId: string;
-// };
-
-// export const useCommentReply = () => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: async ({ commentId, text }: TCommentReplyPayload) => {
-//       return await commentReply(commentId, text);
-//     },
-
-//     onSuccess: (serverResponse, variables) => {
-//       console.log(serverResponse);
-//       const { commentId, postId, text, user } = variables;
-//       const currentTimestamp = new Date().toISOString();
-//       // const commentData = {
-//       //   _id: serverResponse.data._id,
-//       //   text: text,
-//       //   replies: [],
-//       //   user: {
-//       //     _id: user?._id,
-//       //     name: user?.name,
-//       //     profilePhoto: user?.profilePhoto,
-//       //   },
-//       //   votes: { _id: serverResponse.data.votes, upvote: [], downvote: [] },
-//       //   createdAt: currentTimestamp,
-//       // };
-//       // console.log(commentData);
-
-//       // Update the query cache for the specific post with the new comment from the server
-//       queryClient.setQueryData(["post", postId], (old: any) => {
-//         if (!old) return old;
-//         console.log({ old });
-
-//         // Create a new post object to avoid mutation
-//         const postData = { ...old.data };
-
-//         if (!postData.isShared) {
-//           // Find the specific comment by its _id
-//           const findCommentIndex = postData.post.comments.findIndex(
-//             (comment: { _id: string }) => comment._id === commentId
-//           );
-
-//           if (findCommentIndex !== -1) {
-//             // Create a new array with the updated replies for the specific comment
-//             const updatedComments = [...postData.post.comments];
-//             updatedComments[findCommentIndex] = {
-//               ...updatedComments[findCommentIndex],
-//               replies: [
-//                 ...updatedComments[findCommentIndex].replies,
-//                 replyData,
-//               ],
-//             };
-
-//             // Update the post with the new comments array
-//             postData.post = {
-//               ...postData.post,
-//               comments: updatedComments,
-//             };
-//           }
-//         }
-
-//         // return { ...old, data: postData };
-//       });
-//     },
-//   });
-// };

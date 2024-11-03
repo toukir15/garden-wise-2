@@ -6,7 +6,15 @@ import { revalidateTag } from "next/cache"; // Import from Next.js cache utiliti
 export const createPost = async (postData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post("/posts", postData);
-    revalidateTag("posts");
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getMyPosts = async () => {
+  try {
+    const { data } = await axiosInstance.get("/posts/my-posts");
     return { data };
   } catch (error: any) {
     throw new Error(error);

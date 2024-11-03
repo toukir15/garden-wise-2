@@ -1,96 +1,76 @@
-import {
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createPost,
   deletePost,
   downvote,
   editPost,
+  getMyPosts,
   sharePost,
   upvote,
 } from "../services/posts";
 import { FieldValues } from "react-hook-form";
+import { TQueryAndSearch } from "../../types";
 
 type SharePostVariables = {
   description: string;
   postId: string;
 };
 
-export const useCreatePost = () => {
-  // Get the instance of the query client
+export const useCreatePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["POST"],
     mutationFn: async (data) => await createPost(data),
-    // On success, update the cache or re-fetch
-    onSuccess: (data, variables, context) => {
-      const responseData = data.data.data;
-      const previousPosts = queryClient.getQueryData(["posts"]);
-
-      // Optimistically update the cache
-      queryClient.setQueryData(["posts"], (old: any) => {
-        if (!old) return old;
-        // Return the new updated structure
-        return {
-          ...old,
-          data: [...old.data, responseData],
-        };
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
+        exact: true,
       });
-
-      // Optionally return context if you need to rollback
-      return { previousPosts };
     },
   });
 };
 
-export const useSharePost = () => {
+export const useGetMyPosts = () => {
+  return useQuery(["my-posts"], () => getMyPosts());
+};
+
+export const useSharePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, SharePostVariables>({
     mutationKey: ["POST"],
     mutationFn: async ({ description, postId }) =>
       await sharePost(description, postId),
-    onSuccess: (data, variables, context: any) => {
-      const responseData = data.data.data;
-      queryClient.setQueryData(["posts"], (old: any) => {
-        if (!old) return old;
-        const updatedData = {
-          ...old,
-          data: [...old.data, responseData],
-        };
-        return updatedData;
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
+        exact: true,
+      });
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
       });
     },
   });
 };
 
-export const useDeletePost = () => {
+export const useDeletePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, { postId: string }>({
     mutationKey: ["DELETE_POST"],
     mutationFn: async ({ postId }: { postId: string }) =>
       await deletePost(postId),
-    onSuccess: (_data, variables, _context: any) => {
-      queryClient.setQueryData(["posts"], (old: any) => {
-        if (!old) return old;
-        const removePost = old.data.filter(
-          (post: { _id: string }) => post._id !== variables.postId
-        );
-        const updatedData = {
-          ...old,
-          data: [...removePost],
-        };
-        return updatedData;
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
+        exact: true,
+      });
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
       });
     },
   });
 };
 
-export const useEditPost = () => {
+export const useEditPost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
   return useMutation<
     any,
@@ -101,13 +81,16 @@ export const useEditPost = () => {
     mutationFn: async ({ postId, payload }) => {
       return await editPost(postId, payload);
     },
-    onSuccess: (_data, variables, _context: any) => {
-      queryClient.invalidateQueries(["posts"]);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts", queryTerm, searchTerm]);
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
+      });
     },
   });
 };
 
-export const useUpvote = () => {
+export const useUpvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -124,7 +107,7 @@ export const useUpvote = () => {
     },
 
     // Optimistic update logic
-    onMutate: async ({ voteId, postId, userId }) => {
+    onMutate: async ({ postId, userId }) => {
       // Cancel any outgoing queries for "posts" to prevent conflict
       await queryClient.cancelQueries(["posts"]);
 
@@ -132,11 +115,59 @@ export const useUpvote = () => {
       const previousPosts = queryClient.getQueryData(["posts"]);
 
       // Optimistically update the cache with the new upvote
-      queryClient.setQueryData(["posts"], (old: any) => {
+      queryClient.setQueryData(["posts", queryTerm, searchTerm], (old: any) => {
         if (!old) return old;
 
         // Find the post by postId
         const findPost = old.data.find(
+          (post: { _id: string }) => post?._id === postId
+        );
+        if (findPost.isShared) {
+          const upvotes = findPost.votes.upvote;
+          const downvotes = findPost.votes?.downvote;
+
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.votes.upvote.push(userId);
+          }
+        } else {
+          const upvotes = findPost.post.votes.upvote;
+          const downvotes = findPost.post.votes.downvote;
+
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.post.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.post.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.post.votes.upvote.push(userId);
+          }
+        }
+        return old;
+      });
+      // Optimistically update the cache with the new upvote
+      queryClient.setQueryData(["my-posts"], (old: any) => {
+        if (!old) return old;
+        // Find the post by postId
+        const findPost = old.data.data.find(
           (post: { _id: string }) => post?._id === postId
         );
         if (findPost.isShared) {
@@ -186,7 +217,8 @@ export const useUpvote = () => {
     },
   });
 };
-export const useDownvote = () => {
+
+export const useDownvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -212,7 +244,7 @@ export const useDownvote = () => {
       const previousPosts = queryClient.getQueryData(["posts"]);
 
       // Optimistically update the cache with the new downvote
-      queryClient.setQueryData(["posts"], (old: any) => {
+      queryClient.setQueryData(["posts", queryTerm, searchTerm], (old: any) => {
         if (!old) return old;
 
         // Find the post by postId
@@ -259,7 +291,57 @@ export const useDownvote = () => {
             findPost.post.votes.downvote.push(userId);
           }
         }
+        return old;
+      });
 
+      // Optimistically update the cache with the new downvote
+      queryClient.setQueryData(["my-posts"], (old: any) => {
+        if (!old) return old;
+
+        // Find the post by postId
+        const findPost = old.data.data.find(
+          (post: { _id: string }) => post?._id === postId
+        );
+
+        if (findPost.isShared) {
+          const upvotes = findPost.votes.upvote;
+          const downvotes = findPost.votes.downvote;
+
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.votes.downvote.push(userId);
+          }
+        } else {
+          const upvotes = findPost.post.votes.upvote;
+          const downvotes = findPost.post.votes.downvote;
+
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.post.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.post.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.post.votes.downvote.push(userId);
+          }
+        }
         return old;
       });
 

@@ -28,6 +28,7 @@ import {
   useDeletePost,
   useDownvote,
   useEditPost,
+  useGetMyPosts,
   useSharePost,
   useUpvote,
 } from "@/src/hooks/post.hook";
@@ -60,7 +61,7 @@ const items = [
   },
 ];
 
-export default function ViewPost() {
+export default function ViewMyPost() {
   // local state
   const [postId, setPostId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -84,7 +85,7 @@ export default function ViewPost() {
   } = useDisclosure();
 
   // context
-  const { queryTerm, searchTerm } = useContext(PostContext);
+  const { queryTerm, searchTerm, setPostCount } = useContext(PostContext);
 
   const userId = user!?._id;
 
@@ -112,8 +113,23 @@ export default function ViewPost() {
     data: postsData,
     isLoading: isPostsDataLoading,
     error: postsDataError,
-  } = useGetPosts({ queryTerm, searchTerm });
-  console.log(postsData);
+  } = useGetMyPosts();
+
+  const upvoteCount = postsData?.data.data.reduce(
+    (accumulator: number, currentValue: TPost) => {
+      if (currentValue.isShared) {
+        accumulator += currentValue.votes.upvote.length;
+      } else {
+        accumulator += currentValue.post.votes!.upvote.length;
+      }
+      return accumulator;
+    },
+    0
+  );
+
+  useEffect(() => {
+    setPostCount(upvoteCount);
+  }, [upvoteCount]);
 
   // upvote mutation hook
   const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
@@ -152,7 +168,7 @@ export default function ViewPost() {
     <>
       {isPostsDataLoading && <ComponentLoading />}
       <div>
-        {postsData?.data?.map((data: TPost, key: number) => {
+        {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
           const upvoteStatus = checkVoteStatus(
             data.isShared,

@@ -7,16 +7,12 @@ import toukir from "../../../public/toukir.jpg";
 import { useDownvote, useUpvote } from "@/src/hooks/comment.hook";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import CommentReply from "./CommentReply";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useUser } from "@/src/context/user.provider";
 import { formatRelativeTime } from "@/src/utils/formatRelativeTime";
 dayjs.extend(relativeTime);
 
 export default function Comment({ postId }: { postId: string }) {
-  const [openCommentReplyID, setOpenCommentReplyID] = useState<string>("");
-  const [openCommentNestedReplyID, setCommentNestedReplyID] =
-    useState<string>("");
   const { data: postData, isLoading, error } = useGetPost(postId);
   const { mutate: handleUpvote } = useUpvote();
   const { mutate: handleDownvote } = useDownvote();
@@ -45,14 +41,6 @@ export default function Comment({ postId }: { postId: string }) {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  // const onSubmit: SubmitHandler<FieldValues> = (data) => {
-  //   handleCommentReply({
-  //     commentId: openCommentReplyID,
-  //     text: data.text,
-  //     postId: postId,
-  //     user: user,
-  //   });
-  // };
   return (
     <>
       {postData?.data.isShared && (
@@ -74,13 +62,13 @@ export default function Comment({ postId }: { postId: string }) {
                   />
                 </div>
                 <div>
-                  <div className=" bg-[#1d1c1c] py-1 px-2 rounded">
+                  <div className=" bg-[#1d1c1c] text-start py-1 px-2 rounded">
                     <p>
-                      <span className="font-semibold  text-sm">
+                      <span className="font-semibold text-green-500 text-sm">
                         {comment.user?.name}
                       </span>
                     </p>
-                    <p className="mb-1 text-gray-400 leading-[1.3] text-sm">
+                    <p className="mb-1 text-gray-200 leading-[1.3] text-sm">
                       {comment.text}
                     </p>
                   </div>
@@ -148,11 +136,11 @@ export default function Comment({ postId }: { postId: string }) {
                 <div>
                   <div className=" bg-[#1d1c1c] py-1 px-2 text-start rounded">
                     <p>
-                      <span className="font-semibold  text-sm">
+                      <span className="font-semibold text-green-500 text-sm">
                         {comment.user?.name}
                       </span>
                     </p>
-                    <p className="mb-1 text-gray-400 leading-[1.3] text-sm">
+                    <p className="mb-1 text-gray-200 leading-[1.3] text-sm">
                       {comment.text}
                     </p>
                   </div>

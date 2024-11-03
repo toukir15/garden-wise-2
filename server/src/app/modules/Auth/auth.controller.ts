@@ -56,6 +56,19 @@ const changePassword = catchAsync(async (req, res) => {
   })
 })
 
+const editProfile = catchAsync(async (req, res) => {
+  const data = req.body
+  const userId = req.user._id
+  const profilePhoto = req.file
+  const result = await AuthServices.editProfile(data, profilePhoto, userId)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Edit profile successfully!',
+    data: result,
+  })
+})
+
 const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies
   const result = await AuthServices.refreshToken(refreshToken)
@@ -73,4 +86,5 @@ export const AuthControllers = {
   loginUser,
   changePassword,
   refreshToken,
+  editProfile,
 }

@@ -21,6 +21,11 @@ router.post(
 )
 router.patch('/:postId', PostControllers.updatePost)
 router.get('/', PostControllers.getPosts)
+router.get(
+  '/my-posts',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  PostControllers.getMyPosts,
+)
 router.get('/:postId', PostControllers.getPost)
 router.post(
   '/comment/:postId',

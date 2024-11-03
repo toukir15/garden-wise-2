@@ -9,6 +9,7 @@ export type TUser = {
   profilePhoto: string
   address: string
   connection?: Types.ObjectId
+  isVerified: boolean
 }
 
 export type TUserRole = keyof typeof USER_ROLE

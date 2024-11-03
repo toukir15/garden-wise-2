@@ -8,6 +8,7 @@ import { TLoginUser, TRegisterUser } from './auth.interface'
 import { USER_ROLE } from '../user/user.const'
 import { Connection } from '../connection/connection.model'
 import { User } from '../user/user.model'
+import { TUser } from '../user/user.interface'
 
 const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
   // checking if the user is exist
@@ -38,7 +39,8 @@ const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
     name: newUser?.name,
     email: newUser.email,
     role: newUser?.role,
-    profilePhote: newUser?.profilePhoto,
+    profilePhoto: newUser?.profilePhoto,
+    isVerified: newUser?.isVerified,
   }
 
   const accessToken = createToken(
@@ -79,6 +81,7 @@ const loginUser = async (payload: TLoginUser) => {
     email: user.email,
     role: user?.role,
     profilePhoto: user?.profilePhoto,
+    isVerified: user?.isVerified,
   }
 
   const accessToken = createToken(
@@ -136,6 +139,39 @@ const changePassword = async (
   return null
 }
 
+const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
+  console.log(payload)
+  // console.log(profilePhoto)
+  console.log(userId)
+  // await User.findByIdAndUpdate(userId, payload)
+  // const user = await User.findById(userId)
+
+  // const jwtPayload = {
+  //   _id: user?._id.toString(),
+  //   name: user?.name,
+  //   email: user.email,
+  //   role: user?.role,
+  //   profilePhoto: user?.profilePhoto,
+  //   isVerified: user?.isVerified,
+  // }
+
+  // const accessToken = createToken(
+  //   jwtPayload,
+  //   config.jwt_access_secret as string,
+  //   config.jwt_access_expires_in as string,
+  // )
+
+  // const refreshToken = createToken(
+  //   jwtPayload,
+  //   config.jwt_refresh_secret as string,
+  //   config.jwt_refresh_expires_in as string,
+  // )
+  // return {
+  //   accessToken,
+  //   refreshToken,
+  // }
+}
+
 const refreshToken = async (token: string) => {
   // checking if the given token is valid
   const decoded = jwt.verify(
@@ -165,6 +201,7 @@ const refreshToken = async (token: string) => {
     email: user.email,
     role: user?.role,
     profilePhoto: user?.profilePhoto,
+    isVerified: user?.isVerified,
   }
 
   const accessToken = createToken(
@@ -183,4 +220,5 @@ export const AuthServices = {
   loginUser,
   changePassword,
   refreshToken,
+  editProfile,
 }

@@ -10,6 +10,7 @@ export interface IUser {
   role: string;
   email: string;
   profilePhoto: string;
+  isVerified: boolean;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
@@ -66,4 +67,9 @@ type Vote = {
   _id: string;
   upvote: string[];
   downvote: string[];
+};
+
+export type TQueryAndSearch = {
+  searchTerm?: string;
+  queryTerm?: string;
 };

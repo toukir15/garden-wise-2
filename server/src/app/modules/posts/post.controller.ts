@@ -58,11 +58,23 @@ const deletePost = catchAsync(async (req, res) => {
 })
 
 const getPosts = catchAsync(async (req, res) => {
-  const result = await PostServices.getPostsFromDB()
+  const query = req.query
+  const result = await PostServices.getPostsFromDB(query)
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Posts retrive successfully!',
+    data: result,
+  })
+})
+
+const getMyPosts = catchAsync(async (req, res) => {
+  const userId = req.user._id
+  const result = await PostServices.getMyPostsFromDB(userId)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'My posts retrive successfully!',
     data: result,
   })
 })
@@ -146,5 +158,6 @@ export const PostControllers = {
   getPosts,
   createSharePost,
   getPost,
+  getMyPosts,
   updatePost,
 }
