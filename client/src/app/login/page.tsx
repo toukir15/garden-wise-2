@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SubmitHandler } from "react-hook-form";
@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/plant.png";
+import { Button } from "@nextui-org/button";
 
 type TLoginData = {
   email: string;
@@ -18,7 +19,6 @@ type TLoginData = {
 };
 
 export default function LoginPage() {
-  const [toastId, setToastId] = useState<string | null>(null); // Manage toast ID in state
   const router = useRouter();
   const {
     mutate: handleUserLogin,
@@ -30,25 +30,23 @@ export default function LoginPage() {
 
   // Form submission handler
   const onSubmit: SubmitHandler<TLoginData> = (data) => {
-    const id = toast.loading("Logging in...");
-    setToastId(id as string);
+  
     handleUserLogin(data);
   };
 
   // Side effects for login success or error handling
   useEffect(() => {
-    if (isSuccess && toastId) {
-      toast.success("Logged in successfully!", { id: toastId, duration: 2000 });
+    if (isSuccess) {
+      toast.success("Logged in successfully!", {  duration: 2000 });
       router.push("/");
     }
 
-    if (isError && toastId) {
+    if (isError) {
       toast.error(`Login failed: ${error?.message || "Unknown error"}`, {
-        id: toastId,
         duration: 3000,
       });
     }
-  }, [isSuccess, isError, error, toastId, router]);
+  }, [isSuccess, isError, error, router]);
 
   return (
     <div className="h-screen flex justify-center items-center">
@@ -73,20 +71,21 @@ export default function LoginPage() {
             <GWInput name="password" label="Password" type="password" />
           </div>
 
-          <button
+          <Button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 transition duration-200 text-white py-[10px] px-12 rounded-xl font-bold mt-2"
+            color="success"
+            className="py-[10px] px-12 rounded-xl font-bold mt-2"
             disabled={isLoading} // Disable button during loading
           >
             {isLoading ? "Logging in..." : "Login"}
-          </button>
+          </Button>
           <p className="text-[#b5b4b4] mt-3 md:mt-4">
             Don&apos;t have an account?{" "}
             <Link
               href={`/register`}
               className="hover:cursor-pointer hover:underline hover:text-[#959595]"
             >
-              Sign Up
+              Sign up
             </Link>
           </p>
         </div>
