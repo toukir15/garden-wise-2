@@ -1,4 +1,4 @@
-"use client"; // Ensure it's a client-side component
+"use client"; 
 
 import CreatePost from "@/src/components/user/CreatePost";
 import ViewMyPost from "@/src/components/user/ViewMyPosts";
@@ -8,16 +8,31 @@ import { useCreatePayment } from "@/src/hooks/payment.hook";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Make sure this is correct
-import { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "sonner";
 import badge from "../../../../public/medal.png";
+import { logout } from "@/src/services/auth";
+import { useGetMyPosts } from "@/src/hooks/post.hook";
 
-export default function page() {
+export default function Page() {
   const { user } = useUser();
   const { postCount } = useContext(PostContext);
   const { mutate: handlePayment, data } = useCreatePayment();
+  const [isClient, setIsClient] = useState(false); // Track client-side rendering
+  const router = useRouter();
+
+  // get post hook
+  const {
+    data: postsData,
+    isLoading: isPostsDataLoading,
+    error: postsDataError,
+  } = useGetMyPosts();
+
+  useEffect(() => {
+    setIsClient(true); // Set true when the component is mounted on the client
+  }, []);
 
   const handleProfileVerify = () => {
     if (postCount < 1) {
@@ -25,29 +40,45 @@ export default function page() {
         duration: 2000,
         position: "top-right",
       });
-      return; // Prevent further execution if there are no posts
+      return;
     }
-    handlePayment(); // Only call this if the condition is met
+    handlePayment();
   };
 
-  const router = useRouter(); // Initialize the router
+  const [showVerifyButton, setShowVerifyButton] = useState(false);
+  useEffect(() => {
+    if (user && !user.isVerified) {
+      setShowVerifyButton(true);
+    } else {
+      setShowVerifyButton(false);
+    }
+  }, [user]);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   useEffect(() => {
     if (data?.data?.data?.url) {
-      // Redirect only on the client side
       router.push(data.data.data.url);
     }
-  }, [data, router]); // Re-run effect if `data` or `router` changes
+  }, [data, router]);
+
+  // Render nothing until client-side rendering is enabled
+  if (!isClient) return null;
 
   return (
-    <section className="flex flex-col h-[calc(100vh-16px)] post_scroll overflow-y-scroll">
+    <section className="flex flex-col h-screen post_scroll overflow-y-scroll">
       <div className="p-4 gap-4 border-b border-gray-600">
-        <div className="relative w-fit">
+        <div className="relative w-[150px] h-[150px]">
           <Image
-            src={user?.profilePhoto}
-            className="rounded-full"
-            height={150}
-            width={150}
+            src={
+              user?.profilePhoto ||
+              "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+            }
+            fill
+            className="object-cover rounded-full"
             alt="Profile"
           />
           <Image
@@ -55,7 +86,7 @@ export default function page() {
             className="rounded-full absolute right-0 bottom-0"
             height={40}
             width={40}
-            alt="Profile"
+            alt="Badge"
           />
         </div>
         <div className="flex justify-between">
@@ -67,12 +98,12 @@ export default function page() {
                 <span className="text-white">10</span> Followers
               </button>
               <button className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black">
-                <span className="text-white">10</span> Followers
+                <span className="text-white">10</span> Following
               </button>
             </div>
           </div>
           <div className="mt-auto flex gap-3">
-            {!user!?.isVerified && (
+            {showVerifyButton && (
               <Button
                 onClick={handleProfileVerify}
                 color="success"
@@ -86,14 +117,17 @@ export default function page() {
                 Edit Profile
               </Button>
             </Link>
-            <Button color="danger" variant="faded">
+            <Button onClick={handleLogout} color="danger" variant="faded">
               Logout
             </Button>
           </div>
         </div>
       </div>
       <CreatePost />
-      <ViewMyPost />
+      <ViewMyPost
+        postsData={postsData}
+        isPostsDataLoading={isPostsDataLoading}
+      />
     </section>
   );
 }

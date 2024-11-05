@@ -1,22 +1,13 @@
 "use client";
-import { FaComment } from "react-icons/fa";
-import { IoIosShareAlt } from "react-icons/io";
-import toukir from "../../../public/toukir.jpg";
 import { useContext, useEffect, useRef, useState } from "react";
-import { FaDownLong, FaUpLong } from "react-icons/fa6";
-import Image from "next/image";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import "lightgallery/css/lightgallery.css";
-import LightGalleryImageView from "./LightGalleryImageView";
-import { HiDotsHorizontal } from "react-icons/hi";
+
 import {
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
   Modal,
   ModalBody,
   ModalContent,
@@ -115,7 +106,6 @@ export default function ViewPost() {
     isLoading: isPostsDataLoading,
     error: postsDataError,
   } = useGetPosts({ queryTerm, searchTerm });
-  console.log(postsData);
 
   // upvote mutation hook
   const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
@@ -149,6 +139,8 @@ export default function ViewPost() {
     const payload = { description: editPostDescription };
     handleEdit({ postId, payload });
   };
+
+  console.log(user)
 
   return (
     <>

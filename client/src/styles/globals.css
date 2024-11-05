@@ -98,3 +98,7 @@
 .custom-quill .ql-toolbar button .ql-fill {
   fill: green !important; /* For icons that are filled */
 }
+
+.sidebar-button {
+  padding: 25px 20px 25px 15px;
+}

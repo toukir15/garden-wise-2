@@ -1,14 +1,15 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
-import premium from "../../../public/premium.png";
+import React, { useState, useEffect } from "react";
 import { logout } from "@/src/services/auth";
-import { useRouter } from "next/navigation"; // Correct import for useRouter
+import { useRouter } from "next/navigation";
+import logo from "../../../public/plant.png";
+import { GoHomeFill, GoSearch } from "react-icons/go";
 import {
   useGetFollowers,
   useGetFollowings,
   useUnfollowUser,
-} from "@/src/hooks/connection.hook"; // Assuming there is a hook for followers
+} from "@/src/hooks/connection.hook";
 import {
   Modal,
   ModalBody,
@@ -19,13 +20,17 @@ import {
 import { Button } from "@nextui-org/button";
 import { useUser } from "@/src/context/user.provider";
 import { IUser } from "../../../types";
-import { BsThreeDots } from "react-icons/bs";
 import Link from "next/link";
-import badge from "../../../public/medal.png";
+import { IoNotifications, IoPeopleOutline } from "react-icons/io5";
+import { MdMessage, MdOutlineDiamond } from "react-icons/md";
+import { CiBookmark, CiUser } from "react-icons/ci";
+import { HiOutlineUserGroup } from "react-icons/hi";
+import FollowFollowingListModal from "../modal/FollowFollowingListModal";
+import SidebarButton from "./SidebarButton";
 
 export default function Sidebar() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, setUser } = useUser(); // Assuming `setUser` exists in your context
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isFollowersOpen,
@@ -33,23 +38,30 @@ export default function Sidebar() {
     onOpenChange: onFollowersOpenChange,
   } = useDisclosure();
 
+  const [isClient, setIsClient] = useState(false);
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+
+  // Ensure this component only renders on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const { data: followingsUsersData, refetch: refetchFollowings } =
+    useGetFollowings();
+  const { data: followersUsersData, refetch: refetchFollowers } =
+    useGetFollowers();
+  const { mutate: handleUnfollow } = useUnfollowUser();
+
   const handleLogout = () => {
     logout();
     router.push("/login");
   };
 
-  const { data: followingsUsersData } = useGetFollowings();
-  const { data: followersUsersData } = useGetFollowers();
-
-  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-
-  const { mutate: handleUnfollow } = useUnfollowUser();
-
   const handleUnfollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
     setLoadingUserId(user._id);
     handleUnfollow(
-      { user: user },
+      { user },
       {
         onSettled: () => {
           setLoadingUserId(null);
@@ -58,183 +70,118 @@ export default function Sidebar() {
     );
   };
 
+  // Render the component only on the client side
+  if (!isClient) return null;
+
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen justify-between p-4">
         <div>
-          <div className="border-[0.5px] border-gray-600 p-3 rounded-lg">
-            <Link className="w-fit" href={"/profile"}>
-              <div className="relative w-fit">
-                <Image
-                  alt="image"
-                  className="rounded-full"
-                  src={
-                    user?.profilePhoto ||
-                    "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-                  }
-                  height={80}
-                  width={80}
-                />
-                {user?.isVerified && (
-                  <Image
-                    alt="image"
-                    className="rounded-full absolute bottom-0 right-0"
-                    src={badge}
-                    height={25}
-                    width={25}
-                  />
-                )}
-              </div>
-              <p className="mt-2">{user?.name}</p>
-              <p className="mt-1 text-sm">{user?.email}</p>
-            </Link>
+          <div className="w-8 ml-4">
+            <Image
+              src={logo}
+              width={20}
+              height={20}
+              alt="logo"
+              className="w-16 mb-2"
+            />
           </div>
-          <div className="flex flex-col border border-gray-600  mt-4 rounded-lg">
-            <button
-              onClick={onFollowersOpen} // Trigger followers modal
-              className="py-3  text-green-600 border-b hover:bg-[#48484d7f] transition duration-200 border-gray-600 rounded-t-lg rounded-b-none"
+
+          <div>
+            <SidebarButton href="/" icon={GoHomeFill} label="Home" />
+            <SidebarButton onClick={() => {}} icon={GoSearch} label="Explore" />
+            <SidebarButton
+              onClick={() => {}}
+              icon={IoNotifications}
+              label="Notification"
+            />
+            <SidebarButton
+              onClick={() => {}}
+              icon={MdMessage}
+              label="Message"
+            />
+            <SidebarButton
+              onClick={onFollowersOpen}
+              icon={IoPeopleOutline}
+              label={`Followers (${followersUsersData?.data.data.followers.length || 0})`}
+            />
+            <SidebarButton
+              onClick={onOpen}
+              icon={IoPeopleOutline}
+              label={`Followings (${followingsUsersData?.data.data.followings.length || 0})`}
+            />
+            <SidebarButton
+              onClick={() => {}}
+              icon={CiBookmark}
+              label="Bookmark"
+            />
+            <SidebarButton
+              onClick={() => {}}
+              icon={HiOutlineUserGroup}
+              label="Communities"
+            />
+            <SidebarButton
+              onClick={() => {}}
+              icon={MdOutlineDiamond}
+              label="Premium"
+            />
+            <SidebarButton href="/profile" icon={CiUser} label="Profile" />
+
+            <Button
+              className="sidebar-button w-full text-lg font-medium p-4 mt-6"
+              variant="solid"
+              color="success"
+              radius="full"
             >
-              Followers ({followersUsersData?.data.data.followers.length || 0})
-            </button>
-            <button
-              onClick={onOpen} // Trigger followings modal
-              className="py-3 text-green-600 rounded-none rounded-b-lg hover:bg-[#48484d7f] transition duration-200 rounded-t-none"
-            >
-              Followings (
-              {followingsUsersData?.data.data.followings.length || 0})
-            </button>
+              Post
+            </Button>
           </div>
-          {!user?.isVerified && (
-            <div className="border-[0.5px] mt-4 border-gray-600 p-3 rounded-lg">
-              <Link href={"/profile"}>
-                <p className="text-sm text-green-500 font-medium">
-                  Unlock premium posts
-                </p>
-                <div className="flex gap-2 items-center">
-                  <Image src={premium} height={16} width={16} alt="premium" />
-                  <p className="text-sm mt-1 text-gray-300">Try for $5.00</p>
-                </div>
-              </Link>
-            </div>
-          )}
         </div>
         <div className="mb-3">
-          <Button
-            color="danger"
-            variant="faded"
-            onClick={handleLogout}
-            className="  w-full py-3 mt-4"
-          >
-            Logout
-          </Button>
+          <div className="p-3 rounded-lg">
+            <Link href="/profile" className="flex items-center gap-3">
+              <div>
+                <div className="rounded-full overflow-hidden w-[40px] h-[40px] relative">
+                  <Image
+                    alt="Profile image"
+                    src={
+                      user?.profilePhoto ||
+                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                    }
+                    fill
+                    className="object-cover"
+                    sizes="40px"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <p className="font-medium">{user?.name}</p>
+                <p className="text-sm text-gray-600">{user?.email}</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Followings Modal */}
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex justify-center gap-1 border-b border-gray-600">
-                Followings
-              </ModalHeader>
-              <ModalBody>
-                <div className="h-[400px] overflow-y-scroll scroll_box">
-                  {followingsUsersData?.data.data.followings.map(
-                    (user: Partial<IUser>) => (
-                      <div
-                        key={user._id}
-                        className="flex justify-between border-b items-center border-gray-600 py-1"
-                      >
-                        <div className="flex gap-3">
-                          <div className="flex justify-center items-center">
-                            <Image
-                              height={30}
-                              width={30}
-                              src={user.profilePhoto}
-                              alt="profile photo"
-                              className="rounded-full"
-                            />
-                          </div>
-                          <div>
-                            <p className="text-gray-200">{user.name}</p>
-                            <p className="text-sm text-gray-400">
-                              {user.email}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="mr-4">
-                          {loadingUserId !== user._id && (
-                            <button
-                              onClick={() => handleUnfollowRequest(user)}
-                              className="bg-green-600 hover:bg-green-500 transition duration-150 text-white text-xs py-[3px] px-3 rounded-full"
-                            >
-                              Unfollow
-                            </button>
-                          )}
-                          {loadingUserId === user._id && (
-                            <button className="bg-green-600 hover:bg-green-500 transition duration-150 px-6 text-white text-xs py-[3px]  rounded-full">
-                              <BsThreeDots />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <FollowFollowingListModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title="Followings"
+        users={followingsUsersData?.data.data.followings || []}
+        loadingUserId={loadingUserId}
+        handleUnfollowRequest={handleUnfollowRequest}
+      />
 
-      {/* Followers Modal */}
-      <Modal isOpen={isFollowersOpen} onOpenChange={onFollowersOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex justify-center gap-1 border-b border-gray-600">
-                Followers
-              </ModalHeader>
-              <ModalBody>
-                <div className="h-[400px] overflow-y-scroll scroll_box">
-                  {followersUsersData?.data.data.followers.map(
-                    (user: Partial<IUser>) => (
-                      <div
-                        key={user._id}
-                        className="flex justify-between border-b items-center border-gray-600 py-1"
-                      >
-                        <div className="flex gap-3">
-                          <div className="flex justify-center items-center">
-                            <Image
-                              height={30}
-                              width={30}
-                              src={user.profilePhoto}
-                              alt="profile photo"
-                              className="rounded-full"
-                            />
-                          </div>
-                          <div>
-                            <p className="text-gray-200">{user.name}</p>
-                            <p className="text-sm text-gray-400">
-                              {user.email}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="mr-4">
-                          <button className="text-xs py-1 px-3 rounded-full bg-green-600 hover:bg-green-500 transition duration-200">
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      {/* followers modal  */}
+      <FollowFollowingListModal
+        isOpen={isFollowersOpen}
+        onOpenChange={onFollowersOpenChange}
+        title="Followers"
+        users={followersUsersData?.data.data.followers || []}
+        loadingUserId={loadingUserId}
+        handleUnfollowRequest={handleUnfollowRequest}
+      />
     </>
   );
 }

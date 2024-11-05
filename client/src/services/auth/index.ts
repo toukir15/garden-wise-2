@@ -48,6 +48,16 @@ export const editProfile = async (userData: FieldValues) => {
   }
 };
 
+export const changePassword = async (userData: FieldValues) => {
+  try {
+    console.log(userData)
+    const { data } = await axiosInstance.patch("/auth/change-password", userData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const getCurrentUser = async () => {
   const accessToken = cookies().get("accessToken")?.value;
   let decodedToken = null;

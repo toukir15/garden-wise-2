@@ -29,14 +29,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex gap-4 w-full">
-      <div className="w-[17%] h-fit ">
-        <Sidber />
-      </div>
-      <div className="w-[60%] border-[0.5px] border-gray-600 ">{children}</div>
-      <div className="w-[23%] h-fit pt-4 rounded-lg">
-        <FollowRequest />
-      </div>
-    </div>
+      <div className="border-[0.5px] border-gray-600">{children}</div>
   );
 }

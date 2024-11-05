@@ -106,14 +106,14 @@ const changePassword = async (
   userData: JwtPayload,
   payload: { oldPassword: string; newPassword: string },
 ) => {
+  console.log(userData)
   // checking if the user is exist
   const user = await User.findOne({ email: userData?.email })
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!')
   }
-
-  const matchPassword = bcrypt.compareSync(userData.password, user.password)
+  const matchPassword = bcrypt.compareSync(payload.oldPassword, user.password)
 
   //checking if the password is correct
   if (!matchPassword)
@@ -124,7 +124,7 @@ const changePassword = async (
     payload.newPassword,
     Number(config.bcrypt_salt_rounds),
   )
-
+  console.log(newHashedPassword)
   await User.findOneAndUpdate(
     {
       email: userData.email,
@@ -135,14 +135,11 @@ const changePassword = async (
       passwordChangedAt: new Date(),
     },
   )
-
   return null
 }
 
 const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
-  console.log(payload)
   // console.log(profilePhoto)
-  console.log(userId)
   // await User.findByIdAndUpdate(userId, payload)
   // const user = await User.findById(userId)
 

@@ -1,12 +1,9 @@
 /* eslint-disable prettier/prettier */
 import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import clsx from "clsx";
-
+import FollowRequest from "@/src/components/user/FollowRequest"; // Ensure this path is correct
 import { siteConfig } from "@/src/config/site";
-import { fontSans } from "@/src/config/fonts";
-import { Providers } from "../lib/providers";
-
+import Sidebar from "@/src/components/user/Sidber";
 
 export const metadata: Metadata = {
   title: {
@@ -25,25 +22,21 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
 };
-// Create a client
-export default function RootLayout({
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <head />
-      <body
-        className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-            <div>{children}</div>
-        </Providers>
-      </body>
-    </html>
+    <div className="flex container gap-4 mx-auto h-screen">
+      <div className="w-[19%]">
+        <Sidebar />
+      </div>
+      <div className="w-[62%]">{children}</div>
+      <div className="w-[23%] h-fit pt-4 rounded-lg">
+        <FollowRequest />
+      </div>
+    </div>
   );
 }

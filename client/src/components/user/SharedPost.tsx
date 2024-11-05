@@ -4,12 +4,12 @@ import React from 'react'
 import { HiDotsHorizontal } from 'react-icons/hi';
 import toukir from "../../../public/toukir.jpg";
 import { items } from '@/src/const';
-import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from 'dayjs';
 import { FaDownLong, FaUpLong } from 'react-icons/fa6';
 import LightGalleryImageView from './LightGalleryImageView';
 import { IoIosShareAlt } from 'react-icons/io';
 import { FaComment } from 'react-icons/fa';
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 export default function SharedPost({data, isDropdownOpen, toggleDropdown, setPostId, handlePostDelete, handlePostDownvote, handlePostUpvote, setIsOpenComment, setOpenSharedComment, upvoteStatus, images, downvoteStatus, onOpen, editOnOpen,setEditPostDescription, postId}) {
