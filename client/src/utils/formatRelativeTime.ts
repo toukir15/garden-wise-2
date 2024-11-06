@@ -6,7 +6,7 @@ dayjs.extend(relativeTime);
 
 export const formatRelativeTime = (time: any) => {
   const diffInSeconds = dayjs().diff(time, "second");
-  if (diffInSeconds < 60) return `${diffInSeconds}s`;
+  if (diffInSeconds < 60) return `Now`;
 
   const diffInMinutes = dayjs().diff(time, "minute");
   if (diffInMinutes < 60) return `${diffInMinutes}m`;

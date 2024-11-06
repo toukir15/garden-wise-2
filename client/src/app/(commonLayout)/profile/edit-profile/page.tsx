@@ -26,13 +26,13 @@ export default function page() {
             </div>
           </div>
         </div>
-        <Link className="w-full font-bold" href={"/edit-profile-details"}>
+        <Link className="w-full font-bold" href={"/profile/edit-profile-details"}>
           <Button size="lg" color="success" className="w-full font-bold">
             Edit Profile
           </Button>
         </Link>
         <div className="flex mt-8 w-full gap-6">
-          <Link className="w-full font-bold" href={"/change-password"}>
+          <Link className="w-full font-bold" href={"/profile/change-password"}>
             <Button
               size="lg"
               className="w-full"

@@ -12,15 +12,27 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "sonner";
-import badge from "../../../../public/medal.png";
+import badge from "../../../../../public/medal.png";
 import { logout } from "@/src/services/auth";
 import { useGetMyPosts } from "@/src/hooks/post.hook";
+import { useGetFollowers, useGetFollowings, useUnfollowUser } from "@/src/hooks/connection.hook";
+import { IUser } from "../../../../../types";
+import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
+import { useDisclosure } from "@nextui-org/modal";
+import Loading from "@/src/components/Loading";
 
 export default function Page() {
   const { user } = useUser();
   const { postCount } = useContext(PostContext);
-  const { mutate: handlePayment, data } = useCreatePayment();
+  const { mutate: handlePayment, data, isLoading: isPaymentLoading } = useCreatePayment();
   const [isClient, setIsClient] = useState(false); // Track client-side rendering
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isFollowersOpen,
+    onOpen: onFollowersOpen,
+    onOpenChange: onFollowersOpenChange,
+  } = useDisclosure();
   const router = useRouter();
 
   // get post hook
@@ -65,10 +77,36 @@ export default function Page() {
     }
   }, [data, router]);
 
+  
+  const { data: followingsUsersData} =
+    useGetFollowings();
+  const { data: followersUsersData} =
+    useGetFollowers();
+  const { mutate: handleUnfollow } = useUnfollowUser();
+
+
+  const handleUnfollowRequest = (user: Partial<IUser>) => {
+    if (!user._id) return;
+    setLoadingUserId(user._id);
+    handleUnfollow(
+      { user },
+      {
+        onSettled: () => {
+          setLoadingUserId(null);
+        },
+      }
+    );
+  };
+
+if(isPaymentLoading){
+  return <Loading/>
+}
+
   // Render nothing until client-side rendering is enabled
   if (!isClient) return null;
 
   return (
+    <>
     <section className="flex flex-col h-screen post_scroll overflow-y-scroll">
       <div className="p-4 gap-4 border-b border-gray-600">
         <div className="relative w-[150px] h-[150px]">
@@ -94,11 +132,11 @@ export default function Page() {
             <p className="mt-3 text-2xl font-bold">{user?.name}</p>
             <p className="font-medium text-gray-300">{user?.email}</p>
             <div className="flex gap-4 mt-2">
-              <button className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black">
-                <span className="text-white">10</span> Followers
+              <button onClick={onFollowersOpen} className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black">
+                <span className="text-white">{followersUsersData?.data.data.followers.length || 0}</span> Followers
               </button>
-              <button className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black">
-                <span className="text-white">10</span> Following
+              <button onClick={onOpen} className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black">
+                <span className="text-white">{followingsUsersData?.data.data.followings.length || 0}</span> Following
               </button>
             </div>
           </div>
@@ -112,7 +150,7 @@ export default function Page() {
                 Verify
               </Button>
             )}
-            <Link href="/edit-profile">
+            <Link href="/profile/edit-profile">
               <Button color="success" variant="faded">
                 Edit Profile
               </Button>
@@ -129,5 +167,25 @@ export default function Page() {
         isPostsDataLoading={isPostsDataLoading}
       />
     </section>
+      {/* Followings Modal */}
+      <FollowFollowingListModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title="Followings"
+        users={followingsUsersData?.data.data.followings || []}
+        loadingUserId={loadingUserId}
+        handleUnfollowRequest={handleUnfollowRequest}
+      />
+
+      {/* followers modal  */}
+      <FollowFollowingListModal
+        isOpen={isFollowersOpen}
+        onOpenChange={onFollowersOpenChange}
+        title="Followers"
+        users={followersUsersData?.data.data.followers || []}
+        loadingUserId={loadingUserId}
+        handleUnfollowRequest={handleUnfollowRequest}
+      />
+    </>
   );
 }

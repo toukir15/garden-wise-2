@@ -1,13 +1,12 @@
 "use client";
 import React, { useContext, useState } from "react";
 import Image from "next/image";
-import profile from "../../../public/toukir.jpg";
 import { useGetFollowSuggetionUsers } from "@/src/hooks/user.hook";
 import { IUser } from "../../../types";
 import { Input, Spinner } from "@nextui-org/react";
 import { useFollowUser } from "@/src/hooks/connection.hook";
 import { BsThreeDots } from "react-icons/bs";
-import { IoSearchCircleOutline, IoSearchSharp } from "react-icons/io5";
+import { IoSearchSharp } from "react-icons/io5";
 import { PostContext } from "@/src/context/post.provider";
 
 export default function FollowRequest() {
@@ -58,14 +57,14 @@ export default function FollowRequest() {
           }
         />
       </div>
-      {followSuggetionUsersData?.data.data.length > 0 && (
+    
         <div className="border-[0.5px] rounded-xl border-gray-600 pt-4 mt-4">
           <p className="px-2 border-b border-gray-700 pb-3">
             Suggested for you
           </p>
           {isLoading && (
             <div className="flex justify-center">
-              <div className="absolute top-60 h-fit">
+              <div className="absolute top-40 h-fit">
                 <Spinner color="success"></Spinner>
               </div>
             </div>
@@ -78,13 +77,13 @@ export default function FollowRequest() {
                   className="py-3 border-b hover:bg-[#080808] transition duration-150 border-gray-900"
                 >
                   <div className="flex gap-2 px-2 items-center">
-                    <div>
+                    <div className="flex justify-center items-center">
                       <Image
-                        className="rounded-full"
-                        height={40}
-                        width={40}
-                        src={user?.profilePhoto || profile}
-                        alt="profile image"
+                        height={30}
+                        width={30}
+                        src={user.profilePhoto}
+                        alt="profile photo"
+                        className="rounded-full h-8 w-8"
                       />
                     </div>
                     <div className="flex justify-between items-center w-full">
@@ -116,7 +115,7 @@ export default function FollowRequest() {
             </div>
           </div>
         </div>
-      )}
+      
     </div>
   );
 }

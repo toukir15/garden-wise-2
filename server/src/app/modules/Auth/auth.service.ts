@@ -106,7 +106,6 @@ const changePassword = async (
   userData: JwtPayload,
   payload: { oldPassword: string; newPassword: string },
 ) => {
-  console.log(userData)
   // checking if the user is exist
   const user = await User.findOne({ email: userData?.email })
 
@@ -116,15 +115,15 @@ const changePassword = async (
   const matchPassword = bcrypt.compareSync(payload.oldPassword, user.password)
 
   //checking if the password is correct
-  if (!matchPassword)
+  if (!matchPassword) {
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched')
+  }
 
   //hash new password
   const newHashedPassword = await bcrypt.hash(
     payload.newPassword,
     Number(config.bcrypt_salt_rounds),
   )
-  console.log(newHashedPassword)
   await User.findOneAndUpdate(
     {
       email: userData.email,
@@ -139,34 +138,44 @@ const changePassword = async (
 }
 
 const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
-  // console.log(profilePhoto)
-  // await User.findByIdAndUpdate(userId, payload)
-  // const user = await User.findById(userId)
+  const updatedData: any = {}
 
-  // const jwtPayload = {
-  //   _id: user?._id.toString(),
-  //   name: user?.name,
-  //   email: user.email,
-  //   role: user?.role,
-  //   profilePhoto: user?.profilePhoto,
-  //   isVerified: user?.isVerified,
-  // }
+  if (payload.name) {
+    updatedData.name = payload.name
+  }
+  if (payload.address) {
+    updatedData.address = payload.address
+  }
+  if (profilePhoto?.path) {
+    updatedData.profilePhoto = profilePhoto.path
+  }
+  await User.findByIdAndUpdate(userId, updatedData)
+  const user = await User.findById(userId)
 
-  // const accessToken = createToken(
-  //   jwtPayload,
-  //   config.jwt_access_secret as string,
-  //   config.jwt_access_expires_in as string,
-  // )
+  const jwtPayload = {
+    _id: user?._id.toString(),
+    name: user?.name,
+    email: user.email,
+    role: user?.role,
+    profilePhoto: user?.profilePhoto,
+    isVerified: user?.isVerified,
+  }
 
-  // const refreshToken = createToken(
-  //   jwtPayload,
-  //   config.jwt_refresh_secret as string,
-  //   config.jwt_refresh_expires_in as string,
-  // )
-  // return {
-  //   accessToken,
-  //   refreshToken,
-  // }
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  )
+
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string,
+  )
+  return {
+    accessToken,
+    refreshToken,
+  }
 }
 
 const refreshToken = async (token: string) => {

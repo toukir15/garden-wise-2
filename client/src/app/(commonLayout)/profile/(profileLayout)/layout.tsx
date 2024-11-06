@@ -2,6 +2,8 @@
 import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/src/config/site";
+import FollowRequest from "@/src/components/user/FollowRequest";
+import Sidebar from "@/src/components/user/Sidber";
 
 export const metadata: Metadata = {
   title: {
@@ -27,6 +29,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-      <div className="border-[0.5px] h-screen border-gray-600">{children}</div>
+    <div className="flex container gap-4 mx-auto h-screen">
+    <div className="w-[19%]">
+      <Sidebar />
+    </div>
+    <div className="w-[62%] border border-gray-600">{children}</div>
+    <div className="w-[23%] h-fit pt-4 rounded-lg">
+      <FollowRequest />
+    </div>
+  </div>
   );
 }

@@ -20,7 +20,7 @@ export default function PostModal({
   setDescription,
   imagePreviews,
   handleFileChange,
-}) {
+}: any) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function PostModal({
       onOpenChange={(open) => (open ? onOpen() : onClose())} // Toggle open state
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ModalContent className="absolute top-8 -translate-x-9">
+        <ModalContent className="absolute top-8 -translate-x-4">
           {(onClose) => (
             <>
               <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">

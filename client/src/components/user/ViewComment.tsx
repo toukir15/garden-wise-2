@@ -26,7 +26,7 @@ export default function ViewComment({
     >
       <button
         onClick={(e) => e.stopPropagation()}
-        className="w-[95%] md:w-[600px] lg:w-[660px] bg-[#121212] rounded-md absolute right-[52%] translate-x-1/2 top-[18%] md:top-[12%] flex flex-col justify-between "
+        className="w-[95%] md:w-[600px] lg:w-[660px] bg-[#121212] rounded-md absolute right-[51%] translate-x-1/2 top-[18%] md:top-[12%] flex flex-col justify-between "
       >
         {/* hade and body  */}
         <div className="w-full">

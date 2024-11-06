@@ -1,22 +1,15 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { logout } from "@/src/services/auth";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, useContext } from "react";
 import logo from "../../../public/plant.png";
 import { GoHomeFill, GoSearch } from "react-icons/go";
+import categories from "../../assets/json/category.json";
 import {
   useGetFollowers,
   useGetFollowings,
   useUnfollowUser,
 } from "@/src/hooks/connection.hook";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/modal";
+import { useDisclosure } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
 import { useUser } from "@/src/context/user.provider";
 import { IUser } from "../../../types";
@@ -27,11 +20,23 @@ import { CiBookmark, CiUser } from "react-icons/ci";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import FollowFollowingListModal from "../modal/FollowFollowingListModal";
 import SidebarButton from "./SidebarButton";
+import PostModal from "../modal/PostModal";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { PostContext } from "@/src/context/post.provider";
+import { useCreatePost } from "@/src/hooks/post.hook";
 
 export default function Sidebar() {
-  const router = useRouter();
-  const { user, setUser } = useUser(); // Assuming `setUser` exists in your context
+  const { user } = useUser();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isPostOpen,
+    onOpen: postOnOpen,
+    onClose: postOnClose,
+  } = useDisclosure();
+  const [description, setDescription] = useState<string>("");
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const { queryTerm, searchTerm } = useContext(PostContext);
+  const [files, setFiles] = useState<File[]>([]);
   const {
     isOpen: isFollowersOpen,
     onOpen: onFollowersOpen,
@@ -41,21 +46,53 @@ export default function Sidebar() {
   const [isClient, setIsClient] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
+  // Fetch post mutation
+  const { mutate: handleCreatePost, isLoading } = useCreatePost({
+    queryTerm,
+    searchTerm,
+  });
+
   // Ensure this component only renders on the client side
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const { data: followingsUsersData, refetch: refetchFollowings } =
-    useGetFollowings();
-  const { data: followersUsersData, refetch: refetchFollowers } =
-    useGetFollowers();
-  const { mutate: handleUnfollow } = useUnfollowUser();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FieldValues>();
 
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ ...data, description }));
+    files.forEach((file) => {
+      formData.append("file", file);
+    });
+    handleCreatePost(formData);
+    postOnClose();
   };
+
+  // Handle file changes and set preview
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files || []);
+    const newPreviews = newFiles.map((file) => {
+      const reader = new FileReader();
+      return new Promise<string>((resolve) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(newPreviews).then((previews) => {
+      setFiles((prev) => [...prev, ...newFiles]);
+      setImagePreviews((prev) => [...prev, ...previews]);
+    });
+  };
+
+  const { data: followingsUsersData } = useGetFollowings();
+  const { data: followersUsersData } = useGetFollowers();
+  const { mutate: handleUnfollow } = useUnfollowUser();
 
   const handleUnfollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
@@ -128,6 +165,7 @@ export default function Sidebar() {
             <SidebarButton href="/profile" icon={CiUser} label="Profile" />
 
             <Button
+              onClick={postOnOpen}
               className="sidebar-button w-full text-lg font-medium p-4 mt-6"
               variant="solid"
               color="success"
@@ -181,6 +219,21 @@ export default function Sidebar() {
         users={followersUsersData?.data.data.followers || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
+      />
+
+      <PostModal
+        isOpen={isPostOpen}
+        onOpen={postOnOpen}
+        onClose={postOnClose}
+        handleSubmit={handleSubmit}
+        register={register}
+        onSubmit={onSubmit}
+        errors={errors}
+        categories={categories}
+        description={description}
+        setDescription={setDescription}
+        imagePreviews={imagePreviews}
+        handleFileChange={handleFileChange}
       />
     </>
   );

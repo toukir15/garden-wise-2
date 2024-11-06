@@ -23,18 +23,18 @@ router.post(
   AuthControllers.loginUser,
 )
 
-router.post(
+router.patch(
   '/change-password',
   auth(USER_ROLE.user, USER_ROLE.admin),
-  validateRequest(AuthValidation.changePasswordValidationSchema),
+  // validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.changePassword,
 )
 
-router.patch(
+router.post(
   '/edit-profile',
   multerUpload.single('profilePhoto'),
   auth(USER_ROLE.user, USER_ROLE.admin),
-  // parseBody,
+  parseBody,
   AuthControllers.editProfile,
 )
 

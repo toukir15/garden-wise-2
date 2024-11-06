@@ -41,6 +41,8 @@ import ComponentLoading from "../ComponentLoading";
 import { PostContext } from "@/src/context/post.provider";
 import SharedPost from "./SharedPost";
 import Post from "./Post";
+import SharePostModal from "../modal/SharePostModal";
+import EditPostModal from "../modal/EditPostModal";
 
 // Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -229,87 +231,23 @@ export default function ViewMyPost({postsData, isPostsDataLoading}) {
           );
         })}
 
-        {/* share post  */}
-        <Modal
-          className="bg-[#121212]"
-          isOpen={isOpen}
-          size="2xl"
-          onOpenChange={onOpenChange}
-        >
-          <form onSubmit={handlePostShare}>
-            <ModalContent className="absolute top-8 -translate-x-9">
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">
-                    Share post
-                  </ModalHeader>
-                  <ModalBody>
-                    {/* Rich Text Editor */}
-                    <div className="mt-3">
-                      <ReactQuill
-                        placeholder="Add a description..."
-                        className="text-white custom-quill"
-                        value={description}
-                        onChange={setDescription}
-                        style={{ height: "150px" }}
-                      />
-                    </div>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button
-                      className="bg-green-500 py-2 mt-10 font-medium rounded-full w-full"
-                      type="submit"
-                      onPress={onClose}
-                    >
-                      Share
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </form>
-        </Modal>
+       {/* share post  */}
+       <SharePostModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        handlePostShare={handlePostShare}
+        description={description}
+        setDescription={setDescription}
+      />
 
         {/* edit post  */}
-        <Modal
-          className="bg-[#121212]"
-          isOpen={isEditOpen}
-          size="2xl"
-          onOpenChange={editOnOpenChange}
-        >
-          <form onSubmit={handlePostEdit}>
-            <ModalContent className="absolute top-8 -translate-x-9">
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">
-                    Edit Post
-                  </ModalHeader>
-                  <ModalBody>
-                    {/* Rich Text Editor */}
-                    <div className="mt-3">
-                      <ReactQuill
-                        placeholder="Add a description..."
-                        className="text-white custom-quill"
-                        defaultValue={editPostDescription}
-                        onChange={setEditPostDescription}
-                        style={{ height: "150px" }}
-                      />
-                    </div>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button
-                      className="bg-green-500 py-2 mt-10 font-medium rounded-full w-full"
-                      type="submit"
-                      onPress={onClose}
-                    >
-                      Edit Post
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </form>
-        </Modal>
+        <EditPostModal
+        isEditOpen={isEditOpen}
+        editOnOpenChange={editOnOpenChange}
+        handlePostEdit={handlePostEdit}
+        editPostDescription={editPostDescription}
+        setEditPostDescription={setEditPostDescription}
+      />
 
         {(isOpenComment || isOpenSharedComment) && (
           <ViewComment

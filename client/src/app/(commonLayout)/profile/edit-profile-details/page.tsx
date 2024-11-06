@@ -6,13 +6,16 @@ import { Button, Input, Link } from "@nextui-org/react";
 import { useEditProfile } from "@/src/hooks/auth.hook";
 import { useForm } from "react-hook-form"; // Import useForm from react-hook-form
 import { FaEdit } from "react-icons/fa";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const { user } = useUser();
-  const { mutate: editProfile, isLoading } = useEditProfile();
+  const router = useRouter();
+  const { mutate: editProfile, isLoading, isSuccess } = useEditProfile();
 
   // Initialize react-hook-form
   const {
@@ -44,21 +47,30 @@ export default function Page() {
   const onSubmit = (data: TEditProfile) => {
     const formData = new FormData();
 
-    // Append form fields
-    if (data.name) {
-      formData.append("name", data.name);
-    }
-    if (data.address) {
-      formData.append("address", data.address);
-    }
+    // Combine name and address into a single variable
+    const profileDetails = JSON.stringify({
+      name: data.name,
+      address: data.address,
+    });
+
+    // Append combined data as a single variable
+    formData.append("data", profileDetails);
 
     // Append file if available
     if (files[0]) {
       formData.append("profilePhoto", files[0]);
     }
 
+    // Proceed to edit profile
     editProfile(formData);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully updated profile data!", { duration: 2000 });
+      router.push("/");
+    }
+  }, [isSuccess, router]);
 
   return (
     <section className="flex justify-center flex-col items-center h-screen">

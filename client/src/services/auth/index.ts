@@ -18,6 +18,7 @@ export const userRegister = async (userData: FieldValues) => {
     throw new Error(error);
   }
 };
+
 export const userLogin = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post("/auth/login", userData);
@@ -26,7 +27,6 @@ export const userLogin = async (userData: FieldValues) => {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
     }
-
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -35,8 +35,8 @@ export const userLogin = async (userData: FieldValues) => {
 
 export const editProfile = async (userData: FieldValues) => {
   try {
-    const { data } = await axiosInstance.patch("/auth/edit-profile", userData);
-
+    console.log(userData)
+    const { data } = await axiosInstance.post("/auth/edit-profile", userData);
     if (data.success) {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
@@ -44,6 +44,7 @@ export const editProfile = async (userData: FieldValues) => {
 
     return data;
   } catch (error: any) {
+    console.log(error)
     throw new Error(error);
   }
 };

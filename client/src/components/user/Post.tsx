@@ -30,7 +30,7 @@ export default function Post({
   setOpenSharedComment, 
   setIsOpenComment, 
   onOpen 
-}) {
+}: any) {
   // Client-side detection
   const [isClient, setIsClient] = useState(false);
 

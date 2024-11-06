@@ -62,7 +62,7 @@ export default function CreatePost() {
       formData.append("file", file);
     });
     handleCreatePost(formData);
-    onClose(); // Close modal after submission
+    onClose(); 
   };
 
   // Handle file changes and set preview
