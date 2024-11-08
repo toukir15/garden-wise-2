@@ -2,12 +2,10 @@ import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/modal'
 import React from 'react'
 import { IUser } from '../../../types'
 import UserList from '../user/UserList'
-import { FaUserCircle } from 'react-icons/fa'
 
 export default function FollowFollowingListModal({ isOpen, onOpenChange, title, users, loadingUserId, handleUnfollowRequest }: any) {
-  console.log(title)
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} className='w-full h-full xl:h-auto absolute z-[999]' onOpenChange={onOpenChange}>
     <ModalContent>
       <ModalHeader className="flex justify-center gap-1 border-b border-gray-600">
         {title}

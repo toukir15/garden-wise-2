@@ -41,6 +41,7 @@ app.post(
   async (req, res) => {
     const sig = req.headers['stripe-signature'] as string
     let event: Stripe.Event
+    console.log("weebhook")
     try {
       event = stripe.webhooks.constructEvent(
         req.body,

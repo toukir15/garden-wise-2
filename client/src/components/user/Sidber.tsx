@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../../public/plant.png";
 import { GoHomeFill, GoSearch } from "react-icons/go";
 import categories from "../../assets/json/category.json";
@@ -21,22 +21,32 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import FollowFollowingListModal from "../modal/FollowFollowingListModal";
 import SidebarButton from "./SidebarButton";
 import PostModal from "../modal/PostModal";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { PostContext } from "@/src/context/post.provider";
-import { useCreatePost } from "@/src/hooks/post.hook";
+import { useCreatePostForm } from "../hooks/useCreatePostForm";
+import Loading from "../Loading";
 
 export default function Sidebar() {
-  const { user } = useUser();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { data: followingsUsersData } = useGetFollowings();
+  const { data: followersUsersData } = useGetFollowers();
+  const { mutate: handleUnfollow } = useUnfollowUser();
   const {
-    isOpen: isPostOpen,
-    onOpen: postOnOpen,
-    onClose: postOnClose,
+    description,
+    setDescription,
+    imagePreviews,
+    handleFileChange,
+    register,
+    handleSubmit,
+    onSubmit,
+    errors,
+    isLoading,
+  } = useCreatePostForm();
+  const { user } = useUser();
+  const {
+    isOpen: isFollowingsOpen,
+    onOpen: onFollowingsOpen,
+    onOpenChange: onFollowingsOpenChange,
   } = useDisclosure();
-  const [description, setDescription] = useState<string>("");
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const { queryTerm, searchTerm } = useContext(PostContext);
-  const [files, setFiles] = useState<File[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const {
     isOpen: isFollowersOpen,
     onOpen: onFollowersOpen,
@@ -46,53 +56,10 @@ export default function Sidebar() {
   const [isClient, setIsClient] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
-  // Fetch post mutation
-  const { mutate: handleCreatePost, isLoading } = useCreatePost({
-    queryTerm,
-    searchTerm,
-  });
-
   // Ensure this component only renders on the client side
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FieldValues>();
-
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const formData = new FormData();
-    formData.append("data", JSON.stringify({ ...data, description }));
-    files.forEach((file) => {
-      formData.append("file", file);
-    });
-    handleCreatePost(formData);
-    postOnClose();
-  };
-
-  // Handle file changes and set preview
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files || []);
-    const newPreviews = newFiles.map((file) => {
-      const reader = new FileReader();
-      return new Promise<string>((resolve) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(newPreviews).then((previews) => {
-      setFiles((prev) => [...prev, ...newFiles]);
-      setImagePreviews((prev) => [...prev, ...previews]);
-    });
-  };
-
-  const { data: followingsUsersData } = useGetFollowings();
-  const { data: followersUsersData } = useGetFollowers();
-  const { mutate: handleUnfollow } = useUnfollowUser();
 
   const handleUnfollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
@@ -112,6 +79,7 @@ export default function Sidebar() {
 
   return (
     <>
+      {isLoading && <Loading />}
       <div className="flex flex-col h-screen justify-between p-4">
         <div>
           <div className="w-8 ml-4">
@@ -143,7 +111,7 @@ export default function Sidebar() {
               label={`Followers (${followersUsersData?.data.data.followers.length || 0})`}
             />
             <SidebarButton
-              onClick={onOpen}
+              onClick={onFollowingsOpen}
               icon={IoPeopleOutline}
               label={`Followings (${followingsUsersData?.data.data.followings.length || 0})`}
             />
@@ -165,7 +133,7 @@ export default function Sidebar() {
             <SidebarButton href="/profile" icon={CiUser} label="Profile" />
 
             <Button
-              onClick={postOnOpen}
+              onClick={onOpen}
               className="sidebar-button w-full text-lg font-medium p-4 mt-6"
               variant="solid"
               color="success"
@@ -203,8 +171,8 @@ export default function Sidebar() {
 
       {/* Followings Modal */}
       <FollowFollowingListModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        isOpen={isFollowingsOpen}
+        onOpenChange={onFollowingsOpenChange}
         title="Followings"
         users={followingsUsersData?.data.data.followings || []}
         loadingUserId={loadingUserId}
@@ -222,12 +190,12 @@ export default function Sidebar() {
       />
 
       <PostModal
-        isOpen={isPostOpen}
-        onOpen={postOnOpen}
-        onClose={postOnClose}
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
         handleSubmit={handleSubmit}
         register={register}
-        onSubmit={onSubmit}
+        onSubmit={(data) => onSubmit(data, onClose)} // Pass onClose to onSubmit
         errors={errors}
         categories={categories}
         description={description}

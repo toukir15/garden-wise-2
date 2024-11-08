@@ -78,6 +78,7 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = () => {
+  console.log("delete token")
   cookies().delete("accessToken");
   cookies().delete("refreshToken");
 };

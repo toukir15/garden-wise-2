@@ -10,6 +10,7 @@ import {
 } from "react";
 import { IUser } from "../../types";
 import { getCurrentUser } from "../services/auth";
+import Cookies from "js-cookie";
 
 const UserContext = createContext<IUserProviderValues | undefined>(undefined);
 
@@ -23,7 +24,7 @@ interface IUserProviderValues {
 const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const accessToken = Cookies.get("accessToken");
   const handleUser = async () => {
     const user = await getCurrentUser();
     setUser(user);
@@ -31,7 +32,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     handleUser();
-  }, []);
+  }, [accessToken]);
 
   return (
     <UserContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>

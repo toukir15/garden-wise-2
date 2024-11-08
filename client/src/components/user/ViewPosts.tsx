@@ -1,13 +1,10 @@
 "use client";
 import { useContext, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
-import dynamic from "next/dynamic";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import "lightgallery/css/lightgallery.css";
-import {
-  useDisclosure,
-} from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import {
   useDeletePost,
   useDownvote,
@@ -19,20 +16,16 @@ import { useGetPosts } from "@/src/hooks/recentPosts.hook";
 import ViewComment from "./ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { useUser } from "@/src/context/user.provider";
-import { TPost } from "../../../types";
+import { IUser, TPost } from "../../../types";
 import ComponentLoading from "../ComponentLoading";
 import { PostContext } from "@/src/context/post.provider";
 import SharedPost from "./SharedPost";
 import Post from "./Post";
 import EditPostModal from "../modal/EditPostModal";
 import SharePostModal from "../modal/SharePostModal";
-
-// Dynamically import ReactQuill
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => null,
-});
-
+import { useFollowUser } from "@/src/hooks/connection.hook";
+import React from "react";
+import MobileFollowSugg from "./MobileFollowSugg";
 
 export default function ViewPost() {
   // local state
@@ -42,6 +35,7 @@ export default function ViewPost() {
   const [isOpenSharedComment, setOpenSharedComment] = useState(false);
   const [description, setDescription] = useState<string>("");
   const [editPostDescription, setEditPostDescription] = useState("");
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
   // ref
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -82,10 +76,10 @@ export default function ViewPost() {
   }, []);
 
   // get post hook
-  const {
-    data: postsData,
-    isLoading: isPostsDataLoading,
-  } = useGetPosts({ queryTerm, searchTerm });
+  const { data: postsData, isLoading: isPostsDataLoading } = useGetPosts({
+    queryTerm,
+    searchTerm,
+  });
 
   // upvote mutation hook
   const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
@@ -120,9 +114,38 @@ export default function ViewPost() {
     handleEdit({ postId, payload });
   };
 
+  const { mutate: handleFollow } = useFollowUser();
+  const handleFollowRequest = (user: Partial<IUser>) => {
+    if (!user._id) return;
+    setLoadingUserId(user._id);
+    handleFollow(
+      { user: user },
+      {
+        onSettled: () => {
+          setLoadingUserId(null);
+        },
+      }
+    );
+  };
+
   return (
     <>
+      {/* NO DATA AVAILABLE MESSAGE  */}
+      {postsData?.data?.length < 1 && (
+        <h1 className="text-gray-600 text-center mt-32 text-2xl font-medium">
+          It looks a little empty here!
+        </h1>
+      )}
+
+      {/* POSTS LOADING...  */}
       {isPostsDataLoading && <ComponentLoading />}
+
+      {/* MOBILE FOLLOW SUGGETION  */}
+      <MobileFollowSugg
+        handleFollowRequest={handleFollowRequest}
+        loadingUserId={loadingUserId}
+      />
+
       <div>
         {postsData?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
@@ -139,72 +162,78 @@ export default function ViewPost() {
             "downvote"
           );
           return (
-            <div key={key}>
-              {!data.isShared && (
-              <Post
-              {...{
-                data,
-                navbarRef,
-                isDropdownOpen,
-                toggleDropdown,
-                setPostId,
-                handlePostDelete,
-                handlePostDownvote,
-                handlePostUpvote,
-                setIsOpenComment,
-                setOpenSharedComment,
-                upvoteStatus,
-                images,
-                downvoteStatus,
-                onOpen,
-                editOnOpen,
-                setEditPostDescription,
-                postId,
-              }} 
-            />
-              )}
+            <>
+              <div key={key}>
+                {/* POST  */}
+                {!data.isShared && (
+                  <Post
+                    {...{
+                      data,
+                      navbarRef,
+                      isDropdownOpen,
+                      toggleDropdown,
+                      setPostId,
+                      handlePostDelete,
+                      handlePostDownvote,
+                      handlePostUpvote,
+                      setIsOpenComment,
+                      setOpenSharedComment,
+                      upvoteStatus,
+                      images,
+                      downvoteStatus,
+                      onOpen,
+                      editOnOpen,
+                      setEditPostDescription,
+                      postId,
+                    }}
+                  />
+                )}
 
-              {data.isShared && (
-              <SharedPost {...{
-                data,
-                isDropdownOpen,
-                toggleDropdown,
-                setPostId,
-                handlePostDelete,
-                handlePostDownvote,
-                handlePostUpvote,
-                setIsOpenComment,
-                setOpenSharedComment,
-                upvoteStatus,
-                images,
-                downvoteStatus,
-                onOpen,
-                editOnOpen,
-                setEditPostDescription,
-                postId,
-              }} />
-              )}
-            </div>
+                {/* SHARED POST  */}
+                {data.isShared && (
+                  <SharedPost
+                    {...{
+                      data,
+                      isDropdownOpen,
+                      toggleDropdown,
+                      setPostId,
+                      handlePostDelete,
+                      handlePostDownvote,
+                      handlePostUpvote,
+                      setIsOpenComment,
+                      setOpenSharedComment,
+                      upvoteStatus,
+                      images,
+                      downvoteStatus,
+                      onOpen,
+                      editOnOpen,
+                      setEditPostDescription,
+                      postId,
+                    }}
+                  />
+                )}
+              </div>
+            </>
           );
         })}
 
         {/* share post  */}
         <SharePostModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        handlePostShare={handlePostShare}
-        description={description}
-        setDescription={setDescription}
-      />
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          handlePostShare={handlePostShare}
+          description={description}
+          setDescription={setDescription}
+        />
 
         {/* edit post  */}
         <EditPostModal
-        isEditOpen={isEditOpen}
-        editOnOpenChange={editOnOpenChange}
-        handlePostEdit={handlePostEdit}
-        editPostDescription={editPostDescription}
-        setEditPostDescription={setEditPostDescription}
-      />
+          isEditOpen={isEditOpen}
+          editOnOpenChange={editOnOpenChange}
+          handlePostEdit={handlePostEdit}
+          editPostDescription={editPostDescription}
+          setEditPostDescription={setEditPostDescription}
+        />
 
         {(isOpenComment || isOpenSharedComment) && (
           <ViewComment

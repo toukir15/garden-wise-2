@@ -1,90 +1,35 @@
 "use client";
-
 import Image from "next/image";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@nextui-org/modal";
+import { useDisclosure } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
-import { Checkbox, Select, SelectItem } from "@nextui-org/react";
-import dynamic from "next/dynamic";
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import categories from "../../assets/json/category.json";
-import profile from "../../../public/toukir.jpg";
-import { useCreatePost } from "@/src/hooks/post.hook";
-import { FaRegImage } from "react-icons/fa";
 import Loading from "../Loading";
-import { PostContext } from "@/src/context/post.provider";
 import PostModal from "../modal/PostModal";
 import { useUser } from "@/src/context/user.provider";
-
-// Dynamically import ReactQuill for rich text editing
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading editor...</p>,
-});
+import { useCreatePostForm } from "../hooks/useCreatePostForm";
 
 export default function CreatePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [description, setDescription] = useState<string>(""); // Rich text description state
-  const [files, setFiles] = useState<File[]>([]); // Image file state
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Image preview state
-  const { queryTerm, searchTerm } = useContext(PostContext);
   const [isClient, setIsClient] = useState(false);
   const { user } = useUser();
+
+  const {
+    description,
+    setDescription,
+    imagePreviews,
+    handleFileChange,
+    register,
+    handleSubmit,
+    onSubmit,
+    errors,
+    isLoading,
+  } = useCreatePostForm();
 
   // Ensure client-side rendering to avoid hydration errors
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  // Fetch post mutation
-  const { mutate: handleCreatePost, isLoading } = useCreatePost({
-    queryTerm,
-    searchTerm,
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FieldValues>();
-
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const formData = new FormData();
-    formData.append("data", JSON.stringify({ ...data, description }));
-    files.forEach((file) => {
-      formData.append("file", file);
-    });
-    handleCreatePost(formData);
-    onClose(); 
-  };
-
-  // Handle file changes and set preview
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files || []);
-    const newPreviews = newFiles.map((file) => {
-      const reader = new FileReader();
-      return new Promise<string>((resolve) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(newPreviews).then((previews) => {
-      setFiles((prev) => [...prev, ...newFiles]);
-      setImagePreviews((prev) => [...prev, ...previews]);
-    });
-  };
-
-  useEffect(() => {
-    setImagePreviews((prev) => (prev.length ? prev : []));
-  }, [files]);
 
   if (!isClient) return null;
 
@@ -123,7 +68,7 @@ export default function CreatePost() {
           onClose={onClose}
           handleSubmit={handleSubmit}
           register={register}
-          onSubmit={onSubmit}
+          onSubmit={(data ) => onSubmit(data, onClose)} 
           errors={errors}
           categories={categories}
           description={description}

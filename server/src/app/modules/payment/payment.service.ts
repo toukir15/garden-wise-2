@@ -6,16 +6,10 @@ import { User } from '../user/user.model'
 const stripe = new Stripe(config.stripe_cli as string)
 
 const createPaymentSession = async (userId: string) => {
-  console.log(userId)
 
   const findUser = await User.findById(userId)
   if (!findUser) {
     throw new AppError(httpStatus.BAD_REQUEST, 'User does not exist')
-  }
-
-  const paymentData = {
-    user: findUser._id,
-    amount: 500,
   }
 
   // // Step 1: Create a Product

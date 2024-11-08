@@ -7,6 +7,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
   const [queryTerm, setQueryTerm] = useState("recent");
   const [searchTerm, setSearchTerm] = useState("");
   const [postCount, setPostCount] = useState(0);
+  const [isSearchbarOpen, setIsSearchbarOpen] = useState(false)
 
   return (
     <PostContext.Provider
@@ -17,6 +18,8 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
         setSearchTerm,
         postCount,
         setPostCount,
+        setIsSearchbarOpen, 
+        isSearchbarOpen
       }}
     >
       {children}

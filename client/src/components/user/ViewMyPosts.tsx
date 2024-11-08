@@ -1,38 +1,20 @@
 "use client";
-import { FaComment } from "react-icons/fa";
-import { IoIosShareAlt } from "react-icons/io";
-import toukir from "../../../public/toukir.jpg";
 import { useContext, useEffect, useRef, useState } from "react";
-import { FaDownLong, FaUpLong } from "react-icons/fa6";
-import Image from "next/image";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import "lightgallery/css/lightgallery.css";
-import LightGalleryImageView from "./LightGalleryImageView";
-import { HiDotsHorizontal } from "react-icons/hi";
 import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
 import {
   useDeletePost,
   useDownvote,
   useEditPost,
-  useGetMyPosts,
   useSharePost,
   useUpvote,
 } from "@/src/hooks/post.hook";
-import { useGetPosts } from "@/src/hooks/recentPosts.hook";
 import ViewComment from "./ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { useUser } from "@/src/context/user.provider";
@@ -43,27 +25,6 @@ import SharedPost from "./SharedPost";
 import Post from "./Post";
 import SharePostModal from "../modal/SharePostModal";
 import EditPostModal from "../modal/EditPostModal";
-
-// Dynamically import ReactQuill
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => null,
-});
-
-const items = [
-  {
-    key: "copy",
-    label: "Copy",
-  },
-  {
-    key: "edit",
-    label: "Edit",
-  },
-  {
-    key: "delete",
-    label: "Delete",
-  },
-];
 
 export default function ViewMyPost({postsData, isPostsDataLoading}) {
   // local state
@@ -166,7 +127,8 @@ export default function ViewMyPost({postsData, isPostsDataLoading}) {
   return (
     <>
       {isPostsDataLoading && <ComponentLoading />}
-      <div>
+      {postsData?.data?.data?.length < 1 && <h1 className="text-gray-600 text-center mt-32 text-2xl font-medium">It looks a little empty here!</h1> } 
+      <div className="w-full">
         {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
           const upvoteStatus = checkVoteStatus(

@@ -98,7 +98,8 @@ export default function Page() {
             {imagePreviews.length < 1 && (
               <label htmlFor="profilePhoto" className="cursor-pointer">
                 <Image
-                  src={user?.profilePhoto}
+                  src={user?.profilePhoto ||
+                    "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"}
                   className="rounded-full"
                   height={150}
                   width={150}
@@ -166,7 +167,7 @@ export default function Page() {
               </Button>
             )}
 
-            <Link className="w-full" href={"/edit-profile"}>
+            <Link className="w-full" href={"/profile/edit-profile"}>
               <Button
                 className="w-full"
                 size="lg"

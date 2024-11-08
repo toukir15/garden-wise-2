@@ -12,13 +12,13 @@ import { PostContext } from "@/src/context/post.provider";
 export default function FollowRequest() {
   const { data: followSuggetionUsersData, isLoading } =
     useGetFollowSuggetionUsers();
+    const { mutate: handleFollow } = useFollowUser();
 
   // State to keep track of the currently loading follow request user
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
   const { setSearchTerm } = useContext(PostContext);
 
-  const { mutate: handleFollow } = useFollowUser();
 
   const handleFollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
@@ -42,7 +42,7 @@ export default function FollowRequest() {
   };
 
   return (
-    <div>
+    <div className="hidden xl:block">
       <div>
         <Input
           onKeyDown={handleKeyDown}

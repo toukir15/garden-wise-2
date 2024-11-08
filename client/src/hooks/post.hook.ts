@@ -26,6 +26,9 @@ export const useCreatePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
       queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
         exact: true,
       });
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
+      });
     },
   });
 };

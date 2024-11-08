@@ -102,3 +102,6 @@
 .sidebar-button {
   padding: 25px 20px 25px 15px;
 }
+.swiper-pagination{
+  visibility: hidden !important;
+}
