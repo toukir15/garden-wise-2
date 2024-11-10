@@ -16,7 +16,6 @@ export default function FollowRequest() {
 
   // State to keep track of the currently loading follow request user
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-
   const { setSearchTerm } = useContext(PostContext);
 
 

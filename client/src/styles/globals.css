@@ -105,3 +105,22 @@
 .swiper-pagination{
   visibility: hidden !important;
 }
+
+/* Add this to your global CSS file (e.g., globals.css) */
+.ant-menu-item-selected {
+  background-color: #28a745 !important; /* Light green background */
+}
+
+.ant-menu {
+  background: black;
+}
+
+.ant-layout-sider-trigger {
+  background-color: #121212 !important; /* Set your desired background color */
+  color: #fff; /* Optional: Change the text/icon color */
+}
+
+/* Optional: Adjust hover effect for the collapse button */
+.ant-layout-sider-trigger:hover {
+  background-color: #555 !important; /* Set a different color on hover if needed */
+}

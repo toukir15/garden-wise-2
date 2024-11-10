@@ -35,7 +35,6 @@ export const userLogin = async (userData: FieldValues) => {
 
 export const editProfile = async (userData: FieldValues) => {
   try {
-    console.log(userData)
     const { data } = await axiosInstance.post("/auth/edit-profile", userData);
     if (data.success) {
       cookies().set("accessToken", data?.data?.accessToken);
@@ -44,14 +43,12 @@ export const editProfile = async (userData: FieldValues) => {
 
     return data;
   } catch (error: any) {
-    console.log(error)
     throw new Error(error);
   }
 };
 
 export const changePassword = async (userData: FieldValues) => {
   try {
-    console.log(userData)
     const { data } = await axiosInstance.patch("/auth/change-password", userData);
     return data;
   } catch (error: any) {
@@ -78,7 +75,6 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = () => {
-  console.log("delete token")
   cookies().delete("accessToken");
   cookies().delete("refreshToken");
 };

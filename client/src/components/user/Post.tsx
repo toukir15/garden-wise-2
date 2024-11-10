@@ -1,38 +1,40 @@
-import { items } from '@/src/const';
-import { Button, Dropdown, DropdownItem, DropdownMenu } from '@nextui-org/react';
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-import { HiDotsHorizontal } from 'react-icons/hi';
-import LightGalleryImageView from './LightGalleryImageView';
-import { FaDownLong, FaUpLong } from 'react-icons/fa6';
-import { FaComment } from 'react-icons/fa';
-import { IoIosShareAlt } from 'react-icons/io';
+import { items } from "@/src/const";
+import { Dropdown, DropdownItem, DropdownMenu } from "@nextui-org/react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { HiDotsHorizontal } from "react-icons/hi";
+import LightGalleryImageView from "./LightGalleryImageView";
+import { FaDownLong, FaUpLong } from "react-icons/fa6";
+import { FaComment } from "react-icons/fa";
+import { IoIosShareAlt } from "react-icons/io";
 import toukir from "../../../public/toukir.jpg";
 import relativeTime from "dayjs/plugin/relativeTime";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import { useUser } from "@/src/context/user.provider";
 dayjs.extend(relativeTime);
 
 export default function Post({
-  data, 
-  navbarRef, 
-  toggleDropdown, 
-  setPostId, 
-  isDropdownOpen, 
-  postId, 
-  handlePostDelete, 
-  setEditPostDescription, 
-  editOnOpen, 
-  images, 
-  upvoteStatus, 
-  handlePostUpvote, 
-  handlePostDownvote, 
-  downvoteStatus, 
-  setOpenSharedComment, 
-  setIsOpenComment, 
-  onOpen 
+  data,
+  navbarRef,
+  toggleDropdown,
+  setPostId,
+  isDropdownOpen,
+  postId,
+  handlePostDelete,
+  setEditPostDescription,
+  editOnOpen,
+  images,
+  upvoteStatus,
+  handlePostUpvote,
+  handlePostDownvote,
+  downvoteStatus,
+  setOpenSharedComment,
+  setIsOpenComment,
+  onOpen,
 }: any) {
   // Client-side detection
   const [isClient, setIsClient] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => {
     setIsClient(true);
@@ -71,33 +73,48 @@ export default function Post({
           {isDropdownOpen && postId === data?._id && (
             <div className="rounded bg-white shadow-sm z-50 w-40 absolute flex flex-col -left-[170px]">
               <Dropdown>
-                <DropdownMenu aria-label="Dynamic Actions" items={items}>
-                  {item => (
-                    <DropdownItem
-                      onClick={() => {
-                        if (item.key === "delete") {
-                          handlePostDelete(postId);
-                        }
-                        if (item.key === "edit") {
-                          editOnOpen();
-                          setEditPostDescription(data.post.description);
-                          setPostId(data._id);
-                        }
-                      }}
-                      key={item.key}
-                      color={item.key === "delete" ? "danger" : "default"}
-                      className={item.key === "delete" ? "text-danger" : ""}
-                    >
-                      {item.label}
-                    </DropdownItem>
-                  )}
-                </DropdownMenu>
+                <>
+                  <DropdownMenu
+                    aria-label="Dynamic Actions"
+                    items={items.filter(
+                      (item) =>
+                        user?._id === data.post.user._id ||
+                        (item.key !== "delete" && item.key !== "edit")
+                    )}
+                  >
+                    {(item) => (
+                      <DropdownItem
+                        onClick={() => {
+                          if (
+                            item.key === "delete" &&
+                            user?._id === data.post.user._id
+                          ) {
+                            handlePostDelete(postId);
+                          }
+                          if (
+                            item.key === "edit" &&
+                            user?._id === data.post.user._id
+                          ) {
+                            editOnOpen();
+                            setEditPostDescription(data.post.description);
+                            setPostId(data._id);
+                          }
+                        }}
+                        key={item.key}
+                        color={item.key === "delete" ? "danger" : "default"}
+                        className={item.key === "delete" ? "text-danger" : ""}
+                      >
+                        {item.label}
+                      </DropdownItem>
+                    )}
+                  </DropdownMenu>
+                </>
               </Dropdown>
             </div>
           )}
         </div>
       </div>
-      
+
       <div className="mx-4 text-gray-200 break-words">
         <div
           dangerouslySetInnerHTML={{
@@ -141,13 +158,15 @@ export default function Post({
             <FaComment />
             <p>{data.post?.comments?.length || 0}</p>
           </button>
-          <Button
-            onClick={() => setPostId(data._id)}
-            onPress={onOpen}
+          <button
+            onClick={() => {
+              onOpen();
+              setPostId(data._id);
+            }}
             className="flex bg-black items-center gap-1 hover:text-gray-400 transition duration-150"
           >
             <IoIosShareAlt className="text-2xl text-txt-200" />
-          </Button>
+          </button>
         </div>
       </div>
     </div>

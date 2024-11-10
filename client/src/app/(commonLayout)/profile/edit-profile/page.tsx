@@ -56,7 +56,7 @@ export default function page() {
           </Link>
           <Link className="w-full font-bold" href={"/profile"}>
             <Button
-            type="button"
+              type="button"
               size="lg"
               color="danger"
               variant="faded"

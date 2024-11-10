@@ -41,7 +41,6 @@ app.post(
   async (req, res) => {
     const sig = req.headers['stripe-signature'] as string
     let event: Stripe.Event
-    console.log("weebhook")
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
@@ -49,7 +48,6 @@ app.post(
         config.stripe_endpoint_secret as string,
       )
     } catch (err) {
-      console.log(err)
       throw new AppError(httpStatus.BAD_REQUEST, 'Webhook Error')
     }
 

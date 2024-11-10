@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "sonner";
-import badge from "../../../../../public/medal.png";
 import { logout } from "@/src/services/auth";
+import verified from "../../../../../public/verified.png"
 import { useGetMyPosts } from "@/src/hooks/post.hook";
 import {
   useGetFollowers,
@@ -24,7 +24,6 @@ import { IUser } from "../../../../../types";
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
 import Loading from "@/src/components/Loading";
-import MobileMenu from "@/src/components/user/MobileMenu";
 
 export default function Page() {
   const { user } = useUser();
@@ -106,7 +105,7 @@ export default function Page() {
   if (isPaymentLoading) {
     return <Loading />;
   }
-
+  console.log(user);
   // Render nothing until client-side rendering is enabled
   if (!isClient) return null;
 
@@ -124,17 +123,19 @@ export default function Page() {
               className="object-cover rounded-full"
               alt="Profile"
             />
-            <Image
-              src={badge}
-              className="rounded-full absolute right-0 bottom-0"
-              height={40}
-              width={40}
-              alt="Badge"
-            />
           </div>
           <div className="lg:flex justify-between">
             <div>
-              <p className="mt-3 text-2xl font-bold">{user?.name}</p>
+              <div className="relative w-fit">
+                <p className="mt-3 text-2xl font-bold">{user?.name}</p>
+                 {user?.isVerified && <Image
+                    src={verified}
+                    height={20}
+                    width={20}
+                    className="absolute top-1.5 -right-2 translate-x-full"
+                    alt="Profile"
+                  />}
+              </div>
               <p className="font-medium text-gray-300">{user?.email}</p>
               <div className="flex gap-4 mt-2">
                 <button
@@ -168,7 +169,12 @@ export default function Page() {
                 </Button>
               )}
               <Link href="/profile/edit-profile" className="w-full" passHref>
-                <Button as="a" color="success" className="w-full" variant="faded">
+                <Button
+                  as="a"
+                  color="success"
+                  className="w-full"
+                  variant="faded"
+                >
                   Edit Profile
                 </Button>
               </Link>

@@ -15,7 +15,8 @@ import { useUser } from "@/src/context/user.provider";
 import { IUser } from "../../../types";
 import Link from "next/link";
 import { IoNotifications, IoPeopleOutline } from "react-icons/io5";
-import { MdMessage, MdOutlineDiamond } from "react-icons/md";
+import { FaTachometerAlt } from "react-icons/fa";
+import { MdDashboard, MdMessage, MdOutlineDiamond } from "react-icons/md";
 import { CiBookmark, CiUser } from "react-icons/ci";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import FollowFollowingListModal from "../modal/FollowFollowingListModal";
@@ -94,6 +95,12 @@ export default function Sidebar() {
 
           <div>
             <SidebarButton href="/" icon={GoHomeFill} label="Home" />
+            <SidebarButton
+              href="/admin/dashboard"
+              onClick={() => {}}
+              icon={MdDashboard}
+              label="Dashboard"
+            />
             <SidebarButton onClick={() => {}} icon={GoSearch} label="Explore" />
             <SidebarButton
               onClick={() => {}}

@@ -1,25 +1,20 @@
 import React from 'react'
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-
-// import required modules
 import { Pagination } from "swiper/modules";
 import { IUser } from '../../../types';
 import Image from 'next/image';
 import { useGetFollowSuggetionUsers } from '@/src/hooks/user.hook';
 import { Button } from '@nextui-org/button';
 
-export default function MobileFollowSugg({handleFollowRequest, loadingUserId}) {
+export default function MobileFollowSugg({handleFollowRequest, loadingUserId}:any) {
     const { data: followSuggetionUsersData, isLoading } =
     useGetFollowSuggetionUsers();
   return (
     <>
     {followSuggetionUsersData?.data.data.length > 0 && (
-       <div className="py-4">
+       <div className="py-4 block xl:hidden">
          <Swiper
            slidesPerView={3}
            spaceBetween={30}

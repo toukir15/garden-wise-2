@@ -172,13 +172,15 @@ export default function SharedPost({
               <FaComment className="text-txt-200" />
               <p>{data?.comments?.length ? data?.comments?.length : 0}</p>
             </button>
-            <Button
-              onClick={() => setPostId(data._id)}
-              onPress={onOpen}
+            <button
+              onClick={() => {
+                setPostId(data._id)
+                onOpen()
+              }}
               className="flex bg-black items-center gap-1 hover:text-gray-400 transition duration-150"
             >
               <IoIosShareAlt className="text-2xl text-txt-200" />
-            </Button>
+            </button>
           </div>
         </div>
       </div>

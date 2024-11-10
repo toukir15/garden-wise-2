@@ -5,6 +5,7 @@ import { UserRouter } from '../modules/user/user.route'
 import { AuthRouter } from '../modules/Auth/auth.route'
 import { ProfileRouter } from '../modules/profile/profile.route'
 import { PaymentRouter } from '../modules/payment/payment.route'
+import { AdminRouter } from '../modules/admin/admin.route'
 
 const router = express.Router()
 
@@ -17,10 +18,10 @@ const moduleRoutes = [
     path: '/users',
     route: UserRouter,
   },
-  // {
-  //   path: '/profile',
-  //   route: ProfileRouter,
-  // },
+  {
+    path: '/admin',
+    route: AdminRouter,
+  },
   {
     path: '/posts',
     route: PostRouter,

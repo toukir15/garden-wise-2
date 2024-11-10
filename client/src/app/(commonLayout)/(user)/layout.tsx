@@ -3,7 +3,6 @@ import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/src/config/site";
 import FollowRequest from "@/src/components/user/FollowRequest";
 import Sidebar from "@/src/components/user/Sidber";
-import MobileMenu from "@/src/components/user/MobileMenu";
 
 export const metadata: Metadata = {
   title: {
