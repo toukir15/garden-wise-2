@@ -24,7 +24,31 @@ const getMonthlyPayments = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
+      message: 'Monthly payments retrive successfully',
+      data: result,
+    })
+  },
+)
+
+const getPayments = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AdminService.getPaymentsFromDB()
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
       message: 'Payments retrive successfully',
+      data: result,
+    })
+  },
+)
+
+const getPosts = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AdminService.getPostsFromDB()
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Posts retrive successfully',
       data: result,
     })
   },
@@ -75,5 +99,7 @@ export const AdminController = {
     getMonthlyPayments,
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    getPayments,
+    getPosts
 }

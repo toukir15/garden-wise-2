@@ -93,7 +93,6 @@ export default function UserManagement() {
     error: userDataError,
   } = useGetUsers();
 
-  console.log(usersData);
 
   return (
     <div className="px-4 lg:px-32 mt-8 lg:mt-20">

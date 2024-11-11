@@ -12,6 +12,15 @@ export const getUserActivity = async () => {
 
 export const getMonthlyPayments = async () => {
   try {
+    const { data } = await axiosInstance.get(`/admin/monthly-payments`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getPayments = async () => {
+  try {
     const { data } = await axiosInstance.get(`/admin/payments`);
     return { data };
   } catch (error: any) {

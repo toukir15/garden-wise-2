@@ -11,9 +11,21 @@ router.get(
 )
 
 router.get(
-  '/payments',
+  '/monthly-payments',
   auth(USER_ROLE.user, USER_ROLE.admin),
   AdminController.getMonthlyPayments
+)
+
+router.get(
+  '/payments',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  AdminController.getPayments
+)
+
+router.get(
+  '/posts',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  AdminController.getPosts
 )
 
 router.get(

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteUser, getMonthlyPayments, getUserActivity, getUsers, updateUser } from "../services/admin";
+import { deleteUser, getMonthlyPayments, getPayments, getUserActivity, getUsers, updateUser } from "../services/admin";
 
 export const useGetUserActivity = () => {
   return useQuery({
@@ -15,6 +15,15 @@ export const useGetMonthlyPayments = () => {
     queryKey: ["admin-dashboard-monthly-payment"],
     queryFn: async () => {
       return await getMonthlyPayments();
+    },
+  });
+};
+
+export const useGetPayments = () => {
+  return useQuery({
+    queryKey: ["admin-dashboard-payments"],
+    queryFn: async () => {
+      return await getPayments();
     },
   });
 };
