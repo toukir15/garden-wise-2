@@ -3,7 +3,6 @@ import Post from '../posts/post.model'
 import { User } from '../user/user.model'
 
 const getUserActivityFromDB = async () => {
-  // Fetch the posts data with necessary fields and populated paths
   const posts = await Post.find()
     .select('sharedUser votes isShared comments share post createdAt')
     .populate([
@@ -16,7 +15,7 @@ const getUserActivityFromDB = async () => {
   // Initialize an object to store monthly data
   const monthlyData: Record<string, any> = {}
 
-  posts.forEach(post => {
+  posts.forEach((post: any) => {
     const monthYear = new Date(post.createdAt).toLocaleString('default', {
       month: 'short',
       year: 'numeric',
@@ -61,7 +60,7 @@ const getMonthlyPaymentsFromDB = async () => {
   // Initialize an object to store monthly payment totals
   const monthlyTotals: Record<string, number> = {}
 
-  payments.forEach(payment => {
+  payments.forEach((payment: any) => {
     // Extract month and year from the createdAt field
     const monthYear = new Date(payment.createdAt).toLocaleString('default', {
       month: 'short',

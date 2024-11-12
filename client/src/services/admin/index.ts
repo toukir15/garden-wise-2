@@ -28,6 +28,15 @@ export const getPayments = async () => {
   }
 };
 
+export const getPosts = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/admin/posts`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const getUsers = async () => {
   try {
     const { data } = await axiosInstance.get(`/admin/users`);

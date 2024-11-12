@@ -69,6 +69,9 @@ export const useDeletePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
       queryClient.invalidateQueries(["my-posts"], {
         exact: true,
       });
+      queryClient.invalidateQueries(["admin-dashboard-posts"], {
+        exact: true,
+      });
     },
   });
 };

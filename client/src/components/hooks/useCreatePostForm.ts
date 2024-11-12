@@ -32,7 +32,7 @@ export function useCreatePostForm() {
 
     handleCreatePost(formData, {
       onSuccess: () => {
-        onClose(); // Close modal on successful post creation
+        onClose(); 
       },
       onError: (error) => {
         console.error("Post creation failed:", error);

@@ -27,12 +27,13 @@ const createUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
         data: result,
     });
 }));
-const getUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_service_1.UserServices.getUserFromDB();
+const getFollowSuggetionUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user._id;
+    const result = yield user_service_1.UserServices.getFollowSuggetionUsersFromDB(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'User retrive successfully',
+        message: 'Follow suggetion user retrive successfully',
         data: result,
     });
 }));
@@ -48,6 +49,6 @@ const updateUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
 }));
 exports.UserControllers = {
     createUser,
-    getUsers,
+    getFollowSuggetionUsers,
     updateUser,
 };

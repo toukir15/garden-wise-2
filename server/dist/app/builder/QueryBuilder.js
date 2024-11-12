@@ -15,23 +15,22 @@ class QueryBuilder {
         // {title: {$regex: searchTerm}}
         // {genre: {$regex: searchTerm}}
         this.modelQuery = this.modelQuery.find({
-            $or: searchableFields.map((field) => ({
+            $or: searchableFields.map(field => ({
                 [field]: new RegExp(searchTerm, 'i'),
             })),
         });
         return this;
     }
-    paginate() {
-        var _a, _b, _c;
-        let limit = Number(((_a = this.query) === null || _a === void 0 ? void 0 : _a.limit) || 10);
-        let skip = 0;
-        if ((_b = this.query) === null || _b === void 0 ? void 0 : _b.page) {
-            const page = Number(((_c = this.query) === null || _c === void 0 ? void 0 : _c.page) || 1);
-            skip = Number((page - 1) * limit);
-        }
-        this.modelQuery = this.modelQuery.skip(skip).limit(limit);
-        return this;
-    }
+    // paginate() {
+    //   let limit: number = Number(this.query?.limit || 10);
+    //   let skip: number = 0;
+    //   if (this.query?.page) {
+    //     const page: number = Number(this.query?.page || 1);
+    //     skip = Number((page - 1) * limit);
+    //   }
+    //   this.modelQuery = this.modelQuery.skip(skip).limit(limit);
+    //   return this;
+    // }
     sort() {
         var _a;
         let sortBy = '-createdAt';
@@ -53,7 +52,7 @@ class QueryBuilder {
     filter() {
         const queryObj = Object.assign({}, this.query);
         const excludeFields = ['searchTerm', 'page', 'limit', 'sortBy', 'fields'];
-        excludeFields.forEach((e) => delete queryObj[e]);
+        excludeFields.forEach(e => delete queryObj[e]);
         this.modelQuery = this.modelQuery.find(queryObj);
         return this;
     }

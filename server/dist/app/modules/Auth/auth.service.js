@@ -45,7 +45,8 @@ const registerUser = (payload, profilePhoto) => __awaiter(void 0, void 0, void 0
         name: newUser === null || newUser === void 0 ? void 0 : newUser.name,
         email: newUser.email,
         role: newUser === null || newUser === void 0 ? void 0 : newUser.role,
-        profilePhote: newUser.profilePhoto,
+        profilePhoto: newUser === null || newUser === void 0 ? void 0 : newUser.profilePhoto,
+        isVerified: newUser === null || newUser === void 0 ? void 0 : newUser.isVerified,
     };
     const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
     const refreshToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_refresh_secret, config_1.default.jwt_refresh_expires_in);
@@ -70,6 +71,8 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         name: user === null || user === void 0 ? void 0 : user.name,
         email: user.email,
         role: user === null || user === void 0 ? void 0 : user.role,
+        profilePhoto: user === null || user === void 0 ? void 0 : user.profilePhoto,
+        isVerified: user === null || user === void 0 ? void 0 : user.isVerified,
     };
     const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
     const refreshToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_refresh_secret, config_1.default.jwt_refresh_expires_in);
@@ -84,10 +87,11 @@ const changePassword = (userData, payload) => __awaiter(void 0, void 0, void 0, 
     if (!user) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This user is not found!');
     }
-    const matchPassword = bcryptjs_1.default.compareSync(userData.password, user.password);
+    const matchPassword = bcryptjs_1.default.compareSync(payload.oldPassword, user.password);
     //checking if the password is correct
-    if (!matchPassword)
+    if (!matchPassword) {
         throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'Password do not matched');
+    }
     //hash new password
     const newHashedPassword = yield bcryptjs_1.default.hash(payload.newPassword, Number(config_1.default.bcrypt_salt_rounds));
     yield user_model_1.User.findOneAndUpdate({
@@ -98,6 +102,34 @@ const changePassword = (userData, payload) => __awaiter(void 0, void 0, void 0, 
         passwordChangedAt: new Date(),
     });
     return null;
+});
+const editProfile = (payload, profilePhoto, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedData = {};
+    if (payload.name) {
+        updatedData.name = payload.name;
+    }
+    if (payload.address) {
+        updatedData.address = payload.address;
+    }
+    if (profilePhoto === null || profilePhoto === void 0 ? void 0 : profilePhoto.path) {
+        updatedData.profilePhoto = profilePhoto.path;
+    }
+    yield user_model_1.User.findByIdAndUpdate(userId, updatedData);
+    const user = yield user_model_1.User.findById(userId);
+    const jwtPayload = {
+        _id: user === null || user === void 0 ? void 0 : user._id.toString(),
+        name: user === null || user === void 0 ? void 0 : user.name,
+        email: user.email,
+        role: user === null || user === void 0 ? void 0 : user.role,
+        profilePhoto: user === null || user === void 0 ? void 0 : user.profilePhoto,
+        isVerified: user === null || user === void 0 ? void 0 : user.isVerified,
+    };
+    const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
+    const refreshToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_refresh_secret, config_1.default.jwt_refresh_expires_in);
+    return {
+        accessToken,
+        refreshToken,
+    };
 });
 const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     // checking if the given token is valid
@@ -119,7 +151,8 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
         name: user === null || user === void 0 ? void 0 : user.name,
         email: user.email,
         role: user === null || user === void 0 ? void 0 : user.role,
-        profilePhoto: user.profilePhoto,
+        profilePhoto: user === null || user === void 0 ? void 0 : user.profilePhoto,
+        isVerified: user === null || user === void 0 ? void 0 : user.isVerified,
     };
     const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
     return {
@@ -131,4 +164,5 @@ exports.AuthServices = {
     loginUser,
     changePassword,
     refreshToken,
+    editProfile,
 };

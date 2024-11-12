@@ -18,6 +18,7 @@ const user_model_1 = require("./user.model");
 const config_1 = __importDefault(require("../../config"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
+const connection_model_1 = require("../connection/connection.model");
 const createUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     // check user is exist or not
     const isUserExist = yield user_model_1.User.findOne({ email: payload.email });
@@ -34,15 +35,26 @@ const createUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function
     const result = yield user_model_1.User.create(payload);
     return result;
 });
-const getUserFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_model_1.User.find({ role: 'user' }).select({
-        name: 1,
-        email: 1,
-        address: 1,
-        profilePhoto: 1,
-        role: 1,
+const getFollowSuggetionUsersFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    // Find the user by ID
+    const findUser = yield user_model_1.User.findById(userId);
+    if (!findUser) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User not found');
+    }
+    // Find the connection by ID
+    const findConnection = yield connection_model_1.Connection.findById(findUser.connection);
+    if (!findConnection) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Connection not found');
+    }
+    // Ensure followers and followings are arrays to avoid undefined values
+    const followers = findConnection.followers || [];
+    const followings = findConnection.followings || [];
+    // Fetch users that are NOT in the followers and followings arrays
+    const usersNotConnected = yield user_model_1.User.find({
+        _id: { $nin: [...followers, ...followings, userId] },
     });
-    return result;
+    // Return the result
+    return usersNotConnected;
 });
 const updateUserIntoDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.User.findByIdAndUpdate(id, { role: 'admin' }, { new: true });
@@ -50,6 +62,6 @@ const updateUserIntoDB = (id) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.UserServices = {
     createUserIntoDB,
-    getUserFromDB,
+    getFollowSuggetionUsersFromDB,
     updateUserIntoDB,
 };

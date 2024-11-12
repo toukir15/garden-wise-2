@@ -30,9 +30,9 @@ const updateFollowConnection = (0, catchAsync_1.catchAsync)((req, res) => __awai
     });
 }));
 const updateUnfollowConnection = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _a;
     const unfollowUserId = req.params.unfollowUserId;
-    const userId = (_b = req.user) === null || _b === void 0 ? void 0 : _b._id;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield connection_service_1.ConnectionServices.updateUnfollowConnectionIntoDB(unfollowUserId, userId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -41,7 +41,31 @@ const updateUnfollowConnection = (0, catchAsync_1.catchAsync)((req, res) => __aw
         data: result,
     });
 }));
+const getFollowers = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+    const result = yield connection_service_1.ConnectionServices.getFollowersFromDB(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Followers retrive successfully!',
+        data: result,
+    });
+}));
+const getFollowings = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+    const result = yield connection_service_1.ConnectionServices.getFollowingsFromDB(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Followings retrive successfully!',
+        data: result,
+    });
+}));
 exports.ConnectionController = {
     updateFollowConnection,
     updateUnfollowConnection,
+    getFollowers,
+    getFollowings,
 };

@@ -83,7 +83,39 @@ const updateUnfollowConnectionIntoDB = (unfollowUserId, userId) => __awaiter(voi
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'You already unfollow this user');
     }
 });
+const getFollowersFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    //check find user exist or not
+    const currentUser = yield user_model_1.User.findById(userId);
+    if (!currentUser) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User does not exist!');
+    }
+    const findFollowers = yield connection_model_1.Connection.findById(currentUser.connection)
+        .select({ followers: 1 })
+        .populate({
+        path: 'followers',
+        model: 'User',
+        select: 'name email profilePhoto',
+    });
+    return findFollowers;
+});
+const getFollowingsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    //check find user exist or not
+    const currentUser = yield user_model_1.User.findById(userId);
+    if (!currentUser) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User does not exist!');
+    }
+    const findFollowings = yield connection_model_1.Connection.findById(currentUser.connection)
+        .select({ followings: 1 })
+        .populate({
+        path: 'followings',
+        model: 'User',
+        select: 'name email profilePhoto',
+    });
+    return findFollowings;
+});
 exports.ConnectionServices = {
     updateFollowConnectionIntoDB,
     updateUnfollowConnectionIntoDB,
+    getFollowersFromDB,
+    getFollowingsFromDB,
 };

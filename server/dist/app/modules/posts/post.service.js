@@ -42,29 +42,71 @@ const user_model_1 = require("../user/user.model");
 const vote_model_1 = require("../vote/vote.model");
 const post_model_1 = __importDefault(require("./post.model"));
 const comment_model_1 = require("../comment/comment.model");
+const post_const_1 = require("./post.const");
 const createPostIntoDB = (payload, postImages, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const findUser = yield user_model_1.User.findById(userId);
+    if (!findUser) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User does not exist');
+    }
     const createVotes = yield vote_model_1.Vote.create({});
+    const findVote = yield vote_model_1.Vote.findById(createVotes._id);
     const postData = {
-        post: Object.assign(Object.assign({}, payload), { user: userId, votes: createVotes === null || createVotes === void 0 ? void 0 : createVotes._id, images: postImages }),
+        post: Object.assign(Object.assign({}, payload), { user: userId, votes: findVote, images: postImages }),
     };
     const result = yield post_model_1.default.create(postData);
-    return result;
+    const resultObject = result.toObject();
+    const userObject = findUser.toObject();
+    const modifyResult = Object.assign(Object.assign({}, resultObject), { post: Object.assign(Object.assign({}, resultObject.post), { user: {
+                _id: userObject._id,
+                name: userObject.name,
+                profilePhoto: userObject.profilePhoto,
+                email: userObject.email,
+            } }) });
+    return modifyResult;
 });
 const createSharePostIntoDB = (postId, userId, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const createVotes = yield vote_model_1.Vote.create({});
+    const findVote = yield vote_model_1.Vote.findById(createVotes._id);
     const findPost = yield post_model_1.default.findById(postId);
     const sharePostData = {
         description: payload.description,
         isShared: true,
         post: findPost.post,
         sharedUser: userId,
-        votes: createVotes === null || createVotes === void 0 ? void 0 : createVotes._id,
+        votes: findVote,
     };
     const result = yield post_model_1.default.create(sharePostData);
     return result;
 });
-const getPostsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield post_model_1.default.find()
+const getPostsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    let searchTerm = '';
+    if (query === null || query === void 0 ? void 0 : query.searchTerm) {
+        searchTerm = query.searchTerm;
+    }
+    let queryTerm = '';
+    if (query === null || query === void 0 ? void 0 : query.queryTerm) {
+        queryTerm = query.queryTerm;
+    }
+    // Create a base search query
+    const baseQuery = {
+        $or: post_const_1.postSearchableField.map(field => ({
+            [field]: { $regex: searchTerm, $options: 'i' },
+        })),
+    };
+    // Modify the base query based on the queryTerm
+    if (queryTerm === 'premium') {
+        baseQuery['post.isPremium'] = true; // Add premium condition
+    }
+    const searchQuery = post_model_1.default.find(baseQuery);
+    // Determine sorting order based on queryTerm
+    let sortOrder = {};
+    if (queryTerm === 'recent') {
+        sortOrder = { createdAt: -1 };
+    }
+    else if (queryTerm === 'popular') {
+        sortOrder = { 'votes.upvote': -1 };
+    }
+    const result = yield searchQuery
         .select({
         sharedUser: 1,
         description: 1,
@@ -158,7 +200,112 @@ const getPostsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
         path: 'post.votes',
         model: 'Vote',
         select: 'upvote downvote',
-    });
+    })
+        .sort(sortOrder);
+    return result;
+});
+const getMyPostsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield post_model_1.default.find({
+        $or: [
+            { isShared: true, sharedUser: userId },
+            { isShared: false, 'post.user': userId },
+        ],
+    })
+        .select({
+        sharedUser: 1,
+        description: 1,
+        votes: 1,
+        isShared: 1,
+        comments: 1,
+        share: 1,
+        post: 1,
+        createdAt: 1,
+    })
+        .populate({
+        path: 'sharedUser',
+        model: 'User',
+        select: 'name profilePhoto',
+    })
+        .populate({
+        path: 'votes',
+        model: 'Vote',
+        select: 'upvote downvote',
+    })
+        .populate({
+        path: 'comments',
+        model: 'Comment',
+        select: 'text user votes replies createdAt',
+        populate: [
+            {
+                path: 'user',
+                model: 'User',
+                select: 'name profilePhoto',
+            },
+            {
+                path: 'replies.commentReplyUser',
+                model: 'User',
+                select: 'name profilePhoto',
+            },
+            {
+                path: 'replies.replyTo',
+                model: 'User',
+                select: 'name',
+            },
+            {
+                path: 'votes',
+                model: 'Vote',
+                select: 'upvote downvote',
+            },
+            {
+                path: 'replies.votes',
+                model: 'Vote',
+                select: 'upvote downvote',
+            },
+        ],
+    })
+        .populate({
+        path: 'post.user',
+        model: 'User',
+        select: 'name profilePhoto',
+    })
+        .populate({
+        path: 'post.comments',
+        model: 'Comment',
+        select: 'text user votes replies createdAt',
+        populate: [
+            {
+                path: 'user',
+                model: 'User',
+                select: 'name profilePhoto',
+            },
+            {
+                path: 'replies.commentReplyUser',
+                model: 'User',
+                select: 'name profilePhoto',
+            },
+            {
+                path: 'replies.replyTo',
+                model: 'User',
+                select: 'name',
+            },
+            {
+                path: 'votes',
+                model: 'Vote',
+                select: 'upvote downvote',
+            },
+            {
+                path: 'replies.votes',
+                model: 'Vote',
+                select: 'upvote downvote',
+            },
+        ],
+    })
+        .populate({
+        path: 'post.votes',
+        model: 'Vote',
+        select: 'upvote downvote',
+    })
+        .sort({ createdAt: -1 });
     return result;
 });
 const getPostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -256,6 +403,30 @@ const getPostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* ()
         path: 'post.votes',
         model: 'Vote',
         select: 'upvote downvote',
+    });
+    return result;
+});
+const deletePostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield post_model_1.default.findByIdAndDelete(postId);
+    return result;
+});
+const updatePostIntoDB = (postId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const findPost = yield post_model_1.default.findById(postId);
+    const findPostObject = findPost === null || findPost === void 0 ? void 0 : findPost.toObject();
+    if (!findPost) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Post does not exist');
+    }
+    let updatedData;
+    if (findPost.isShared) {
+        updatedData = payload;
+    }
+    else {
+        updatedData = {
+            post: Object.assign(Object.assign({}, findPostObject.post), payload),
+        };
+    }
+    const result = yield post_model_1.default.findByIdAndUpdate(postId, updatedData, {
+        new: true,
     });
     return result;
 });
@@ -379,7 +550,10 @@ const updateDownvoteIntoDB = (userId, voteId) => __awaiter(void 0, void 0, void 
 exports.PostServices = {
     createPostIntoDB,
     createCommentIntoDB,
+    getMyPostsFromDB,
     createCommentReplyIntoDB,
+    deletePostFromDB,
+    updatePostIntoDB,
     updateUpvoteIntoDB,
     updateDownvoteIntoDB,
     getPostsFromDB,

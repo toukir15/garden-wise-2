@@ -76,6 +76,18 @@ const changePassword = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void
         data: result,
     });
 }));
+const editProfile = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = req.body;
+    const userId = req.user._id;
+    const profilePhoto = req.file;
+    const result = yield auth_service_1.AuthServices.editProfile(data, profilePhoto, userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Edit profile successfully!',
+        data: result,
+    });
+}));
 const refreshToken = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { refreshToken } = req.cookies;
     const result = yield auth_service_1.AuthServices.refreshToken(refreshToken);
@@ -91,4 +103,5 @@ exports.AuthControllers = {
     loginUser,
     changePassword,
     refreshToken,
+    editProfile,
 };

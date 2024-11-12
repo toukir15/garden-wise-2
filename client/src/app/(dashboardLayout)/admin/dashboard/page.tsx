@@ -34,7 +34,6 @@ export default function Page() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              {/* @ts-ignore */}
               <Legend />
               <Bar dataKey="upvotes" fill="#8884d8" name="Upvotes" />
               <Bar dataKey="downvotes" fill="#82ca9d" name="Downvotes" />
@@ -61,7 +60,6 @@ export default function Page() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                {/* @ts-ignore */}
                 <Legend />
                 <Bar dataKey="posts" fill="#8884d8" />
               </BarChart>
@@ -83,7 +81,6 @@ export default function Page() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                {/* @ts-ignore */}
                 <Legend />
                 <Bar dataKey="payments" fill="#82ca9d" />
               </BarChart>

@@ -11,4 +11,6 @@ const user_const_1 = require("../user/user.const");
 const router = express_1.default.Router();
 router.patch('/follow/:followUserId', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), connection_controller_1.ConnectionController.updateFollowConnection);
 router.patch('/unfollow/:unfollowUserId', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), connection_controller_1.ConnectionController.updateUnfollowConnection);
+router.get('/followers', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), connection_controller_1.ConnectionController.getFollowers);
+router.get('/followings', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), connection_controller_1.ConnectionController.getFollowings);
 exports.ConnectionRouter = router;

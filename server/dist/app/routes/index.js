@@ -8,7 +8,8 @@ const post_route_1 = require("../modules/posts/post.route");
 const connection_route_1 = require("../modules/connection/connection.route");
 const user_route_1 = require("../modules/user/user.route");
 const auth_route_1 = require("../modules/Auth/auth.route");
-const profile_route_1 = require("../modules/profile/profile.route");
+const payment_route_1 = require("../modules/payment/payment.route");
+const admin_route_1 = require("../modules/admin/admin.route");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -20,8 +21,8 @@ const moduleRoutes = [
         route: user_route_1.UserRouter,
     },
     {
-        path: '/profile',
-        route: profile_route_1.ProfileRouter,
+        path: '/admin',
+        route: admin_route_1.AdminRouter,
     },
     {
         path: '/posts',
@@ -30,6 +31,10 @@ const moduleRoutes = [
     {
         path: '/connections',
         route: connection_route_1.ConnectionRouter,
+    },
+    {
+        path: '/payments',
+        route: payment_route_1.PaymentRouter,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

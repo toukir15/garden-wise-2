@@ -28,8 +28,8 @@ const updateMyProfile = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(voi
     });
 }));
 const myFollowings = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    const userId = (_b = req.user) === null || _b === void 0 ? void 0 : _b._id;
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield profile_service_1.ProfileServices.myFollowings(userId);
     (0, sendResponse_1.default)(res, {
         success: true,
@@ -39,8 +39,8 @@ const myFollowings = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0
     });
 }));
 const myFollowers = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const userId = (_c = req.user) === null || _c === void 0 ? void 0 : _c._id;
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield profile_service_1.ProfileServices.myFollowers(userId);
     (0, sendResponse_1.default)(res, {
         success: true,

@@ -13,8 +13,11 @@ const router = express_1.default.Router();
 router.post('/', multer_config_1.multerUpload.array('file'), (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), 
 // validateRequest(AuthValidation.registerValidationSchema),
 post_controller_1.PostControllers.createPost);
+router.delete('/:postId', post_controller_1.PostControllers.deletePost);
 router.post('/share-post/:postId', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), post_controller_1.PostControllers.createSharePost);
+router.patch('/:postId', post_controller_1.PostControllers.updatePost);
 router.get('/', post_controller_1.PostControllers.getPosts);
+router.get('/my-posts', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), post_controller_1.PostControllers.getMyPosts);
 router.get('/:postId', post_controller_1.PostControllers.getPost);
 router.post('/comment/:postId', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), post_controller_1.PostControllers.createComment);
 router.post('/comment/reply/:commentId', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), post_controller_1.PostControllers.createCommentReply);

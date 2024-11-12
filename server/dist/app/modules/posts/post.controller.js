@@ -32,9 +32,9 @@ const createPost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
     });
 }));
 const createSharePost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _a;
     const postId = req.params.postId;
-    const userId = (_b = req.user) === null || _b === void 0 ? void 0 : _b._id;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const data = req.body;
     const result = yield post_service_1.PostServices.createSharePostIntoDB(postId, userId, data);
     (0, sendResponse_1.default)(res, {
@@ -44,12 +44,44 @@ const createSharePost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(voi
         data: result,
     });
 }));
+const updatePost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const postId = req.params.postId;
+    const payload = req.body;
+    const result = yield post_service_1.PostServices.updatePostIntoDB(postId, payload);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'update post successfully!',
+        data: result,
+    });
+}));
+const deletePost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const postId = req.params.postId;
+    const result = yield post_service_1.PostServices.deletePostFromDB(postId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Delete post successfully!',
+        data: result,
+    });
+}));
 const getPosts = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield post_service_1.PostServices.getPostsFromDB();
+    const query = req.query;
+    const result = yield post_service_1.PostServices.getPostsFromDB(query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Posts retrive successfully!',
+        data: result,
+    });
+}));
+const getMyPosts = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user._id;
+    const result = yield post_service_1.PostServices.getMyPostsFromDB(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'My posts retrive successfully!',
         data: result,
     });
 }));
@@ -64,10 +96,10 @@ const getPost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, voi
     });
 }));
 const createComment = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _a;
     const data = req.body;
     const postId = req.params.postId;
-    const userId = (_c = req.user) === null || _c === void 0 ? void 0 : _c._id;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield post_service_1.PostServices.createCommentIntoDB(data, postId, userId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -77,10 +109,10 @@ const createComment = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 
     });
 }));
 const createCommentReply = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
+    var _a;
     const data = req.body;
     const commentId = req.params.commentId;
-    const userId = (_d = req.user) === null || _d === void 0 ? void 0 : _d._id;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield post_service_1.PostServices.createCommentReplyIntoDB(data, commentId, userId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -90,9 +122,9 @@ const createCommentReply = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(
     });
 }));
 const updateUpvote = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
+    var _a;
     const voteId = req.params.voteId;
-    const userId = (_e = req.user) === null || _e === void 0 ? void 0 : _e._id;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield post_service_1.PostServices.updateUpvoteIntoDB(userId, voteId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -102,9 +134,9 @@ const updateUpvote = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0
     });
 }));
 const updateDownvote = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _f;
+    var _a;
     const voteId = req.params.voteId;
-    const userId = (_f = req.user) === null || _f === void 0 ? void 0 : _f._id;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
     const result = yield post_service_1.PostServices.updateDownvoteIntoDB(userId, voteId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -117,9 +149,12 @@ exports.PostControllers = {
     createPost,
     createComment,
     createCommentReply,
+    deletePost,
     updateUpvote,
     updateDownvote,
     getPosts,
     createSharePost,
     getPost,
+    getMyPosts,
+    updatePost,
 };
