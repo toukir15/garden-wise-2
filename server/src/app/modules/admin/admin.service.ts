@@ -140,12 +140,10 @@ const getUsersFromDB = async (userId: string) => {
 
 const deleteUserFromDB = async (userId: string) => {
   const result = await User.findByIdAndDelete(userId)
-  console.log(result)
   return result
 }
 
 const updateUserIntoDB = async (userId: string) => {
-  console.log(userId)
   const result = await User.findByIdAndUpdate(
     userId,
     { role: 'admin' },

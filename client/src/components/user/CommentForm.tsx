@@ -9,6 +9,7 @@ import { PostContext } from "@/src/context/post.provider";
 
 export default function CommentForm({ postId }: { postId: string }) {
   const { user } = useUser();
+
   const { queryTerm, searchTerm } = useContext(PostContext);
   const { mutate: handleComment } = useComment({ queryTerm, searchTerm });
   const { register, handleSubmit, reset } = useForm<FieldValues>();

@@ -3,6 +3,8 @@ import {
   followUser,
   getFollowers,
   getFollowings,
+  getViewProfileFollowers,
+  getViewProfileFollowings,
   unfollowUser,
 } from "../services/connection";
 import { IUser } from "../../types";
@@ -60,6 +62,24 @@ export const useGetFollowings = () => {
     queryKey: ["followings"],
     queryFn: async () => {
       return await getFollowings();
+    },
+  });
+};
+
+export const useGetViewProfileFollowers = (id: string) => {
+  return useQuery({
+    queryKey: ["view-profile-followers"],
+    queryFn: async () => {
+      return await getViewProfileFollowers(id);
+    },
+  });
+};
+
+export const useGetViewProfileFollowings = (id: string) => {
+  return useQuery({
+    queryKey: ["view-profile-followings"],
+    queryFn: async () => {
+      return await getViewProfileFollowings(id);
     },
   });
 };

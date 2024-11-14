@@ -7,6 +7,7 @@ import { TPost } from './post.interface'
 import Post from './post.model'
 import { Comment } from '../comment/comment.model'
 import { postSearchableField } from './post.const'
+import { TUser } from '../user/user.interface'
 
 const createPostIntoDB = async (
   payload: TPost,
@@ -67,15 +68,18 @@ const createSharePostIntoDB = async (
   return result
 }
 
-const getPostsFromDB = async (query: Record<string, unknown>) => {
-  let searchTerm = ''
+const getPostsFromDB = async (query: Record<string, unknown>, user: TUser) => {
+  // const limit = 2; 
+  // const skip = limit * (Number(query.page) - 1); // Calculate skip based on page number
+
+  let searchTerm = '';
   if (query?.searchTerm) {
-    searchTerm = query.searchTerm as string
+    searchTerm = query.searchTerm as string;
   }
 
-  let queryTerm = ''
+  let queryTerm = '';
   if (query?.queryTerm) {
-    queryTerm = query.queryTerm as string
+    queryTerm = query.queryTerm as string;
   }
 
   // Create a base search query
@@ -83,24 +87,138 @@ const getPostsFromDB = async (query: Record<string, unknown>) => {
     $or: postSearchableField.map(field => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
-  }
+  };
 
   // Modify the base query based on the queryTerm
   if (queryTerm === 'premium') {
-    baseQuery['post.isPremium'] = true // Add premium condition
+    baseQuery['post.isPremium'] = true;
   }
 
-  const searchQuery = Post.find(baseQuery)
+  if (!user.isVerified) {
+    baseQuery['post.isPremium'] = false;
+  }
+
+  const searchQuery = Post.find(baseQuery);
 
   // Determine sorting order based on queryTerm
-  let sortOrder = {}
+  let sortOrder = {};
   if (queryTerm === 'recent') {
-    sortOrder = { createdAt: -1 }
+    sortOrder = { createdAt: -1 };
   } else if (queryTerm === 'popular') {
-    sortOrder = { 'votes.upvote': -1 }
+    sortOrder = { 'votes.upvote': -1 };
+  }else if(queryTerm === 'premium'){
+    sortOrder = { 'votes.upvote': -1 };
   }
 
+  // Perform the query with pagination and sorting
   const result = await searchQuery
+    .select({
+      sharedUser: 1,
+      description: 1,
+      votes: 1,
+      isShared: 1,
+      comments: 1,
+      share: 1,
+      post: 1,
+      createdAt: 1,
+    })
+    .populate({
+      path: 'sharedUser',
+      model: 'User',
+      select: 'name profilePhoto isVerified',
+    })
+    .populate({
+      path: 'votes',
+      model: 'Vote',
+      select: 'upvote downvote',
+    })
+    .populate({
+      path: 'comments',
+      model: 'Comment',
+      select: 'text user votes replies createdAt',
+      populate: [
+        {
+          path: 'user',
+          model: 'User',
+          select: 'name profilePhoto isVerified',
+        },
+        {
+          path: 'replies.commentReplyUser',
+          model: 'User',
+          select: 'name profilePhoto',
+        },
+        {
+          path: 'replies.replyTo',
+          model: 'User',
+          select: 'name',
+        },
+        {
+          path: 'votes',
+          model: 'Vote',
+          select: 'upvote downvote',
+        },
+        {
+          path: 'replies.votes',
+          model: 'Vote',
+          select: 'upvote downvote',
+        },
+      ],
+    })
+    .populate({
+      path: 'post.user',
+      model: 'User',
+      select: 'name profilePhoto email isVerified',
+    })
+    .populate({
+      path: 'post.comments',
+      model: 'Comment',
+      select: 'text user votes replies createdAt',
+      populate: [
+        {
+          path: 'user',
+          model: 'User',
+          select: 'name profilePhoto',
+        },
+        {
+          path: 'replies.commentReplyUser',
+          model: 'User',
+          select: 'name profilePhoto',
+        },
+        {
+          path: 'replies.replyTo',
+          model: 'User',
+          select: 'name',
+        },
+        {
+          path: 'votes',
+          model: 'Vote',
+          select: 'upvote downvote',
+        },
+        {
+          path: 'replies.votes',
+          model: 'Vote',
+          select: 'upvote downvote',
+        },
+      ],
+    })
+    .populate({
+      path: 'post.votes',
+      model: 'Vote',
+      select: 'upvote downvote',
+    })
+    .sort(sortOrder)
+
+  return result;
+};
+
+
+const getVisitProfilePostsFromDB = async (userId: string) => {
+  const result = await Post.find({
+    $or: [
+      { isShared: true, sharedUser: userId },
+      { isShared: false, 'post.user': userId },
+    ],
+  })
     .select({
       sharedUser: 1,
       description: 1,
@@ -195,8 +313,7 @@ const getPostsFromDB = async (query: Record<string, unknown>) => {
       model: 'Vote',
       select: 'upvote downvote',
     })
-    .sort(sortOrder)
-
+    .sort({ createdAt: -1 })
   return result
 }
 
@@ -609,4 +726,5 @@ export const PostServices = {
   getPostsFromDB,
   createSharePostIntoDB,
   getPostFromDB,
+  getVisitProfilePostsFromDB,
 }

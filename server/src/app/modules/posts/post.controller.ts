@@ -5,9 +5,9 @@ import { PostServices } from './post.service'
 
 const createPost = catchAsync(async (req, res) => {
   const post = JSON.parse(req.body.data)
-  const files = req.files as Express.Multer.File[]
+  const files = req?.files as Express.Multer.File[]
   const userId = req.user?._id
-  const postImages = files?.map(file => file.path)
+  const postImages = files?.map(file => file?.path)
   const result = await PostServices.createPostIntoDB(post, postImages, userId)
 
   sendResponse(res, {
@@ -59,7 +59,8 @@ const deletePost = catchAsync(async (req, res) => {
 
 const getPosts = catchAsync(async (req, res) => {
   const query = req.query
-  const result = await PostServices.getPostsFromDB(query)
+  const user = req.user
+  const result = await PostServices.getPostsFromDB(query, user)
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -70,6 +71,17 @@ const getPosts = catchAsync(async (req, res) => {
 
 const getMyPosts = catchAsync(async (req, res) => {
   const userId = req.user._id
+  const result = await PostServices.getMyPostsFromDB(userId)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'My posts retrive successfully!',
+    data: result,
+  })
+})
+
+const getVisitProfilePosts = catchAsync(async (req, res) => {
+  const userId = req.params.userId
   const result = await PostServices.getMyPostsFromDB(userId)
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -160,4 +172,5 @@ export const PostControllers = {
   getPost,
   getMyPosts,
   updatePost,
+  getVisitProfilePosts
 }

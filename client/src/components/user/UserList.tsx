@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 
-export default function UserList({ user, loadingUserId, handleUnfollowRequest }: any) {
+export default function UserList({ user, loadingUserId, handleUnfollowRequest, actionType }: any) {
   return (
     <div key={user._id} className="flex justify-between items-center py-1.5 border-b border-gray-600">
     <div className="flex gap-3">
@@ -19,18 +19,18 @@ export default function UserList({ user, loadingUserId, handleUnfollowRequest }:
         <p className="text-xs text-gray-400">{user.email}</p>
       </div>
     </div>
-    <div className="mr-4">
+  { actionType && <div className="mr-4">
       {loadingUserId !== user._id ? (
         <button
           onClick={() => handleUnfollowRequest(user)}
-          className="py-[2px] px-4 text-sm rounded-full bg-gray-600"
+          className="py-[2px] px-4 text-sm rounded-full text-white hover:text-whitre bg-green-600 hover:bg-green-500 transition duration-200"
         >
           Unfollow
         </button>
       ) : (
         <span>Loading...</span>
       )}
-    </div>
+    </div>}
   </div>
   )
 }

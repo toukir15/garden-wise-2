@@ -1,33 +1,27 @@
 "use client";
 
-import CreatePost from "@/src/components/user/CreatePost";
 import ViewMyPost from "@/src/components/user/ViewMyPosts";
-import { PostContext } from "@/src/context/post.provider";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
-import { Button } from "@nextui-org/button";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import { toast } from "sonner";
-import { logout } from "@/src/services/auth";
-import verified from "../../../../../public/verified.png"
-import { useGetMyPosts } from "@/src/hooks/post.hook";
+import verified from "../../../../../../public/verified.png"
+import { useGetVisitProfilePosts } from "@/src/hooks/post.hook";
 import {
-  useGetFollowers,
-  useGetFollowings,
+  useGetViewProfileFollowers,
+  useGetViewProfileFollowings,
   useUnfollowUser,
 } from "@/src/hooks/connection.hook";
-import { IUser } from "../../../../../types";
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
 import Loading from "@/src/components/Loading";
+import { IUser } from "../../../../../../types";
 
 export default function Page() {
-  const { user } = useUser();
-  const { postCount } = useContext(PostContext);
+  const { user } = useUser()
+  
   const {
     mutate: handlePayment,
     data,
@@ -42,52 +36,30 @@ export default function Page() {
     onOpenChange: onFollowersOpenChange,
   } = useDisclosure();
   const router = useRouter();
+  const postUser = JSON.parse(localStorage.getItem("user-profile") || "{}");
 
   // get post hook
   const {
     data: postsData,
     isLoading: isPostsDataLoading,
     error: postsDataError,
-  } = useGetMyPosts();
+  } = useGetVisitProfilePosts(postUser._id);
 
   useEffect(() => {
-    setIsClient(true); // Set true when the component is mounted on the client
+    setIsClient(true); 
   }, []);
 
-  const handleProfileVerify = () => {
-    if (postCount < 1) {
-      toast.warning("To verify, the user needs at least 1 upvote", {
-        duration: 2000,
-        position: "top-right",
-      });
-      return;
-    }
-    handlePayment();
-  };
-
-  const [showVerifyButton, setShowVerifyButton] = useState(false);
-  useEffect(() => {
-    if (user && !user.isVerified) {
-      setShowVerifyButton(true);
-    } else {
-      setShowVerifyButton(false);
-    }
-  }, [user]);
-
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
 
   useEffect(() => {
     if (data?.data?.data?.url) {
       router.push(data.data.data.url);
     }
   }, [data, router]);
-
-  const { data: followingsUsersData } = useGetFollowings();
-  const { data: followersUsersData } = useGetFollowers();
+  
+  const { data: followingsUsersData } = useGetViewProfileFollowings(postUser._id);
+  const { data: followersUsersData } = useGetViewProfileFollowers(postUser._id);
   const { mutate: handleUnfollow } = useUnfollowUser();
+
 
   const handleUnfollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
@@ -105,18 +77,16 @@ export default function Page() {
   if (isPaymentLoading) {
     return <Loading />;
   }
-  console.log(user);
-  // Render nothing until client-side rendering is enabled
   if (!isClient) return null;
 
   return (
     <>
-      <section className="flex flex-col h-screen post_scroll overflow-y-scroll">
+      <section className="flex flex-col">
         <div className="p-4 gap-4 border-b border-gray-600">
           <div className="relative w-[150px] h-[150px]">
             <Image
               src={
-                user?.profilePhoto ||
+                postUser?.profilePhoto ||
                 "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
               }
               fill
@@ -127,7 +97,7 @@ export default function Page() {
           <div className="lg:flex justify-between">
             <div>
               <div className="relative w-fit">
-                <p className="mt-3 text-2xl font-bold">{user?.name}</p>
+                <p className="mt-3 text-2xl font-bold">{postUser?.name}</p>
                  {user?.isVerified && <Image
                     src={verified}
                     height={20}
@@ -136,7 +106,7 @@ export default function Page() {
                     alt="Profile"
                   />}
               </div>
-              <p className="font-medium text-gray-300">{user?.email}</p>
+              <p className="font-medium text-gray-300">{postUser?.email}</p>
               <div className="flex gap-4 mt-2">
                 <button
                   onClick={onFollowersOpen}
@@ -158,39 +128,8 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <div className="xl:mt-auto flex gap-3 mt-2">
-              {showVerifyButton && (
-                <Button
-                  onClick={handleProfileVerify}
-                  color="success"
-                  variant="faded"
-                >
-                  Verify
-                </Button>
-              )}
-              <Link href="/profile/edit-profile" className="w-full" passHref>
-                <Button
-                  as="a"
-                  color="success"
-                  className="w-full"
-                  variant="faded"
-                >
-                  Edit Profile
-                </Button>
-              </Link>
-              <Button
-                type="button"
-                className="w-full"
-                onClick={handleLogout}
-                color="danger"
-                variant="faded"
-              >
-                Logout
-              </Button>
-            </div>
           </div>
         </div>
-        <CreatePost />
         <ViewMyPost
           postsData={postsData}
           isPostsDataLoading={isPostsDataLoading}
@@ -205,6 +144,7 @@ export default function Page() {
         users={followingsUsersData?.data.data.followings || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
+        actionType={false}
       />
 
       {/* followers modal  */}
@@ -215,6 +155,7 @@ export default function Page() {
         users={followersUsersData?.data.data.followers || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
+        actionType={false}
       />
     </>
   );

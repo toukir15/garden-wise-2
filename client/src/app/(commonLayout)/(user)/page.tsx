@@ -6,11 +6,11 @@ import MobileMenu from "@/src/components/user/MobileMenu";
 
 export default function Home() {
   return (
-    <section className="flex flex-col h-[calc(100vh-2px)] post_scroll overflow-y-scroll  ">
+    <section className="flex flex-col border border-gray-600  min-h-screen">
       <PostFilter />
       <CreatePost />
       <ViewPost />
-      <MobileMenu/>
+      <MobileMenu />
     </section>
   );
 }

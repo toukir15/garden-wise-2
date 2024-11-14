@@ -13,7 +13,6 @@ export default function CreatePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isClient, setIsClient] = useState(false);
   const { user } = useUser();
-
   const {
     description,
     setDescription,
@@ -38,16 +37,18 @@ export default function CreatePost() {
       {isLoading && <Loading />}
       <div className="w-full border-b h-fit border-gray-700 py-5">
         <div className="flex gap-2 items-center px-4">
-          <div className="relative rounded-full overflow-hidden w-[40px] h-[40px]">
-            <Image
-              alt="Profile image"
-              src={
-                user?.profilePhoto ||
-                "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-              }
-              fill
-              className="object-cover"
-            />
+          <div>
+            <div className="relative rounded-full overflow-hidden w-[40px] h-[40px]">
+              <Image
+                alt="Profile image"
+                src={
+                  user?.profilePhoto ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                }
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
           <Button
             className="p-5 rounded-full text-sm w-full cursor-pointer flex justify-start bg-[#121212]"

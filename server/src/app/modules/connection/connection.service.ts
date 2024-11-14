@@ -97,6 +97,7 @@ const getFollowersFromDB = async (userId: string) => {
       model: 'User',
       select: 'name email profilePhoto',
     })
+
   return findFollowers
 }
 
@@ -114,7 +115,41 @@ const getFollowingsFromDB = async (userId: string) => {
       model: 'User',
       select: 'name email profilePhoto',
     })
+  return findFollowings
+}
 
+const getViewProfileFollowersFromDB = async (userId: string) => {
+  //check find user exist or not
+  const currentUser = await User.findById(userId)
+  if (!currentUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User does not exist!')
+  }
+
+  const findFollowers = await Connection.findById(currentUser.connection)
+    .select({ followers: 1 })
+    .populate({
+      path: 'followers',
+      model: 'User',
+      select: 'name email profilePhoto',
+    })
+
+  return findFollowers
+}
+
+const getViewProfileFollowingsFromDB = async (userId: string) => {
+  //check find user exist or not
+  const currentUser = await User.findById(userId)
+  if (!currentUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User does not exist!')
+  }
+
+  const findFollowings = await Connection.findById(currentUser.connection)
+    .select({ followings: 1 })
+    .populate({
+      path: 'followings',
+      model: 'User',
+      select: 'name email profilePhoto',
+    })
   return findFollowings
 }
 
@@ -123,4 +158,6 @@ export const ConnectionServices = {
   updateUnfollowConnectionIntoDB,
   getFollowersFromDB,
   getFollowingsFromDB,
+  getViewProfileFollowingsFromDB,
+  getViewProfileFollowersFromDB
 }

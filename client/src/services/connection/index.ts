@@ -31,9 +31,28 @@ export const getFollowers = async () => {
     throw new Error(error);
   }
 };
+
 export const getFollowings = async () => {
   try {
     const { data } = await axiosInstance.get(`/connections/followings`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getViewProfileFollowers = async (id: string) => {
+  try {
+    const { data } = await axiosInstance.get(`/connections/followers/${id}`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getViewProfileFollowings = async (id: string) => {
+  try {
+    const { data } = await axiosInstance.get(`/connections/followings/${id}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);

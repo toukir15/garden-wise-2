@@ -23,8 +23,59 @@ module.exports = {
           xl: "1280px",
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: '#333',
+            h1: {
+              color: '#E5E7EB',
+              "margin-top": "8px",
+              "margin-bottom": "8px",
+              padding: "0px"
+            },
+            h2: {
+              color: '#fff',
+              "margin-top": "8px",
+              "margin-bottom": "8px",
+              padding: "0px"
+            },
+            h3: {
+              color: '#fff',
+              "margin-top": "4px",
+              "margin-bottom": "4px",
+              padding: "0px"
+            },
+            p: {
+              color: '#E5E7EB',
+              "margin-top": "8px",
+              "margin-bottom": "8px"
+            },
+            ol: {
+              color: '#E5E7EB',
+              "margin-bottom": "0px",
+              "margin-top": "0px",
+            },
+            strong: {
+              color: '#fff',
+            },
+            li: {
+              color: '#E5E7EB',
+              "margin-bottom": "0px",
+              "margin-top": "0px",
+            },
+            ul: {
+              color: '#E5E7EB',
+              "margin-bottom": "8px",
+              "margin-top": "8px",
+            },
+          },
+        },
+      },
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui(),
+    require('@tailwindcss/typography')
+  ],
 };

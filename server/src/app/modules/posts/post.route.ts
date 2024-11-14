@@ -20,7 +20,8 @@ router.post(
   PostControllers.createSharePost,
 )
 router.patch('/:postId', PostControllers.updatePost)
-router.get('/', PostControllers.getPosts)
+router.get('/', auth(USER_ROLE.user, USER_ROLE.admin), PostControllers.getPosts)
+router.get('/visit-profile-posts/:userId', PostControllers.getVisitProfilePosts)
 router.get(
   '/my-posts',
   auth(USER_ROLE.user, USER_ROLE.admin),

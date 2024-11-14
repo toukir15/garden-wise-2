@@ -28,4 +28,16 @@ router.get(
   ConnectionController.getFollowings,
 )
 
+router.get(
+  '/followers/:userId',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  ConnectionController.getViewProfileFollowers,
+)
+
+router.get(
+  '/followings/:userId',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  ConnectionController.getViewProfileFollowings,
+)
+
 export const ConnectionRouter = router

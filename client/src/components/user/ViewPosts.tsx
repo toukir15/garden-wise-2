@@ -9,10 +9,10 @@ import {
   useDeletePost,
   useDownvote,
   useEditPost,
+  useGetPosts,
   useSharePost,
   useUpvote,
 } from "@/src/hooks/post.hook";
-import { useGetPosts } from "@/src/hooks/recentPosts.hook";
 import ViewComment from "./ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { useUser } from "@/src/context/user.provider";
@@ -24,11 +24,10 @@ import Post from "./Post";
 import EditPostModal from "../modal/EditPostModal";
 import SharePostModal from "../modal/SharePostModal";
 import { useFollowUser } from "@/src/hooks/connection.hook";
-import React from "react";
 import MobileFollowSugg from "./MobileFollowSugg";
 
 export default function ViewPost() {
-  // local state
+  // Local state
   const [postId, setPostId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOpenComment, setIsOpenComment] = useState(false);
@@ -36,14 +35,15 @@ export default function ViewPost() {
   const [description, setDescription] = useState<string>("");
   const [editPostDescription, setEditPostDescription] = useState("");
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+  // const [page, setPage] = useState(1);
 
-  // ref
+  // Refs
   const navbarRef = useRef<HTMLDivElement>(null);
 
-  // hook
+  // Hook
   const { user } = useUser();
 
-  // modal state
+  // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isEditOpen,
@@ -51,63 +51,48 @@ export default function ViewPost() {
     onOpenChange: editOnOpenChange,
   } = useDisclosure();
 
-  // context
+  // Context
   const { queryTerm, searchTerm } = useContext(PostContext);
 
   const userId = user!?._id;
 
-  // dropdown
+  // Dropdown toggle function
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navbarRef.current &&
-        !(
-          event.target instanceof Node &&
-          navbarRef.current.contains(event.target)
-        )
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // get post hook
+  // Get posts hook
   const { data: postsData, isLoading: isPostsDataLoading } = useGetPosts({
     queryTerm,
     searchTerm,
   });
 
-  // upvote mutation hook
-  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
+
+  // Upvote mutation hook
+  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm});
   const handlePostUpvote = (voteId: string, postId: string) => {
     handleUpvote({ voteId, postId, userId });
   };
 
-  // downvote mutation hook
-  const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm });
+  // Downvote mutation hook
+  const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm});
   const handlePostDownvote = (voteId: string, postId: string) => {
     handleDownvote({ voteId, postId, userId });
   };
 
-  // share post mutation hook
-  const { mutate: handleSharePost } = useSharePost({ queryTerm, searchTerm });
+  // Share post mutation hook
+  const { mutate: handleSharePost } = useSharePost({ queryTerm, searchTerm});
   const handlePostShare = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSharePost({ description, postId });
   };
 
-  // delete post mutation hook
-  const { mutate: handleDelete } = useDeletePost({ queryTerm, searchTerm });
+  // Delete post mutation hook
+  const { mutate: handleDelete } = useDeletePost({ queryTerm, searchTerm});
   const handlePostDelete = (postId: string) => {
     handleDelete({ postId });
   };
 
-  // edit post mutation hook
-  const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm });
+  // Edit post mutation hook
+  const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm});
   const handlePostEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = { description: editPostDescription };
@@ -128,96 +113,97 @@ export default function ViewPost() {
     );
   };
 
+  // Infinite Scroll Logic
+  // const handleScroll = () => {
+  //   const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+  //   if (bottom && postsData?.data?.data?.length && !isPostsDataLoading) {
+  //     setPage((prev) => prev + 1);  
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [postsData]);
+
+
   return (
-    <>
-      {/* NO DATA AVAILABLE MESSAGE  */}
-      {postsData?.data?.length < 1 && (
+    <div>
+      {/* NO DATA AVAILABLE MESSAGE */}
+      {postsData?.data?.data?.length < 1 && (
         <h1 className="text-gray-600 text-center mt-32 text-2xl font-medium">
           It looks a little empty here!
         </h1>
       )}
 
-      {/* POSTS LOADING...  */}
+      {/* POSTS LOADING... */}
       {isPostsDataLoading && <ComponentLoading />}
 
-      {/* MOBILE FOLLOW SUGGETION  */}
+      {/* MOBILE FOLLOW SUGGESTION */}
       <MobileFollowSugg
         handleFollowRequest={handleFollowRequest}
         loadingUserId={loadingUserId}
       />
 
+      {/* Render Posts */}
       <div>
-        {postsData?.data?.map((data: TPost, key: number) => {
+        {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
-          const upvoteStatus = checkVoteStatus(
-            data.isShared,
-            data,
-            userId,
-            "upvote"
-          );
-          const downvoteStatus = checkVoteStatus(
-            data.isShared,
-            data,
-            userId,
-            "downvote"
-          );
-          return (
-            <>
-              <div key={key}>
-                {/* POST  */}
-                {!data.isShared && (
-                  <Post
-                    {...{
-                      data,
-                      navbarRef,
-                      isDropdownOpen,
-                      toggleDropdown,
-                      setPostId,
-                      handlePostDelete,
-                      handlePostDownvote,
-                      handlePostUpvote,
-                      setIsOpenComment,
-                      setOpenSharedComment,
-                      upvoteStatus,
-                      images,
-                      downvoteStatus,
-                      onOpen,
-                      editOnOpen,
-                      setEditPostDescription,
-                      postId,
-                    }}
-                  />
-                )}
+          const upvoteStatus = checkVoteStatus(data.isShared, data, userId, "upvote");
+          const downvoteStatus = checkVoteStatus(data.isShared, data, userId, "downvote");
 
-                {/* SHARED POST  */}
-                {data.isShared && (
-                  <SharedPost
-                    {...{
-                      data,
-                      isDropdownOpen,
-                      toggleDropdown,
-                      setPostId,
-                      handlePostDelete,
-                      handlePostDownvote,
-                      handlePostUpvote,
-                      setIsOpenComment,
-                      setOpenSharedComment,
-                      upvoteStatus,
-                      images,
-                      downvoteStatus,
-                      onOpen,
-                      editOnOpen,
-                      setEditPostDescription,
-                      postId,
-                    }}
-                  />
-                )}
-              </div>
-            </>
+          return (
+            <div key={key}>
+              {/* Render Post or SharedPost depending on data */}
+              {!data.isShared ? (
+                <Post
+                  {...{
+                    data,
+                    navbarRef,
+                    isDropdownOpen,
+                    toggleDropdown,
+                    setPostId,
+                    handlePostDelete,
+                    handlePostDownvote,
+                    handlePostUpvote,
+                    setIsOpenComment,
+                    setOpenSharedComment,
+                    upvoteStatus,
+                    images,
+                    downvoteStatus,
+                    onOpen,
+                    editOnOpen,
+                    setEditPostDescription,
+                    postId,
+                  }}
+                />
+              ) : (
+                <SharedPost
+                  {...{
+                    data,
+                    isDropdownOpen,
+                    toggleDropdown,
+                    setPostId,
+                    handlePostDelete,
+                    handlePostDownvote,
+                    handlePostUpvote,
+                    setIsOpenComment,
+                    setOpenSharedComment,
+                    upvoteStatus,
+                    images,
+                    downvoteStatus,
+                    onOpen,
+                    editOnOpen,
+                    setEditPostDescription,
+                    postId,
+                  }}
+                />
+              )}
+            </div>
           );
         })}
 
-        {/* share post  */}
+        {/* Modals */}
         <SharePostModal
           isOpen={isOpen}
           onOpenChange={onOpenChange}
@@ -226,7 +212,6 @@ export default function ViewPost() {
           setDescription={setDescription}
         />
 
-        {/* edit post  */}
         <EditPostModal
           isEditOpen={isEditOpen}
           editOnOpenChange={editOnOpenChange}
@@ -243,6 +228,6 @@ export default function ViewPost() {
           />
         )}
       </div>
-    </>
+    </div>
   );
 }

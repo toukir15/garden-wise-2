@@ -8,8 +8,8 @@ export const items = [
       label: "Edit",
     },
     {
-      key: "bookmark",
-      label: "Bookmark",
+      key: "save",
+      label: "Save",
     },
     {
       key: "delete",

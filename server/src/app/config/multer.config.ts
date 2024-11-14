@@ -3,7 +3,7 @@ import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import { cloudinaryUpload } from './cloudinary.config'
 
 const removeExtension = (filename: string) => {
-  return filename.split('.').slice(0, -1).join('.')
+  return filename?.split('.').slice(0, -1).join('.')
 }
 
 const storage = new CloudinaryStorage({
@@ -14,9 +14,9 @@ const storage = new CloudinaryStorage({
       '-' +
       Date.now() +
       '-' +
-      file.fieldname +
+      file?.fieldname +
       '-' +
-      removeExtension(file.originalname),
+      removeExtension(file?.originalname),
   },
 })
 export const multerUpload = multer({ storage: storage })

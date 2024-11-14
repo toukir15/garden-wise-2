@@ -5,6 +5,8 @@ import {
   downvote,
   editPost,
   getMyPosts,
+  getPosts,
+  getVisitProfilePost,
   sharePost,
   upvote,
 } from "../services/posts";
@@ -33,8 +35,29 @@ export const useCreatePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   });
 };
 
+export const useGetPosts = ({
+  queryTerm,
+  searchTerm,
+}: {
+  queryTerm: string;
+  searchTerm: string;
+}) => {
+
+  return useQuery(
+    ["posts", queryTerm, searchTerm],
+    () => getPosts(queryTerm, searchTerm),
+    {
+      staleTime: 30000,
+    }
+  );
+};
+
 export const useGetMyPosts = () => {
   return useQuery(["my-posts"], () => getMyPosts());
+};
+
+export const useGetVisitProfilePosts = (id: string) => {
+  return useQuery(["my-posts", id], () => getVisitProfilePost(id));
 };
 
 export const useSharePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
@@ -102,12 +125,10 @@ export const useUpvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   return useMutation({
     mutationFn: async ({
       voteId,
-      postId,
-      userId,
     }: {
       voteId: string;
-      postId: string;
-      userId: string;
+      postId?: string;
+      userId?: string;
     }) => {
       return await upvote(voteId);
     },
@@ -125,7 +146,7 @@ export const useUpvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
         if (!old) return old;
 
         // Find the post by postId
-        const findPost = old.data.find(
+        const findPost = old.data.data.find(
           (post: { _id: string }) => post?._id === postId
         );
         if (findPost.isShared) {
@@ -230,23 +251,18 @@ export const useDownvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
   return useMutation({
     mutationFn: async ({
       voteId,
-      postId,
-      userId,
-      replyId,
     }: {
       voteId: string;
-      postId: string;
-      userId: string;
+      postId?: string;
+      userId?: string;
       replyId?: string;
     }) => {
       return await downvote(voteId);
     },
 
     // Optimistic update logic
-    onMutate: async ({ voteId, postId, userId, replyId }) => {
-      // Cancel any outgoing queries for "posts" to prevent conflict
+    onMutate: async ({ postId, userId }) => {
       await queryClient.cancelQueries(["posts"]);
-      // Snapshot the previous posts data
       const previousPosts = queryClient.getQueryData(["posts"]);
 
       // Optimistically update the cache with the new downvote
@@ -254,7 +270,7 @@ export const useDownvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
         if (!old) return old;
 
         // Find the post by postId
-        const findPost = old.data.find(
+        const findPost = old.data.data.find(
           (post: { _id: string }) => post?._id === postId
         );
 

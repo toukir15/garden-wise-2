@@ -1,11 +1,17 @@
-import dynamic from 'next/dynamic';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
-import { Button, Checkbox, Select, SelectItem } from '@nextui-org/react';
-import React, { useEffect, useState } from 'react';
-import { FaRegImage } from 'react-icons/fa';
+import dynamic from "next/dynamic";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/modal";
+import { Button, Checkbox, Select, SelectItem } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
+import { FaRegImage } from "react-icons/fa";
 
 // Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function PostModal({
   isOpen,
@@ -51,12 +57,12 @@ export default function PostModal({
               variant="bordered"
             >
               {(category) => (
-                <SelectItem key={category.label}>
-                  {category.label}
-                </SelectItem>
+                <SelectItem key={category.label}>{category.label}</SelectItem>
               )}
             </Select>
-            {errors.category && <p className="text-red-500">Category is required</p>}
+            {errors.category && (
+              <p className="text-red-500">Category is required</p>
+            )}
 
             {/* Add Images */}
             <label
@@ -81,7 +87,10 @@ export default function PostModal({
               <div className="flex flex-col md:flex-row w-full md:items-center mb-2">
                 <div className="flex w-full flex-wrap gap-3">
                   {imagePreviews.map((src, idx) => (
-                    <div key={idx} className="h-28 w-28 border border-dashed p-2">
+                    <div
+                      key={idx}
+                      className="h-28 w-28 border border-dashed p-2"
+                    >
                       <img className="w-full h-full" alt="preview" src={src} />
                     </div>
                   ))}
@@ -103,10 +112,11 @@ export default function PostModal({
             </div>
 
             <Checkbox
-              {...register("premium")}
+              {...register("isPremium")}
               defaultSelected={false}
               size="md"
               className="mt-16 xl:mt-10"
+              color="success"
             >
               Premium
             </Checkbox>
@@ -124,4 +134,3 @@ export default function PostModal({
     </Modal>
   );
 }
-

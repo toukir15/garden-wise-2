@@ -1,7 +1,6 @@
 "use server";
 import axiosInstance from "@/src/lib/axiosInstance";
 import { FieldValues } from "react-hook-form";
-import { revalidateTag } from "next/cache"; // Import from Next.js cache utilities
 
 export const createPost = async (postData: FieldValues) => {
   try {
@@ -15,6 +14,33 @@ export const createPost = async (postData: FieldValues) => {
 export const getMyPosts = async () => {
   try {
     const { data } = await axiosInstance.get("/posts/my-posts");
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getPosts = async (queryTerm: string, searchTerm: string) => {
+  const params = new URLSearchParams();
+
+  if (queryTerm) {
+    params.append("queryTerm", queryTerm);
+  }
+
+  if (searchTerm) {
+    params.append("searchTerm", searchTerm);
+  }
+  try {
+    const { data } = await axiosInstance.get(`/posts?${params.toString()}`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getVisitProfilePost = async (id: string) => {
+  try {
+    const { data } = await axiosInstance.get(`/posts/visit-profile-posts/${id}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);

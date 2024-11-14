@@ -1,11 +1,10 @@
 import {
-  Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
 } from "@nextui-org/react";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import toukir from "../../../public/toukir.jpg";
 import { items } from "@/src/const";
@@ -15,6 +14,15 @@ import LightGalleryImageView from "./LightGalleryImageView";
 import { IoIosShareAlt } from "react-icons/io";
 import { FaComment } from "react-icons/fa";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {
+  IUserProviderValues,
+  UserContext,
+  useUser,
+} from "@/src/context/user.provider";
+import Link from "next/link";
+import { formatPostTime } from "@/src/utils/formatPostTime";
+import { LuDot } from "react-icons/lu";
+import verified from "../../../public/verified.png";
 dayjs.extend(relativeTime);
 
 export default function SharedPost({
@@ -35,12 +43,25 @@ export default function SharedPost({
   setEditPostDescription,
   postId,
 }: any) {
+  const { setPostUser } = useContext(UserContext) as IUserProviderValues;
+  const { user } = useUser();
+  
+  const checkSharedPostUser = user?._id == data?.sharedUser._id;
+  const checkPostUser = user?._id == data?.post.user._id;
+  const handlePostUser = (postUser: any) => {
+    setPostUser(postUser);
+  };
+
   return (
     <div key={data._id} className="mt-4 shadow-md border-b border-gray-600">
       <div>
         <>
           <div className="flex justify-between">
-            <button className="flex gap-2 items-center p-2 cursor-pointer w-fit text-start">
+            <Link
+              onClick={() => handlePostUser(data?.sharedUser)}
+              href={`${checkSharedPostUser ? "/profile/my-profile" : "/profile/user-profile"}`}
+              className="flex gap-2 items-center p-2 cursor-pointer w-fit text-start"
+            >
               <Image
                 className=" rounded-full"
                 height={45}
@@ -48,13 +69,30 @@ export default function SharedPost({
                 src={toukir}
                 alt=""
               />
-              <div>
-                <p className="font-medium">{data.sharedUser?.name}</p>
-                <p className="text-sm text-green-500">
-                  {dayjs(data.createdAt).fromNow()}
-                </p>
+
+              <div className="text-start">
+                <div className="flex  items-center">
+                  <p className="font-medium">{data.sharedUser?.name}</p>
+                  {data.post.user?.isVerified && (
+                    <Image
+                      src={verified}
+                      height={15}
+                      width={15}
+                      className="mx-1"
+                      alt="Profile"
+                    />
+                  )}
+                  {data.post.isPremium && (
+                    <p className="text-sm text-gray-500">Premium</p>
+                  )}
+                  <LuDot />
+                  <p className="text-xs text-gray-400">
+                    {formatPostTime(data?.createdAt)}
+                  </p>
+                </div>
+                <p className="text-sm text-green-500">{data.post.category}</p>
               </div>
-            </button>
+            </Link>
             <div className="relative">
               <button
                 onClick={() => {
@@ -112,7 +150,11 @@ export default function SharedPost({
         </>
         <div className="">
           <div className="mx-6 border border-gray-600 p-2 mt-2 rounded-lg">
-            <button className=" text-start flex gap-2 items-center p-2 cursor-pointer w-fit ">
+            <Link
+              onClick={() => handlePostUser(data?.post.user)}
+              href={`${checkPostUser ? "/profile/my-profile" : "/profile/user-profile"}`}
+              className=" text-start flex gap-2 items-center p-2 cursor-pointer w-fit "
+            >
               <Image
                 className=" rounded-full"
                 height={40}
@@ -120,13 +162,30 @@ export default function SharedPost({
                 src={toukir}
                 alt=""
               />
-              <div>
-                <p className="font-medium">{data.post.user?.name}</p>
-                <p className="text-sm text-green-500">
-                  {dayjs(data.post.createdAt).fromNow()}
-                </p>
+
+              <div className="text-start">
+                <div className="flex  items-center">
+                  <p className="font-medium">{data.post.user?.name}</p>
+                  {data.post.user?.isVerified && (
+                    <Image
+                      src={verified}
+                      height={15}
+                      width={15}
+                      className="mx-1"
+                      alt="Profile"
+                    />
+                  )}
+                  {data.post.isPremium && (
+                    <p className="text-sm text-gray-500">Premium</p>
+                  )}
+                  <LuDot />
+                  <p className="text-xs text-gray-400">
+                    {formatPostTime(data.post.createdAt)}
+                  </p>
+                </div>
+                <p className="text-sm text-green-500">{data.post.category}</p>
               </div>
-            </button>
+            </Link>
             <div className="pl-4">
               <div
                 dangerouslySetInnerHTML={{
@@ -174,8 +233,8 @@ export default function SharedPost({
             </button>
             <button
               onClick={() => {
-                setPostId(data._id)
-                onOpen()
+                setPostId(data._id);
+                onOpen();
               }}
               className="flex bg-black items-center gap-1 hover:text-gray-400 transition duration-150"
             >

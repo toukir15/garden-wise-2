@@ -12,7 +12,6 @@ import Image from "next/image";
 
 const { Header, Content, Sider } = Layout;
 const items = [
-  { label: "Home", key: "2", icon: <GoHomeFill size={20} />, link: "/" },
   {
     label: "Dashboard",
     key: "1",
@@ -65,7 +64,7 @@ export default function RootLayout({
         }}
       >
         {/* Logo Section */}
-        <div className="flex items-center gap-2 px-2 py-3">
+        <Link href={"/"} className="flex items-center gap-2 px-2 py-4">
           <Image src={logo} width={30} height={30} alt="logo" />
           {/* Conditionally render text based on the collapsed state */}
           {!collapsed && (
@@ -73,7 +72,7 @@ export default function RootLayout({
               Garden-Wise
             </h3>
           )}
-        </div>
+        </Link>
 
         <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
           {items.map((item) => (

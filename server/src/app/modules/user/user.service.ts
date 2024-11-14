@@ -39,12 +39,11 @@ const getFollowSuggetionUsersFromDB = async (userId: string) => {
   }
 
   // Ensure followers and followings are arrays to avoid undefined values
-  const followers = findConnection.followers || []
   const followings = findConnection.followings || []
 
   // Fetch users that are NOT in the followers and followings arrays
   const usersNotConnected = await User.find({
-    _id: { $nin: [...followers, ...followings, userId] },
+    _id: { $nin: [ ...followings, userId] },
   })
 
   // Return the result

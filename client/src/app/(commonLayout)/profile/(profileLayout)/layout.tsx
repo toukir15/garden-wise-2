@@ -30,17 +30,23 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-   <>
-    <div className="flex lg:container gap-4 mx-auto h-screen">
-    <div className="hidden xl:block w-[19%]">
-      <Sidebar />
-    </div>
-    <div className="w-full xl:w-[62%] border border-gray-600">{children}</div>
-    <div className="hidden xl:block w-[23%] h-fit pt-4 rounded-lg">
-      <FollowRequest />
-    </div>
-  </div>
-  <MobileMenu/>
-  </>
+    <>
+      <div className="flex lg:container gap-4 mx-auto ">
+        <div className="hidden xl:block w-[19%]">
+          <div className="fixed">
+            <Sidebar />
+          </div>
+        </div>
+        <div className="w-full xl:w-[62%] border border-gray-600 min-h-screen">
+          {children}
+        </div>
+        <div className="hidden xl:block w-[23%] h-fit pt-4 rounded-lg">
+          <div className="fixed">
+            <FollowRequest />
+          </div>
+        </div>
+      </div>
+      <MobileMenu />
+    </>
   );
 }

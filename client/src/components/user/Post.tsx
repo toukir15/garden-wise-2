@@ -1,16 +1,23 @@
 import { items } from "@/src/const";
 import { Dropdown, DropdownItem, DropdownMenu } from "@nextui-org/react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import LightGalleryImageView from "./LightGalleryImageView";
 import { FaDownLong, FaUpLong } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
 import { IoIosShareAlt } from "react-icons/io";
-import toukir from "../../../public/toukir.jpg";
+import verified from "../../../public/verified.png";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { LuDot } from "react-icons/lu";
 import dayjs from "dayjs";
-import { useUser } from "@/src/context/user.provider";
+import {
+  IUserProviderValues,
+  UserContext,
+  useUser,
+} from "@/src/context/user.provider";
+import Link from "next/link";
+import { formatPostTime } from "@/src/utils/formatPostTime";
 dayjs.extend(relativeTime);
 
 export default function Post({
@@ -32,34 +39,63 @@ export default function Post({
   setIsOpenComment,
   onOpen,
 }: any) {
-  // Client-side detection
   const [isClient, setIsClient] = useState(false);
   const { user } = useUser();
+  const checkPostUser = user?._id == data?.post.user._id;
+  const [isReadMore, setIsReadMore] = useState(false); // Add Read More state
+
+  const { setPostUser } = useContext(UserContext) as IUserProviderValues;
+  const handlePostUser = (postUser: any) => {
+    setPostUser(postUser);
+    localStorage.setItem("user-profile", JSON.stringify(postUser));
+  };
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null; // Skip rendering on the server
+  if (!isClient) return null;
 
   return (
     <div className="my-4 shadow-md border-b border-gray-600" ref={navbarRef}>
       <div className="flex justify-between">
-        <button className="flex gap-2 items-center p-2 cursor-pointer w-fit">
+        <Link
+          onClick={() => handlePostUser(data?.post.user)}
+          href={`${checkPostUser ? "/profile/my-profile" : "/profile/user-profile"}`}
+          className="flex gap-2 items-center p-2 cursor-pointer w-fit"
+        >
           <Image
             className="rounded-full"
             height={45}
             width={45}
-            src={toukir}
+            src={data?.post.user.profilePhoto}
             alt="User Avatar"
           />
           <div className="text-start">
-            <p className="font-medium">{data.post.user?.name}</p>
-            <p className="text-sm text-green-500">
-              {dayjs(data?.createdAt).fromNow()}
-            </p>
+            <div className="flex items-center">
+              <p className="font-medium">{data.post.user?.name}</p>
+              {data.post.user?.isVerified && (
+                <Image
+                  src={verified}
+                  height={15}
+                  width={15}
+                  className="mx-1"
+                  alt="Profile"
+                />
+              )}
+              {data.post.isPremium && (
+                <p className={`text-sm text-gray-500 ${!data.post.user?.isVerified && "ml-1"}`}>
+                  Premium
+                </p>
+              )}
+              <LuDot />
+              <p className="text-xs text-gray-400">
+                {formatPostTime(data?.createdAt)}
+              </p>
+            </div>
+            <p className="text-sm text-green-500">{data.post.category}</p>
           </div>
-        </button>
+        </Link>
         <div className="relative">
           <button
             onClick={() => {
@@ -73,75 +109,90 @@ export default function Post({
           {isDropdownOpen && postId === data?._id && (
             <div className="rounded bg-white shadow-sm z-50 w-40 absolute flex flex-col -left-[170px]">
               <Dropdown>
-                <>
-                  <DropdownMenu
-                    aria-label="Dynamic Actions"
-                    items={items.filter(
-                      (item) =>
-                        user?._id === data.post.user._id ||
-                        (item.key !== "delete" && item.key !== "edit")
-                    )}
-                  >
-                    {(item) => (
-                      <DropdownItem
-                        onClick={() => {
-                          if (
-                            item.key === "delete" &&
-                            user?._id === data.post.user._id
-                          ) {
-                            handlePostDelete(postId);
-                          }
-                          if (
-                            item.key === "edit" &&
-                            user?._id === data.post.user._id
-                          ) {
-                            editOnOpen();
-                            setEditPostDescription(data.post.description);
-                            setPostId(data._id);
-                          }
-                        }}
-                        key={item.key}
-                        color={item.key === "delete" ? "danger" : "default"}
-                        className={item.key === "delete" ? "text-danger" : ""}
-                      >
-                        {item.label}
-                      </DropdownItem>
-                    )}
-                  </DropdownMenu>
-                </>
+                <DropdownMenu
+                  aria-label="Dynamic Actions"
+                  items={items.filter(
+                    (item) =>
+                      user?._id === data.post.user._id ||
+                      (item.key !== "delete" && item.key !== "edit")
+                  )}
+                >
+                  {(item) => (
+                    <DropdownItem
+                      onClick={() => {
+                        if (
+                          item.key === "delete" &&
+                          user?._id === data.post.user._id
+                        ) {
+                          handlePostDelete(postId);
+                        }
+                        if (
+                          item.key === "edit" &&
+                          user?._id === data.post.user._id
+                        ) {
+                          editOnOpen();
+                          setEditPostDescription(data.post.description);
+                          setPostId(data._id);
+                        }
+                      }}
+                      key={item.key}
+                      color={item.key === "delete" ? "danger" : "default"}
+                      className={item.key === "delete" ? "text-danger" : ""}
+                    >
+                      {item.label}
+                    </DropdownItem>
+                  )}
+                </DropdownMenu>
               </Dropdown>
             </div>
           )}
         </div>
       </div>
 
-      <div className="mx-4 text-gray-200 break-words">
-        <div
-          dangerouslySetInnerHTML={{
-            __html: data.post.description || "",
-          }}
-        ></div>
+      {/* Post description with Read More/Show Less functionality */}
+      <div className="mx-4 list-disc prose text-gray-200 break-words">
+        {data.post.description.length > 500 && !isReadMore ? (
+          <div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: data.post.description.slice(0, 500),
+              }}
+            ></div>
+            <button onClick={() => setIsReadMore(true)} className="text-gray-500">
+              Read more...
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: data.post.description,
+              }}
+            ></div>
+            {data.post.description.length > 500 && (
+              <button onClick={() => setIsReadMore(false)} className="text-gray-500">
+                Show less
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="w-[80%] mx-auto ">
+      <div className="w-[80%] mx-auto">
         <div className="flex justify-center pt-4 pb-2">
           <LightGalleryImageView images={images} />
         </div>
 
         <div className="flex justify-between mt-4 px-4 pb-4">
           <button
-            onClick={() => {
-              handlePostUpvote(data.post.votes?._id, data?._id);
-            }}
+            onClick={() => handlePostUpvote(data.post.votes?._id, data?._id)}
             className={`${upvoteStatus ? "text-green-500" : "hover:text-gray-400"} flex items-center transition duration-150`}
           >
             <FaUpLong className="text-[20px]" />
             <p>{data.post?.votes?.upvote?.length || 0}</p>
           </button>
           <button
-            onClick={() => {
-              handlePostDownvote(data.post.votes?._id, data?._id);
-            }}
+            onClick={() => handlePostDownvote(data.post.votes?._id, data?._id)}
             className={`${downvoteStatus ? "text-green-500" : "hover:text-gray-400"} flex items-center transition duration-150`}
           >
             <FaDownLong className="text-[20px]" />

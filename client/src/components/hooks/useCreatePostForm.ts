@@ -1,4 +1,3 @@
-// useCreatePostForm.js
 "use client";
 import { useState, useEffect, useContext } from "react";
 import { useCreatePost } from "@/src/hooks/post.hook";
@@ -9,9 +8,7 @@ export function useCreatePostForm() {
   const [description, setDescription] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-
   const { queryTerm, searchTerm } = useContext(PostContext);
-
   const { mutate: handleCreatePost, isLoading } = useCreatePost({
     queryTerm,
     searchTerm,

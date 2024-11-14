@@ -19,7 +19,7 @@ export default function PostManagement() {
   const { data: postsData, isLoading: postsDataLoading } = useGetPosts();
 
   return (
-    <div className="px-4 lg:px-32 mt-8 lg:mt-20">
+    <div className="xl:px-4 lg:px-32 mt-8 lg:mt-20">
       <CustomTable
         columns={postColumns}
         data={postsData?.data.data || []}

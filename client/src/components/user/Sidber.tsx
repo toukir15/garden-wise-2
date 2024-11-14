@@ -15,7 +15,6 @@ import { useUser } from "@/src/context/user.provider";
 import { IUser } from "../../../types";
 import Link from "next/link";
 import { IoNotifications, IoPeopleOutline } from "react-icons/io5";
-import { FaTachometerAlt } from "react-icons/fa";
 import { MdDashboard, MdMessage, MdOutlineDiamond } from "react-icons/md";
 import { CiBookmark, CiUser } from "react-icons/ci";
 import { HiOutlineUserGroup } from "react-icons/hi";
@@ -81,7 +80,7 @@ export default function Sidebar() {
   return (
     <>
       {isLoading && <Loading />}
-      <div className="flex flex-col h-screen justify-between p-4">
+      <div className="flex flex-col h-screen justify-between py-4">
         <div>
           <div className="w-8 ml-4">
             <Image
@@ -137,7 +136,7 @@ export default function Sidebar() {
               icon={MdOutlineDiamond}
               label="Premium"
             />
-            <SidebarButton href="/profile" icon={CiUser} label="Profile" />
+            <SidebarButton href="/profile/my-profile" icon={CiUser} label="Profile" />
 
             <Button
               onClick={onOpen}
@@ -150,8 +149,8 @@ export default function Sidebar() {
             </Button>
           </div>
         </div>
-        <div className="mb-3">
-          <div className="p-3 rounded-lg">
+        <div className="">
+          <div className="px-1 rounded-lg">
             <Link href="/profile" className="flex items-center gap-3">
               <div>
                 <div className="rounded-full overflow-hidden w-[40px] h-[40px] relative">
@@ -184,6 +183,7 @@ export default function Sidebar() {
         users={followingsUsersData?.data.data.followings || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
+        actionType={true}
       />
 
       {/* followers modal  */}
@@ -194,6 +194,7 @@ export default function Sidebar() {
         users={followersUsersData?.data.data.followers || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
+        actionType={false}
       />
 
       <PostModal
@@ -202,7 +203,7 @@ export default function Sidebar() {
         onClose={onClose}
         handleSubmit={handleSubmit}
         register={register}
-        onSubmit={(data) => onSubmit(data, onClose)} // Pass onClose to onSubmit
+        onSubmit={(data) => onSubmit(data, onClose)} 
         errors={errors}
         categories={categories}
         description={description}
