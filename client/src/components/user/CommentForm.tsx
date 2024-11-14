@@ -4,12 +4,10 @@ import toukir from "../../../public/toukir.jpg";
 import { IoSend } from "react-icons/io5";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useComment } from "@/src/hooks/comment.hook";
-import { useUser } from "@/src/context/user.provider";
 import { PostContext } from "@/src/context/post.provider";
 
 export default function CommentForm({ postId }: { postId: string }) {
-  const { user } = useUser();
-
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const { queryTerm, searchTerm } = useContext(PostContext);
   const { mutate: handleComment } = useComment({ queryTerm, searchTerm });
   const { register, handleSubmit, reset } = useForm<FieldValues>();

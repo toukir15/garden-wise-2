@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import logo from "../../../public/plant.png";
 import { GoHomeFill, GoSearch } from "react-icons/go";
 import categories from "../../assets/json/category.json";
@@ -11,7 +11,7 @@ import {
 } from "@/src/hooks/connection.hook";
 import { useDisclosure } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider";
 import { IUser } from "../../../types";
 import Link from "next/link";
 import { IoNotifications, IoPeopleOutline } from "react-icons/io5";
@@ -23,6 +23,7 @@ import SidebarButton from "./SidebarButton";
 import PostModal from "../modal/PostModal";
 import { useCreatePostForm } from "../hooks/useCreatePostForm";
 import Loading from "../Loading";
+import verified from "../../../public/verified.png";
 
 export default function Sidebar() {
   const { data: followingsUsersData } = useGetFollowings();
@@ -39,7 +40,17 @@ export default function Sidebar() {
     errors,
     isLoading,
   } = useCreatePostForm();
-  const { user } = useUser();
+  //   const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   // Access localStorage only on the client-side
+  //   const storedUser = localStorage.getItem("user");
+  //   if (storedUser) {
+  //     setUser(JSON.parse(storedUser));
+  //   }
+  // }, []);
+
+  const { user } = useContext(UserContext)as IUserProviderValues;
   const {
     isOpen: isFollowingsOpen,
     onOpen: onFollowingsOpen,
@@ -136,7 +147,11 @@ export default function Sidebar() {
               icon={MdOutlineDiamond}
               label="Premium"
             />
-            <SidebarButton href="/profile/my-profile" icon={CiUser} label="Profile" />
+            <SidebarButton
+              href="/profile/my-profile"
+              icon={CiUser}
+              label="Profile"
+            />
 
             <Button
               onClick={onOpen}
@@ -167,7 +182,18 @@ export default function Sidebar() {
                 </div>
               </div>
               <div className="flex flex-col">
-                <p className="font-medium">{user?.name}</p>
+                <div className="relative flex items-center w-fit">
+                  <p className="font-medium">{user?.name}</p>
+                  {user?.isVerified && (
+                    <Image
+                      src={verified}
+                      height={15}
+                      width={15}
+                      className="mx-1"
+                      alt="Profile"
+                    />
+                  )}
+                </div>
                 <p className="text-sm text-gray-600">{user?.email}</p>
               </div>
             </Link>
@@ -203,7 +229,7 @@ export default function Sidebar() {
         onClose={onClose}
         handleSubmit={handleSubmit}
         register={register}
-        onSubmit={(data) => onSubmit(data, onClose)} 
+        onSubmit={(data) => onSubmit(data, onClose)}
         errors={errors}
         categories={categories}
         description={description}

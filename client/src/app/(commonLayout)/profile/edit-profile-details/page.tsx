@@ -1,19 +1,19 @@
 "use client";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import Image from "next/image";
 import "react-quill/dist/quill.snow.css";
 import { Button, Input, Link } from "@nextui-org/react";
 import { useEditProfile } from "@/src/hooks/auth.hook";
 import { useForm } from "react-hook-form"; // Import useForm from react-hook-form
 import { FaEdit } from "react-icons/fa";
-import { use, useEffect, useState } from "react";
+import {useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
   const router = useRouter();
   const { mutate: editProfile, isLoading, isSuccess } = useEditProfile();
 

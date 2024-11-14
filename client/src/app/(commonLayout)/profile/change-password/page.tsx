@@ -1,13 +1,13 @@
 "use client"; 
 
-import { useUser } from "@/src/context/user.provider"; 
+import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider"; 
 import Image from "next/image"; 
 import { Button, Link } from "@nextui-org/react"; 
 import { useForm } from "react-hook-form"; 
 import { useChangePassword } from "@/src/hooks/auth.hook";
 import { toast } from "sonner";
 import PasswordInput from "@/src/components/form/PasswordInput";
-import { useEffect } from "react"; 
+import { useContext, useEffect } from "react"; 
 import { useRouter } from "next/navigation";
 
 // Define the interface for the form data
@@ -18,7 +18,7 @@ interface IChangePasswordForm {
 }
 
 export default function Page() {
-  const { user } = useUser(); 
+  const {user} = useContext(UserContext) as IUserProviderValues
   const router = useRouter(); 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<IChangePasswordForm>();
   const {

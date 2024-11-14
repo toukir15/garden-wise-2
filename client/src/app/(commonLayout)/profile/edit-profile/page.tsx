@@ -1,12 +1,13 @@
 "use client";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
 import "react-quill/dist/quill.snow.css";
 
 export default function page() {
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
 
   return (
     <section className="flex justify-center flex-col items-center h-screen   ">

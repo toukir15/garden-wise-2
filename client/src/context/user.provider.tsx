@@ -32,6 +32,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   // Function to fetch and set the current user
   const handleUser = async () => {
     const user = await getCurrentUser();
+    localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
 
@@ -39,6 +40,13 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     handleUser();
+  }, [accessToken]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, [accessToken]);
 
   return (

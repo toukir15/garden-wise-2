@@ -25,7 +25,7 @@ import Post from "./Post";
 import SharePostModal from "../modal/SharePostModal";
 import EditPostModal from "../modal/EditPostModal";
 
-export default function ViewMyPost({postsData, isPostsDataLoading}: any) {
+export default function ViewVisitUser({postsData, isPostsDataLoading}: any) {
   // local state
   const [postId, setPostId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

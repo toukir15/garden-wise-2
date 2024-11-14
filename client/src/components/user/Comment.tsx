@@ -1,11 +1,11 @@
 "use client";
 import { useGetPost } from "@/src/hooks/recentPosts.hook";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import toukir from "../../../public/toukir.jpg";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { formatRelativeTime } from "@/src/utils/formatRelativeTime";
 import ComponentLoading from "../ComponentLoading";
 dayjs.extend(relativeTime);
@@ -48,7 +48,7 @@ const CommentItem = ({
 
 export default function Comment({ postId }: { postId: string }) {
   const { data: postData, isLoading, error } = useGetPost(postId);
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
   const userId = user?._id;
 
   if (isLoading) return <div className="h-[450px] flex justify-center items-center"><ComponentLoading/></div>;

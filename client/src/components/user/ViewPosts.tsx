@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -15,7 +15,7 @@ import {
 } from "@/src/hooks/post.hook";
 import ViewComment from "./ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { IUser, TPost } from "../../../types";
 import ComponentLoading from "../ComponentLoading";
 import { PostContext } from "@/src/context/post.provider";
@@ -41,7 +41,7 @@ export default function ViewPost() {
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // Hook
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
 
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

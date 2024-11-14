@@ -1,11 +1,10 @@
 "use client";
 
 import ViewMyPost from "@/src/components/user/ViewMyPosts";
-import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import verified from "../../../../../../public/verified.png"
 import { useGetVisitProfilePosts } from "@/src/hooks/post.hook";
@@ -20,8 +19,6 @@ import Loading from "@/src/components/Loading";
 import { IUser } from "../../../../../../types";
 
 export default function Page() {
-  const { user } = useUser()
-  
   const {
     mutate: handlePayment,
     data,
@@ -98,7 +95,7 @@ export default function Page() {
             <div>
               <div className="relative w-fit">
                 <p className="mt-3 text-2xl font-bold">{postUser?.name}</p>
-                 {user?.isVerified && <Image
+                 {postUser?.isVerified && <Image
                     src={verified}
                     height={20}
                     width={20}

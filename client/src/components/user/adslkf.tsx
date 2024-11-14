@@ -1,4 +1,8 @@
+import { Dropdown, DropdownItem, DropdownMenu } from "@nextui-org/react";
+import Image from "next/image";
 import React, { useContext } from "react";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { items } from "@/src/const";
 import dayjs from "dayjs";
 import { FaDownLong, FaUpLong } from "react-icons/fa6";
 import LightGalleryImageView from "./LightGalleryImageView";
@@ -6,11 +10,95 @@ import { IoIosShareAlt } from "react-icons/io";
 import { FaComment } from "react-icons/fa";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
+import Link from "next/link";
+import { formatPostTime } from "@/src/utils/formatPostTime";
+import { LuDot } from "react-icons/lu";
+import verified from "../../../public/verified.png";
 import { UserLink } from "./SharedPost/UserLink";
-import { PostDropdown } from "./SharedPost/PostDropdown";
-import { PostContent } from "./SharedPost/PostContent";
 
 dayjs.extend(relativeTime);
+
+// Helper Component for User Link
+// const UserLink = ({ user, isOwner, handleUserClick }: any) => (
+//   <Link
+//     onClick={() => handleUserClick(user)}
+//     href={isOwner ? "/profile/my-profile" : "/profile/user-profile"}
+//     className="flex gap-2 items-center p-2 cursor-pointer w-fit text-start"
+//   >
+//     <Image
+//       className="rounded-full"
+//       height={45}
+//       width={45}
+//       src={user.profilePhoto}
+//       alt=""
+//     />
+//     {/* <div className="text-start">
+//       <div className="flex items-center">
+//         <p className="font-medium">{user?.name}</p>
+//         {user?.isVerified && (
+//           <Image
+//             src={verified}
+//             height={15}
+//             width={15}
+//             className="mx-1"
+//             alt="Profile"
+//           />
+//         )}
+//       </div>  
+//     </div> */}    
+//   </Link>
+// );
+
+// Post Content Display Component
+const PostContent = ({ description, category }: any) => (
+  <div className="pl-4">
+    <div dangerouslySetInnerHTML={{ __html: description || "" }}></div>
+    <p className="text-sm text-green-500">{category}</p>
+  </div>
+);
+
+// Dropdown Menu Component
+const PostDropdown = ({
+  toggleDropdown,
+  setPostId,
+  handlePostDelete,
+  handleEdit,
+  isOpen,
+  postId,
+}: any) => (
+  <div className="relative">
+    <button onClick={toggleDropdown} className="mr-8 relative">
+      <HiDotsHorizontal className="text-[20px] hover:text-green-500 transition duration-150" />
+    </button>
+    {isOpen && (
+      <div className="rounded bg-white shadow-sm z-50 w-40 absolute flex flex-col -left-[170px]">
+        <Dropdown>
+          {[
+            <DropdownMenu
+              aria-label="Post Actions"
+              items={items}
+              key="dropdown-menu"
+            >
+              {(item) => (
+                <DropdownItem
+                  onClick={() =>
+                    item.key === "delete"
+                      ? handlePostDelete(postId)
+                      : handleEdit()
+                  }
+                  key={item.key}
+                  color={item.key === "delete" ? "danger" : "default"}
+                >
+                  {item.label}
+                </DropdownItem>
+              )}
+            </DropdownMenu>,
+          ]}
+        </Dropdown>
+      </div>
+    )}
+  </div>
+);
 
 // Main Component
 export default function SharedPost({
@@ -51,9 +139,6 @@ export default function SharedPost({
           user={data.sharedUser}
           isOwner={isSharedPostOwner}
           handleUserClick={handleUserClick}
-          category={data.post.category}
-          isPremium={data.post.isPremium}
-          createdAt={data.createdAt}
         />
         <PostDropdown
           toggleDropdown={() => {
@@ -68,17 +153,16 @@ export default function SharedPost({
         />
       </div>
 
-      <PostContent description={data.description} />
+      <PostContent
+        description={data.description}
+        category={data.post.category}
+      />
 
       <div className="mx-6 border border-gray-600 p-2 mt-2 rounded-lg">
         <UserLink
           user={data.post.user}
           isOwner={isPostOwner}
           handleUserClick={handleUserClick}
-          category={data.post.category}
-          isPremium={data.post.isPremium}
-          createdAt={data.post.createdAt}
-          isShared={data.isShared}
         />
         <PostContent
           description={data.post.description}
@@ -129,3 +213,6 @@ export default function SharedPost({
     </div>
   );
 }
+
+
+

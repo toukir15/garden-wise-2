@@ -3,7 +3,7 @@
 import CreatePost from "@/src/components/user/CreatePost";
 import ViewMyPost from "@/src/components/user/ViewMyPosts";
 import { PostContext } from "@/src/context/post.provider";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "sonner";
 import { logout } from "@/src/services/auth";
-import verified from "../../../../../../public/verified.png"
+import verified from "../../../../../../public/verified.png";
 import { useGetMyPosts } from "@/src/hooks/post.hook";
 import {
   useGetFollowers,
@@ -26,14 +26,14 @@ import Loading from "@/src/components/Loading";
 import { IUser } from "../../../../../../types";
 
 export default function Page() {
-  const { user } = useUser();
+  const { user } = useContext(UserContext) as IUserProviderValues;
   const { postCount } = useContext(PostContext);
   const {
     mutate: handlePayment,
     data,
     isLoading: isPaymentLoading,
   } = useCreatePayment();
-  const [isClient, setIsClient] = useState(false); 
+  const [isClient, setIsClient] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
@@ -74,6 +74,7 @@ export default function Page() {
   }, [user]);
 
   const handleLogout = () => {
+    localStorage.removeItem("user");
     logout();
     router.push("/login");
   };
@@ -126,13 +127,15 @@ export default function Page() {
             <div>
               <div className="relative w-fit">
                 <p className="mt-3 text-2xl font-bold">{user?.name}</p>
-                 {user?.isVerified && <Image
+                {user?.isVerified && (
+                  <Image
                     src={verified}
                     height={20}
                     width={20}
                     className="absolute top-1.5 -right-2 translate-x-full"
                     alt="Profile"
-                  />}
+                  />
+                )}
               </div>
               <p className="font-medium text-gray-300">{user?.email}</p>
               <div className="flex gap-4 mt-2">

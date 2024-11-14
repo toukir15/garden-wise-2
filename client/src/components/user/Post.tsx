@@ -14,7 +14,6 @@ import dayjs from "dayjs";
 import {
   IUserProviderValues,
   UserContext,
-  useUser,
 } from "@/src/context/user.provider";
 import Link from "next/link";
 import { formatPostTime } from "@/src/utils/formatPostTime";
@@ -40,7 +39,7 @@ export default function Post({
   onOpen,
 }: any) {
   const [isClient, setIsClient] = useState(false);
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
   const checkPostUser = user?._id == data?.post.user._id;
   const [isReadMore, setIsReadMore] = useState(false); // Add Read More state
 
@@ -84,7 +83,7 @@ export default function Post({
                 />
               )}
               {data.post.isPremium && (
-                <p className={`text-sm text-gray-500 ${!data.post.user?.isVerified && "ml-1"}`}>
+                <p className={`text-sm text-gray-500 ${!data.post.user?.isVerified && "ml-2 top-[2px] relative"}`}>
                   Premium
                 </p>
               )}

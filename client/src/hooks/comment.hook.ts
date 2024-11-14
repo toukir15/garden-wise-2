@@ -214,7 +214,10 @@ export const useComment = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
         exact: true,
       });
 
-      // invalide posts tag
+      queryClient.invalidateQueries(["visit-profile-posts"], {
+        exact: true,
+      });
+
       queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
         exact: true,
       });

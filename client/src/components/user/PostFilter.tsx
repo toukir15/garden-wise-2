@@ -1,6 +1,6 @@
 "use client";
 import { PostContext } from "@/src/context/post.provider";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { Input } from "@nextui-org/input";
 import Image from "next/image";
 import React, { useContext } from "react";
@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 
 export default function PostFilter() {
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
   const { isSearchbarOpen } = useContext(PostContext);
   const { queryTerm, setQueryTerm } = useContext(PostContext);
   const router = useRouter();

@@ -1,10 +1,10 @@
 import { useDownvote, useUpvote } from "@/src/hooks/comment.hook";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { FaDownLong, FaUpLong } from "react-icons/fa6";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { formatRelativeTime } from "@/src/utils/formatRelativeTime";
 dayjs.extend(relativeTime);
 
@@ -25,8 +25,7 @@ export default function CommentReply({
   openCommentNestedReplyID: string;
   setCommentNestedReplyID: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const { user } = useUser();
- 
+  const {user} = useContext(UserContext) as IUserProviderValues
   const userId = user!?._id;
   const { mutate: handleUpvote } = useUpvote();
   const { mutate: handleDownvote } = useDownvote();

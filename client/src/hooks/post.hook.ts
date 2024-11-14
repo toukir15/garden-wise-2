@@ -57,7 +57,7 @@ export const useGetMyPosts = () => {
 };
 
 export const useGetVisitProfilePosts = (id: string) => {
-  return useQuery(["my-posts", id], () => getVisitProfilePost(id));
+  return useQuery(["visit-profile-posts"], () => getVisitProfilePost(id));
 };
 
 export const useSharePost = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
@@ -239,6 +239,55 @@ export const useUpvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
         return old;
       });
 
+      // Optimistically update the cache with the new upvote
+      queryClient.setQueryData(["visit-profile-posts"], (old: any) => {
+        if (!old) return old;
+        // Find the post by postId
+        const findPost = old.data.data.find(
+          (post: { _id: string }) => post?._id === postId
+        );
+        if (findPost.isShared) {
+          const upvotes = findPost.votes.upvote;
+          const downvotes = findPost.votes?.downvote;
+
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.votes.upvote.push(userId);
+          }
+        } else {
+          const upvotes = findPost.post.votes.upvote;
+          const downvotes = findPost.post.votes.downvote;
+
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.post.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.post.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.post.votes.upvote.push(userId);
+          }
+        }
+        return old;
+      });
+
       // Return snapshot for rollback on error
       return { previousPosts };
     },
@@ -318,6 +367,55 @@ export const useDownvote = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
 
       // Optimistically update the cache with the new downvote
       queryClient.setQueryData(["my-posts"], (old: any) => {
+        if (!old) return old;
+
+        // Find the post by postId
+        const findPost = old.data.data.find(
+          (post: { _id: string }) => post?._id === postId
+        );
+
+        if (findPost.isShared) {
+          const upvotes = findPost.votes.upvote;
+          const downvotes = findPost.votes.downvote;
+
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.votes.downvote.push(userId);
+          }
+        } else {
+          const upvotes = findPost.post.votes.upvote;
+          const downvotes = findPost.post.votes.downvote;
+
+          if (upvotes.includes(userId)) {
+            // Remove the userId from the downvote array
+            findPost.post.votes.upvote = upvotes.filter(
+              (id: string) => id !== userId
+            );
+          }
+          if (downvotes.includes(userId)) {
+            // Remove the userId from the upvote array
+            findPost.post.votes.downvote = downvotes.filter(
+              (id: string) => id !== userId
+            );
+          } else {
+            // Add the userId to the upvote array
+            findPost.post.votes.downvote.push(userId);
+          }
+        }
+        return old;
+      });
+      queryClient.setQueryData(["visit-profile-posts"], (old: any) => {
         if (!old) return old;
 
         // Find the post by postId

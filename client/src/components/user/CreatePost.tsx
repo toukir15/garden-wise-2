@@ -2,17 +2,17 @@
 import Image from "next/image";
 import { useDisclosure } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import categories from "../../assets/json/category.json";
 import Loading from "../Loading";
 import PostModal from "../modal/PostModal";
-import { useUser } from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { useCreatePostForm } from "../hooks/useCreatePostForm";
 
 export default function CreatePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isClient, setIsClient] = useState(false);
-  const { user } = useUser();
+  const {user} = useContext(UserContext) as IUserProviderValues
   const {
     description,
     setDescription,

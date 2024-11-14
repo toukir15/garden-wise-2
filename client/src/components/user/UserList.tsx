@@ -23,7 +23,7 @@ export default function UserList({ user, loadingUserId, handleUnfollowRequest, a
       {loadingUserId !== user._id ? (
         <button
           onClick={() => handleUnfollowRequest(user)}
-          className="py-[2px] px-4 text-sm rounded-full text-white hover:text-whitre bg-green-600 hover:bg-green-500 transition duration-200"
+          className="py-[4px] px-4 text-xs rounded-full text-white hover:text-whitre bg-green-600 hover:bg-green-500 transition duration-200"
         >
           Unfollow
         </button>
