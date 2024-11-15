@@ -11,7 +11,11 @@ import {
 } from "@/src/hooks/connection.hook";
 import { useDisclosure } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
-import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider";
+import {
+  IUserProviderValues,
+  UserContext,
+  useUser,
+} from "@/src/context/user.provider";
 import { IUser } from "../../../types";
 import Link from "next/link";
 import { IoNotifications, IoPeopleOutline } from "react-icons/io5";
@@ -24,6 +28,20 @@ import PostModal from "../modal/PostModal";
 import { useCreatePostForm } from "../hooks/useCreatePostForm";
 import Loading from "../Loading";
 import verified from "../../../public/verified.png";
+import { FieldValues } from "react-hook-form";
+
+// Sidebar navigation links
+const sidebarLinks = [
+  { href: "/", icon: GoHomeFill, label: "Home" },
+  { href: "/admin/dashboard", icon: MdDashboard, label: "Dashboard" },
+  { icon: GoSearch, label: "Explore" },
+  { icon: IoNotifications, label: "Notification" },
+  { icon: MdMessage, label: "Message" },
+  { icon: CiBookmark, label: "Bookmark" },
+  { icon: HiOutlineUserGroup, label: "Communities" },
+  { icon: MdOutlineDiamond, label: "Premium" },
+  { href: "/profile/my-profile", icon: CiUser, label: "Profile" },
+];
 
 export default function Sidebar() {
   const { data: followingsUsersData } = useGetFollowings();
@@ -40,17 +58,7 @@ export default function Sidebar() {
     errors,
     isLoading,
   } = useCreatePostForm();
-  //   const [user, setUser] = useState(null);
-
-  // useEffect(() => {
-  //   // Access localStorage only on the client-side
-  //   const storedUser = localStorage.getItem("user");
-  //   if (storedUser) {
-  //     setUser(JSON.parse(storedUser));
-  //   }
-  // }, []);
-
-  const { user } = useContext(UserContext)as IUserProviderValues;
+  const { user } = useContext(UserContext) as IUserProviderValues;
   const {
     isOpen: isFollowingsOpen,
     onOpen: onFollowingsOpen,
@@ -103,56 +111,35 @@ export default function Sidebar() {
             />
           </div>
 
+          {/* Navigation Links */}
           <div>
-            <SidebarButton href="/" icon={GoHomeFill} label="Home" />
-            <SidebarButton
-              href="/admin/dashboard"
-              onClick={() => {}}
-              icon={MdDashboard}
-              label="Dashboard"
-            />
-            <SidebarButton onClick={() => {}} icon={GoSearch} label="Explore" />
-            <SidebarButton
-              onClick={() => {}}
-              icon={IoNotifications}
-              label="Notification"
-            />
-            <SidebarButton
-              onClick={() => {}}
-              icon={MdMessage}
-              label="Message"
-            />
-            <SidebarButton
-              onClick={onFollowersOpen}
-              icon={IoPeopleOutline}
-              label={`Followers (${followersUsersData?.data.data.followers.length || 0})`}
-            />
-            <SidebarButton
-              onClick={onFollowingsOpen}
-              icon={IoPeopleOutline}
-              label={`Followings (${followingsUsersData?.data.data.followings.length || 0})`}
-            />
-            <SidebarButton
-              onClick={() => {}}
-              icon={CiBookmark}
-              label="Bookmark"
-            />
-            <SidebarButton
-              onClick={() => {}}
-              icon={HiOutlineUserGroup}
-              label="Communities"
-            />
-            <SidebarButton
-              onClick={() => {}}
-              icon={MdOutlineDiamond}
-              label="Premium"
-            />
-            <SidebarButton
-              href="/profile/my-profile"
-              icon={CiUser}
-              label="Profile"
-            />
+            {sidebarLinks.map(({ href, icon, label }, index) => (
+              <div>
+                {index == 4 ? (
+                  <>
+                    <SidebarButton
+                      onClick={onFollowersOpen}
+                      icon={IoPeopleOutline}
+                      label={`Followers (${followersUsersData?.data?.data?.followers?.length || 0})`}
+                    />
+                    <SidebarButton
+                      onClick={onFollowingsOpen}
+                      icon={IoPeopleOutline}
+                      label={`Followings (${followingsUsersData?.data?.data?.followings?.length || 0})`}
+                    />
+                  </>
+                ) : (
+                  <SidebarButton
+                    key={index}
+                    href={href}
+                    icon={icon}
+                    label={label}
+                  />
+                )}
+              </div>
+            ))}
 
+            {/* Post Button */}
             <Button
               onClick={onOpen}
               className="sidebar-button w-full text-lg font-medium p-4 mt-6"
@@ -229,7 +216,7 @@ export default function Sidebar() {
         onClose={onClose}
         handleSubmit={handleSubmit}
         register={register}
-        onSubmit={(data) => onSubmit(data, onClose)}
+        onSubmit={(data: FieldValues) => onSubmit(data)}
         errors={errors}
         categories={categories}
         description={description}

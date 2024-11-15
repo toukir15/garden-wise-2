@@ -34,6 +34,13 @@ export default function PostModal({
   }, []);
 
   if (!isClient) return null;
+
+   const handleFormSubmit = (data: any) => {
+    onSubmit(data);
+    onClose();
+  };
+
+
   return (
     <Modal
       className="bg-[#121212] absolute z-[999]"
@@ -41,7 +48,7 @@ export default function PostModal({
       size="2xl"
       onOpenChange={(open) => (open ? onOpen() : onClose())}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <ModalContent className="absolute top-0 xl:top-8 -translate-x-4">
           <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">
             Create post
@@ -56,7 +63,7 @@ export default function PostModal({
               className="mt-3"
               variant="bordered"
             >
-              {(category) => (
+              {(category: any) => (
                 <SelectItem key={category.label}>{category.label}</SelectItem>
               )}
             </Select>
@@ -86,7 +93,7 @@ export default function PostModal({
             {imagePreviews.length > 0 && (
               <div className="flex flex-col md:flex-row w-full md:items-center mb-2">
                 <div className="flex w-full flex-wrap gap-3">
-                  {imagePreviews.map((src, idx) => (
+                  {imagePreviews.map((src: string, idx: string) => (
                     <div
                       key={idx}
                       className="h-28 w-28 border border-dashed p-2"

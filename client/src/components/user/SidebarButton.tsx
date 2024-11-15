@@ -8,7 +8,7 @@ export default function SidebarButton({ href, onClick, icon: Icon, label }: any)
     as={href ? Link : "button"}
     href={href || undefined}
     onClick={onClick}
-    className="sidebar-button text-start text-lg font-medium flex items-center justify-start gap-2 p-4"
+    className="sidebar-button text-start text-lg my-0.5 font-medium flex items-center justify-start gap-2 p-4"
     variant="light"
     radius="full"
   >
