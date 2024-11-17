@@ -1,13 +1,21 @@
-import httpStatus, { BAD_REQUEST } from 'http-status'
+import httpStatus from 'http-status'
+import { PipelineStage } from 'mongoose'
 import AppError from '../../errors/AppError'
-import { TComments, TReply } from '../comment/comment.interface'
+import { TReply } from '../comment/comment.interface'
 import { User } from '../user/user.model'
 import { Vote } from '../vote/vote.model'
 import { TPost } from './post.interface'
 import Post from './post.model'
 import { Comment } from '../comment/comment.model'
-import { postSearchableField } from './post.const'
 import { TUser } from '../user/user.interface'
+import {
+  createBaseQuery,
+  filterPostsForUnverifiedUser,
+  getSortOrderPipeline,
+  populateOptions,
+  sortPopularPosts,
+} from './post.utils'
+import { JwtPayload } from 'jsonwebtoken'
 
 const createPostIntoDB = async (
   payload: TPost,
@@ -68,145 +76,48 @@ const createSharePostIntoDB = async (
   return result
 }
 
-const getPostsFromDB = async (query: Record<string, unknown>, user: TUser) => {
-  // const limit = 2; 
-  // const skip = limit * (Number(query.page) - 1); // Calculate skip based on page number
+export const getPostsFromDB = async (
+  query: Record<string, unknown>,
+  user: JwtPayload,
+) => {
+  const searchTerm = (query?.searchTerm as string) || '';
+  const queryTerm = (query?.queryTerm as string) || '';
 
-  let searchTerm = '';
-  if (query?.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
+  const baseQuery = createBaseQuery(searchTerm, queryTerm, user);
+  const sortPipeline = getSortOrderPipeline(queryTerm);
 
-  let queryTerm = '';
-  if (query?.queryTerm) {
-    queryTerm = query.queryTerm as string;
-  }
+  const pipeline: PipelineStage[] = [
+    { $match: baseQuery },
+    ...sortPipeline,
+    {
+      $project: {
+        sharedUser: 1,
+        description: 1,
+        votes: 1,
+        isShared: 1,
+        comments: 1,
+        share: 1,
+        post: 1,
+        createdAt: 1,
+      },
+    },
+  ];
 
-  // Create a base search query
-  const baseQuery: Record<string, unknown> = {
-    $or: postSearchableField.map(field => ({
-      [field]: { $regex: searchTerm, $options: 'i' },
-    })),
-  };
+  // Execute aggregation
+  let result = await Post.aggregate(pipeline).exec();
 
-  // Modify the base query based on the queryTerm
-  if (queryTerm === 'premium') {
-    baseQuery['post.isPremium'] = true;
-  }
+  // Populate fields
+  await Post.populate(result, populateOptions);
 
+  // Apply additional filters for unverified users
   if (!user.isVerified) {
-    baseQuery['post.isPremium'] = false;
+    result = filterPostsForUnverifiedUser(result, user);
   }
 
-  const searchQuery = Post.find(baseQuery);
-
-  // Determine sorting order based on queryTerm
-  let sortOrder = {};
-  if (queryTerm === 'recent') {
-    sortOrder = { createdAt: -1 };
-  } else if (queryTerm === 'popular') {
-    sortOrder = { 'votes.upvote': -1 };
-  }else if(queryTerm === 'premium'){
-    sortOrder = { 'votes.upvote': -1 };
+  // Sort by popularity if the query term is 'popular'
+  if (queryTerm === 'popular') {
+    result = sortPopularPosts(result);
   }
-
-  // Perform the query with pagination and sorting
-  const result = await searchQuery
-    .select({
-      sharedUser: 1,
-      description: 1,
-      votes: 1,
-      isShared: 1,
-      comments: 1,
-      share: 1,
-      post: 1,
-      createdAt: 1,
-    })
-    .populate({
-      path: 'sharedUser',
-      model: 'User',
-      select: 'name profilePhoto isVerified',
-    })
-    .populate({
-      path: 'votes',
-      model: 'Vote',
-      select: 'upvote downvote',
-    })
-    .populate({
-      path: 'comments',
-      model: 'Comment',
-      select: 'text user votes replies createdAt',
-      populate: [
-        {
-          path: 'user',
-          model: 'User',
-          select: 'name profilePhoto isVerified',
-        },
-        {
-          path: 'replies.commentReplyUser',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.replyTo',
-          model: 'User',
-          select: 'name',
-        },
-        {
-          path: 'votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-        {
-          path: 'replies.votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-      ],
-    })
-    .populate({
-      path: 'post.user',
-      model: 'User',
-      select: 'name profilePhoto email isVerified',
-    })
-    .populate({
-      path: 'post.comments',
-      model: 'Comment',
-      select: 'text user votes replies createdAt',
-      populate: [
-        {
-          path: 'user',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.commentReplyUser',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.replyTo',
-          model: 'User',
-          select: 'name',
-        },
-        {
-          path: 'votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-        {
-          path: 'replies.votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-      ],
-    })
-    .populate({
-      path: 'post.votes',
-      model: 'Vote',
-      select: 'upvote downvote',
-    })
-    .sort(sortOrder)
 
   return result;
 };
@@ -550,46 +461,6 @@ const updatePostIntoDB = async (
   return result
 }
 
-const createCommentIntoDB = async (
-  payload: TComments,
-  postId: string,
-  userId: string,
-) => {
-  // find user exist or not
-  const user = await User.findById(userId)
-  if (!user) {
-    throw new AppError(BAD_REQUEST, "User doesn't exist!")
-  }
-
-  // find post
-  const findPost = await Post.findById(postId)
-  if (!findPost) {
-    throw new AppError(BAD_REQUEST, 'Post no longer available!')
-  }
-
-  // create votes
-  const createVotes = await Vote.create({})
-  if (createVotes?._id) {
-    payload.votes = createVotes?._id
-  }
-
-  // set user id
-  payload.user = user?._id
-
-  const result = await Comment.create(payload)
-  //   update post coment id
-  if (findPost.isShared) {
-    await Post.findByIdAndUpdate(postId, {
-      $push: { comments: result?._id },
-    })
-  } else {
-    await Post.findByIdAndUpdate(postId, {
-      $push: { 'post.comments': result?._id },
-    })
-  }
-  return result
-}
-
 const createCommentReplyIntoDB = async (
   payload: TReply,
   commentId: string,
@@ -716,7 +587,6 @@ const updateDownvoteIntoDB = async (userId: string, voteId: string) => {
 
 export const PostServices = {
   createPostIntoDB,
-  createCommentIntoDB,
   getMyPostsFromDB,
   createCommentReplyIntoDB,
   deletePostFromDB,

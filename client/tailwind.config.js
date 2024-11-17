@@ -68,6 +68,9 @@ module.exports = {
               "margin-bottom": "8px",
               "margin-top": "8px",
             },
+            a: {
+              color: '#E5E7EB'
+            },
           },
         },
       },

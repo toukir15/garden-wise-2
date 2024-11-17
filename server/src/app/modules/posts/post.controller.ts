@@ -102,20 +102,6 @@ const getPost = catchAsync(async (req, res) => {
   })
 })
 
-const createComment = catchAsync(async (req, res) => {
-  const data = req.body
-  const postId = req.params.postId
-  const userId = req.user?._id
-  const result = await PostServices.createCommentIntoDB(data, postId, userId)
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Created comment successfully!',
-    data: result,
-  })
-})
-
 const createCommentReply = catchAsync(async (req, res) => {
   const data = req.body
   const commentId = req.params.commentId
@@ -162,7 +148,6 @@ const updateDownvote = catchAsync(async (req, res) => {
 
 export const PostControllers = {
   createPost,
-  createComment,
   createCommentReply,
   deletePost,
   updateUpvote,

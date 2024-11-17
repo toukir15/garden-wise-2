@@ -3,9 +3,9 @@ import { PostRouter } from '../modules/posts/post.route'
 import { ConnectionRouter } from '../modules/connection/connection.route'
 import { UserRouter } from '../modules/user/user.route'
 import { AuthRouter } from '../modules/Auth/auth.route'
-import { ProfileRouter } from '../modules/profile/profile.route'
 import { PaymentRouter } from '../modules/payment/payment.route'
-import { AdminRouter } from '../modules/admin/admin.route'
+import { DashboardRoute } from '../modules/dashboard/dashboard.route'
+import { CommentRouter } from '../modules/comment/comment.route'
 
 const router = express.Router()
 
@@ -20,11 +20,15 @@ const moduleRoutes = [
   },
   {
     path: '/admin',
-    route: AdminRouter,
+    route: DashboardRoute,
   },
   {
     path: '/posts',
     route: PostRouter,
+  },
+  {
+    path: '/comments',
+    route: CommentRouter,
   },
   {
     path: '/connections',

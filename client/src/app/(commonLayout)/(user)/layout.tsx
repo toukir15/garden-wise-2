@@ -1,8 +1,9 @@
 import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/src/config/site";
-import FollowRequest from "@/src/components/user/FollowRequest";
-import Sidebar from "@/src/components/user/Sidber";
+import FollowRequest from "@/src/components/shared/RightSidebar";
+import Sidebar from "@/src/components/shared/Sidber";
+import RightSidebar from "@/src/components/shared/RightSidebar";
 
 export const metadata: Metadata = {
   title: {
@@ -44,11 +45,9 @@ export default function RootLayout({
       {/* FollowRequest - visible on extra large screens */}
       <div className="w-full xl:w-[23%] h-fit pt-4 rounded-lg hidden xl:block">
         <div className="fixed">
-        <FollowRequest />
+        <RightSidebar />
         </div>
       </div>
-
-      
     </div>
   );
 }

@@ -29,11 +29,6 @@ router.get(
 )
 router.get('/:postId', PostControllers.getPost)
 router.post(
-  '/comment/:postId',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  PostControllers.createComment,
-)
-router.post(
   '/comment/reply/:commentId',
   auth(USER_ROLE.user, USER_ROLE.admin),
   PostControllers.createCommentReply,

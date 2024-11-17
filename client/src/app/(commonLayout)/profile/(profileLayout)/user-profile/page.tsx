@@ -1,6 +1,5 @@
 "use client";
 
-import ViewMyPost from "@/src/components/user/ViewMyPosts";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -15,8 +14,9 @@ import {
 } from "@/src/hooks/connection.hook";
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
-import Loading from "@/src/components/Loading";
+import Loading from "@/src/components/loading/Loading";
 import { IUser } from "../../../../../../types";
+import ViewMyPost from "@/src/components/shared/ViewMyPosts";
 
 export default function Page() {
   const {

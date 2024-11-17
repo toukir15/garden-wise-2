@@ -64,13 +64,13 @@ export default function RootLayout({
         }}
       >
         {/* Logo Section */}
-        <Link href={"/"} className="flex items-center gap-2 px-2 py-4">
-          <Image src={logo} width={30} height={30} alt="logo" />
+        <Link href={"/"} className="flex items-center gap-1 px-2 py-4">
+          {/* <Image src={logo} width={30} height={30} alt="logo" /> */}
           {/* Conditionally render text based on the collapsed state */}
           {!collapsed && (
-            <h3 className="text-xl font-medium relative top-1 text-white">
+            <span className="text-xl font-medium relative top-1 text-white">
               Garden-Wise
-            </h3>
+            </span>
           )}
         </Link>
 

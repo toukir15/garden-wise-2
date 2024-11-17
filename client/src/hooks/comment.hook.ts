@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { comment, commentReply, downvote, upvote } from "../services/comment";
+import { comment, deleteComment, downvote, editComment, upvote } from "../services/comment";
 import { IUser, TQueryAndSearch } from "../../types";
 
 type TCommentPayload = {
@@ -204,6 +204,65 @@ export const useComment = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
 
     onSuccess: (_serverResponse, variables) => {
       const { postId } = variables;
+
+      // invalide post tag
+      queryClient.invalidateQueries(["post", postId], {
+        exact: true,
+      });
+
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
+      });
+
+      queryClient.invalidateQueries(["visit-profile-posts"], {
+        exact: true,
+      });
+    },
+  });
+};
+
+export const useEditComment = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ commentId, text }: any ) => {
+      return await editComment(commentId, text);
+    },
+
+    onSuccess: (_serverResponse, variables) => {
+      const { postId } = variables;
+
+      // invalide post tag
+      queryClient.invalidateQueries(["post", postId], {
+        exact: true,
+      });
+
+      queryClient.invalidateQueries(["my-posts"], {
+        exact: true,
+      });
+
+      queryClient.invalidateQueries(["visit-profile-posts"], {
+        exact: true,
+      });
+
+      queryClient.invalidateQueries(["posts", queryTerm, searchTerm], {
+        exact: true,
+      });
+    },
+  });
+};
+
+export const useDeleteComment = ({ queryTerm, searchTerm }: TQueryAndSearch) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ postId, commentId }: {postId: string, commentId: string}) => {
+      return await deleteComment(commentId, postId);
+    },
+
+    onSuccess: (_serverResponse, variables) => {
+      const { postId } = variables;
+      console.log(variables)
 
       // invalide post tag
       queryClient.invalidateQueries(["post", postId], {

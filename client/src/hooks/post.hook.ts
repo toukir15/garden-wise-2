@@ -45,10 +45,7 @@ export const useGetPosts = ({
 
   return useQuery(
     ["posts", queryTerm, searchTerm],
-    () => getPosts(queryTerm, searchTerm),
-    {
-      staleTime: 30000,
-    }
+    () => getPosts(queryTerm, searchTerm)
   );
 };
 

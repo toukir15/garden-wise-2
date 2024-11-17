@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/modal'
 import React from 'react'
 import { IUser } from '../../../types'
-import UserList from '../user/UserList'
+import UserList from '../shared/UserList'
 
 export default function FollowFollowingListModal({ isOpen, onOpenChange, title, users, loadingUserId, handleUnfollowRequest, actionType }: any) {
   return (

@@ -1,7 +1,5 @@
 "use client";
 
-import CreatePost from "@/src/components/user/CreatePost";
-import ViewMyPost from "@/src/components/user/ViewMyPosts";
 import { PostContext } from "@/src/context/post.provider";
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
@@ -22,8 +20,10 @@ import {
 } from "@/src/hooks/connection.hook";
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
-import Loading from "@/src/components/Loading";
+import Loading from "@/src/components/loading/Loading";
 import { IUser } from "../../../../../../types";
+import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
+import ViewMyPost from "@/src/components/shared/ViewMyPosts";
 
 export default function Page() {
   const { user } = useContext(UserContext) as IUserProviderValues;
@@ -33,7 +33,6 @@ export default function Page() {
     data,
     isLoading: isPaymentLoading,
   } = useCreatePayment();
-  const [isClient, setIsClient] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
@@ -49,10 +48,6 @@ export default function Page() {
     isLoading: isPostsDataLoading,
     error: postsDataError,
   } = useGetMyPosts();
-
-  useEffect(() => {
-    setIsClient(true); // Set true when the component is mounted on the client
-  }, []);
 
   const handleProfileVerify = () => {
     if (postCount < 1) {
@@ -105,8 +100,6 @@ export default function Page() {
   if (isPaymentLoading) {
     return <Loading />;
   }
-  // Render nothing until client-side rendering is enabled
-  if (!isClient) return null;
 
   return (
     <>

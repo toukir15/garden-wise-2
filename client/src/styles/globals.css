@@ -125,3 +125,6 @@
   background-color: #555 !important; /* Set a different color on hover if needed */
 }
 
+.ant-spin-dot-item {
+  background-color: #10b981 !important; /* Tailwind's green-500 */
+}

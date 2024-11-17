@@ -11,7 +11,7 @@ export default function Page() {
     isLoading: isUserActivityLoading,
     error: userActivityError,
   } = useGetUserActivity();
-  
+
   const {
     data: monthlyPaymentsData,
     isLoading: isMonthlyPaymentsLoading,
@@ -20,7 +20,6 @@ export default function Page() {
 
   return (
     <div>
-      {/* User Activity Section */}
       <div>
         <h2 className="text-2xl font-medium py-4">User Activity</h2>
         {isUserActivityLoading ? (

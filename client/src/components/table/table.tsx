@@ -49,7 +49,6 @@ export const CustomTable = ({
       pagination={{ pageSize }}
       loading={loading}
       scroll={{ x: "max-content" }}
-      className="custom-table-header"
     />
   );
 };

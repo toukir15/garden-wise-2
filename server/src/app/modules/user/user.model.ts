@@ -1,6 +1,5 @@
 import { Schema, model, models } from 'mongoose'
 import { TUser } from './user.interface'
-import { boolean } from 'zod'
 
 const userSchema = new Schema<TUser>(
   {
@@ -15,6 +14,7 @@ const userSchema = new Schema<TUser>(
     },
     address: { type: String },
     connection: { type: Schema.ObjectId, default: null, ref: 'Connection' },
+    bookmark: { type: [Schema.ObjectId], default: [], ref: 'Post' },
     isVerified: { type: Boolean, default: false },
   },
   { timestamps: true },

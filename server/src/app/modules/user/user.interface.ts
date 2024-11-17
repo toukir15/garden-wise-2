@@ -9,6 +9,7 @@ export type TUser = {
   profilePhoto: string
   address: string
   connection?: Types.ObjectId
+  bookmark: Types.ObjectId[]
   isVerified: boolean
 }
 
