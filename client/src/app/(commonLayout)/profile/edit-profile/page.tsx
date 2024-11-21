@@ -1,5 +1,9 @@
 "use client";
-import { IUserProviderValues, UserContext, useUser } from "@/src/context/user.provider";
+import {
+  IUserProviderValues,
+  UserContext,
+  useUser,
+} from "@/src/context/user.provider";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,26 +11,31 @@ import { useContext } from "react";
 import "react-quill/dist/quill.snow.css";
 
 export default function page() {
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
 
   return (
     <section className="flex justify-center flex-col items-center h-screen   ">
       <div className=" w-fit">
         <div className="p-8 flex flex-col justify-center items-center w-[500px] gap-4 border-gray-600">
-          <Image
-            src={
-              user?.profilePhoto ||
-              "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-            }
-            className="rounded-full"
-            height={150}
-            width={150}
-            alt="df"
-          />
-          <div className="flex justify-between text-center">
-            <div>
-              <p className=" text-2xl font-bold">{user?.name}</p>
-              <p className="font-medium text-sm text-gray-400">{user?.email}</p>
+          <div>
+            <div className="relative rounded-full overflow-hidden w-[150px] h-[150px]">
+              <Image
+                src={
+                  user?.profilePhoto ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                }
+                fill
+                className="object-cover"
+                alt="df"
+              />
+            </div>
+            <div className="flex justify-between text-center">
+              <div>
+                <p className=" text-2xl font-bold">{user?.name}</p>
+                <p className="font-medium text-sm text-gray-400">
+                  {user?.email}
+                </p>
+              </div>
             </div>
           </div>
         </div>

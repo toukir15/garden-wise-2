@@ -55,6 +55,16 @@ const changePassword = catchAsync(async (req, res) => {
   })
 })
 
+const forgetPassword = catchAsync(async (req, res) => {
+  const result = await AuthServices.forgetPassword()
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Send forget email successfully!',
+    data: result,
+  })
+})
+
 const editProfile = catchAsync(async (req, res) => {
   const data = req.body
   const userId = req.user._id
@@ -69,8 +79,7 @@ const editProfile = catchAsync(async (req, res) => {
 })
 
 const refreshToken = catchAsync(async (req, res) => {
-  const { refreshToken } = req.cookies
-  const result = await AuthServices.refreshToken(refreshToken)
+  const result = await AuthServices.refreshToken(req.user.email)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -86,4 +95,5 @@ export const AuthControllers = {
   changePassword,
   refreshToken,
   editProfile,
+  forgetPassword
 }

@@ -9,6 +9,8 @@ import { USER_ROLE } from '../user/user.const'
 import { Connection } from '../connection/connection.model'
 import { User } from '../user/user.model'
 import Bookmark from '../bookmark/bookmark.model'
+import nodemailer from 'nodemailer'
+import { sendEmail } from '../../utils/emailSender'
 
 const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
   // checking if the user is exist
@@ -34,9 +36,9 @@ const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
   //create new user
   const newUser = await User.create(payload)
 
-  // create bookmark collection 
-  const createBookmark = await Bookmark.create({user: newUser._id})
-  await User.findByIdAndUpdate(newUser._id, {bookmark: createBookmark._id})
+  // create bookmark collection
+  const createBookmark = await Bookmark.create({ user: newUser._id })
+  await User.findByIdAndUpdate(newUser._id, { bookmark: createBookmark._id })
 
   //create token and sent to the  client
   const jwtPayload = {
@@ -142,6 +144,9 @@ const changePassword = async (
   )
   return null
 }
+const forgetPassword = async () => {
+  await sendEmail('toukir486@gmail.com')
+}
 
 const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
   const updatedData: any = {}
@@ -185,29 +190,13 @@ const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
   }
 }
 
-const refreshToken = async (token: string) => {
-  // checking if the given token is valid
-  const decoded = jwt.verify(
-    token,
-    config.jwt_refresh_secret as string,
-  ) as JwtPayload
-
-  const { email, iat } = decoded
-
+const refreshToken = async (email: string) => {
   // checking if the user is exist
   const user = await User.findOne({ email: email })
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!')
   }
-
-  // if (
-  //   user.passwordChangedAt &&
-  //   User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
-  // ) {
-  //   throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !')
-  // }
-
   const jwtPayload = {
     _id: user?._id.toString(),
     name: user?.name,
@@ -223,7 +212,6 @@ const refreshToken = async (token: string) => {
     config.jwt_access_secret as string,
     config.jwt_access_expires_in as string,
   )
-  console.log({accessToken})
 
   return {
     accessToken,
@@ -236,4 +224,5 @@ export const AuthServices = {
   changePassword,
   refreshToken,
   editProfile,
+  forgetPassword,
 }

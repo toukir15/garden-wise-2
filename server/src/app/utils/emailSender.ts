@@ -1,57 +1,38 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import { promisify } from 'util'
-// import Handlebars from 'handlebars';
-// import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'
 import config from '../config'
-import AppError from '../errors/AppError'
-import httpStatus from 'http-status'
 
-const ReadFile = promisify(fs.readFile)
+export const sendEmail = async (email: string) => {
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: config.node_mailer.sender_email,
+      pass: config.node_mailer.sender_app_password,
+    },
+  })
 
-// const sendEmail = async (email: string, html: string, subject: string) => {
-//   const transporter = nodemailer.createTransport({
-//     host: 'smtp.gmail.com',
-//     port: 587,
-//     secure: false, // Use `true` for port 465, `false` for all other ports
-//     auth: {
-//       user: config.sender_email,
-//       pass: config.sender_app_password,
-//     },
-//     tls: {
-//       rejectUnauthorized: false,
-//     },
-//   });
-
-//   await transporter.sendMail({
-//     from: '"FoundX" <fahimfiroz.ph@gmail.com>', // sender address
-//     to: email, // list of receivers
-//     subject, // Subject line.
-//     //text: "Hello world?", // plain text body
-//     html, // html body
-//   });
-// };
-
-// const createEmailContent = async (data: object, templateType: string) => {
-//   try {
-//     const templatePath = path.join(
-//       process.cwd(),
-//       `src/views/${templateType}.template.hbs`
-//     );
-//     const content = await ReadFile(templatePath, 'utf8');
-
-//     const template = Handlebars.compile(content);
-
-//     return template(data);
-//   } catch (error) {
-//     throw new AppError(
-//       httpStatus.INTERNAL_SERVER_ERROR,
-//       (error as Error).message
-//     );
-//   }
-// };
-
-// export const EmailHelper = {
-//   sendEmail,
-//   createEmailContent,
-// };
+  // async..await is not allowed in global scope, must use a wrapper
+  async function main() {
+    // send mail with defined transport object
+    await transporter.sendMail({
+      from: '"Garden-Wise" <toukir.developer.bd@gmail.email>', // sender address
+      to: email, // list of receivers
+      subject: 'Password Reset Request', // Subject line
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+          <h2 style="color: #4CAF50;">Garden-Wise Password Reset</h2>
+          <p>Hello,</p>
+          <p>You requested to reset your password. Please click the link below to reset it:</p>
+          <a href="https://example.com/reset-password?email=${encodeURIComponent('toukir486@gmail.com')}" 
+             style="display: inline-block; padding: 10px 15px; color: white; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
+             Reset Password
+          </a>
+          <p>If you did not request this, please ignore this email.</p>
+          <p>Thanks,<br>The Garden-Wise Team</p>
+        </div>
+      `,
+    })
+  }
+  main()
+}

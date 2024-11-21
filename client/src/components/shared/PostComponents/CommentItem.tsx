@@ -21,7 +21,6 @@ export const CommentItem = ({
   const { setEditComment, setEditCommentId } = useContext(PostContext);
 
   const handleCommentDelete = (commentId: string) => {
-    console.log({postId, commentId})
     showConfirmation(
       "Delete",
       "Are you sure you want to delete this comment?",

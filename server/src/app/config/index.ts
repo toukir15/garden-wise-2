@@ -19,7 +19,9 @@ export default {
   client_url: process.env.CLIENT_URL,
   stripe_cli: process.env.STRIPE_CLI,
   stripe_endpoint_secret: process.env.STRIPE_ENDPOINT_SECRET,
-  success_url: process.env.SUCCESS_URL
-  //   meilisearch_host: process.env.MEILISEARCH_HOST,
-  //   meilisearch_master_key: process.env.MEILISEARCH_MASTER_KEY,
+  success_url: process.env.SUCCESS_URL,
+  node_mailer: {
+    sender_email: process.env.SENDER_EMAIL,
+    sender_app_password: process.env.SENDER_APP_PASSWORD,
+  },
 }

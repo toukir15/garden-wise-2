@@ -31,6 +31,13 @@ router.patch(
 )
 
 router.post(
+  '/forget-password',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  // validateRequest(AuthValidation.changePasswordValidationSchema),
+  AuthControllers.forgetPassword,
+)
+
+router.post(
   '/edit-profile',
   multerUpload.single('profilePhoto'),
   auth(USER_ROLE.user, USER_ROLE.admin),
@@ -40,7 +47,7 @@ router.post(
 
 router.post(
   '/refresh-token',
-  validateRequestCookies(AuthValidation.refreshTokenValidationSchema),
+  auth(USER_ROLE.user, USER_ROLE.admin),
   AuthControllers.refreshToken,
 )
 

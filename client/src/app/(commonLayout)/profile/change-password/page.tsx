@@ -45,17 +45,21 @@ export default function Page() {
     <section className="flex justify-center flex-col items-center h-screen">
       <div className="w-fit">
         <div className="p-4 flex flex-col justify-center items-center w-[500px] gap-4 border-gray-600">
-          <Image
-            src={user?.profilePhoto ||
-              "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"}
-            className="rounded-full"
-            height={150}
-            width={150}
-            alt="Profile Picture"
-          />
+        <div className="relative rounded-full overflow-hidden w-[150px] h-[150px]">
+              <Image
+                src={
+                  user?.profilePhoto ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                }
+                fill
+                className="object-cover"
+                alt="df"
+              />
+            </div>
           <div className="flex justify-between text-center">
             <div>
               <p className="text-2xl font-bold">{user?.name}</p>
+              <p className="text-sm text-gray-500 font-bold">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -115,6 +119,9 @@ export default function Page() {
               </Link>
             </div>
           </form>
+         <div className="text-center w-full mt-6 text-gray-400 hover:text-white transition duration-200">
+         <button className="border-b">Forget password</button>
+         </div>
         </div>
       </div>
     </section>

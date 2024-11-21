@@ -34,6 +34,7 @@ export const userLogin = async (userData: FieldValues) => {
 };
 
 export const refreshToken = async () => {
+  console.log("first")
   try {
     const { data } = await axiosInstance.post("/auth/refresh-token");
 
@@ -42,6 +43,7 @@ export const refreshToken = async () => {
     }
     return data;
   } catch (error: any) {
+    console.log(error)
     throw new Error(error);
   }
 };

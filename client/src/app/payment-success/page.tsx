@@ -1,22 +1,25 @@
 "use client";
 import { useRefreshToken } from "@/src/hooks/auth.hook";
 import { Button } from "@nextui-org/button";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { LiaCheckCircle } from "react-icons/lia";
 
 export default function PaymentSuccessPage() {
-
-  const {mutate: handleRefreshToken, data} = useRefreshToken()
-  // useEffect(()=> {
-  //   console.log("payment success")
-  //   handleRefreshToken()
-  // }, [])
+  const { mutate: handleRefreshToken, isLoading, isSuccess } = useRefreshToken();
+  const router = useRouter()
+  useEffect(()=> {
+    handleRefreshToken()
+  }, [])
 
   const handleRedirect = () => {
-    handleRefreshToken()
-  }
-  console.log(data)
+    // handleRefreshToken();
+    router.push("/")
+  };
+
+  // if(!isLoading && isSuccess){
+  //   router.push("/")
+  // }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -31,14 +34,14 @@ export default function PaymentSuccessPage() {
           Thank you for your payment. Your account has been successfully
           verified, and you can now access all features.
         </p>
-        <Link onClick={() => handleRedirect} href={"/"}>
-          <Button
-            color="success"
-            className="w-full text-white font-semibold py-2 px-4 rounded transition"
-          >
-            Go to Home
-          </Button>
-        </Link>
+
+        <Button
+          onClick={handleRedirect}
+          color="success"
+          className="w-full text-white font-semibold py-2 px-4 rounded transition"
+        >
+          Go to Home
+        </Button>
       </div>
     </div>
   );

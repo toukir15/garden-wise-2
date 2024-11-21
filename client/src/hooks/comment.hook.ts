@@ -262,7 +262,6 @@ export const useDeleteComment = ({ queryTerm, searchTerm }: TQueryAndSearch) => 
 
     onSuccess: (_serverResponse, variables) => {
       const { postId } = variables;
-      console.log(variables)
 
       // invalide post tag
       queryClient.invalidateQueries(["post", postId], {

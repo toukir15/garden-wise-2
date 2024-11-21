@@ -114,7 +114,6 @@ export default function ViewPost() {
   };
 
   const handleSaveUnsave = (bookmarkId:string, postId:string) => {
-    console.log(bookmarkId, postId)
   }
 
   // Infinite Scroll Logic

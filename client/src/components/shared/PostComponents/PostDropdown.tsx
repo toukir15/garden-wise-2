@@ -24,7 +24,6 @@ export const PostDropdown = ({
 
   const {mutate: updateBookmark} = useUpdateBookmark()
   const handleSaveUnsave = (bookmarkId:string, postId:string, label: string) => {
-    console.log(label)
     updateBookmark({bookmarkId, postId})
     if(label == "Save"){
       toast.success("Saved bookmark!", {duration: 2000})

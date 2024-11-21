@@ -17,6 +17,8 @@ import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
 import ViewMyPost from "@/src/components/shared/ViewMyPosts";
 import { useGetBookmarks } from "@/src/hooks/bookmark.hook";
 import ViewBookmark from "@/src/components/shared/ViewBookmark";
+import { IoBookmark } from "react-icons/io5";
+import { FaRegBookmark } from "react-icons/fa";
 
 export default function page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -62,8 +64,7 @@ export default function page() {
 
   const { data: followingsUsersData } = useGetFollowings();
   const { data: followersUsersData } = useGetFollowers();
-  const { data: bookmarkData, isLoading: isBookmarkDataLoading } =
-    useGetBookmarks();
+
   return (
     <section className="flex flex-col border border-gray-600">
       <div className="p-4 gap-4 border-b border-gray-600">
@@ -109,7 +110,7 @@ export default function page() {
               >
                 <span className="text-white">
                   {followingsUsersData?.data.data.followings.length || 0}
-                </span>
+                </span>{" "}
                 Following
               </button>
             </div>
@@ -142,7 +143,10 @@ export default function page() {
           </div>
         </div>
       </div>
-      <h2 className="py-4 text-center text-2xl font-medium border-b border-gray-600 sticky top-0 z-[999] bg-black/30 backdrop-blur-md">Bookmark posts</h2>
+      <h2 className="py-4 text-center text-xl font-medium border-b border-gray-600 sticky top-0 z-[999] bg-black/30 backdrop-blur-md flex justify-center items-center gap-2">
+      <FaRegBookmark />
+      <span>Bookmark posts</span>
+      </h2>
       <ViewBookmark />
     </section>
   );

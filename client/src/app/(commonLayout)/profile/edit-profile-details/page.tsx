@@ -6,14 +6,14 @@ import { Button, Input, Link } from "@nextui-org/react";
 import { useEditProfile } from "@/src/hooks/auth.hook";
 import { useForm } from "react-hook-form"; // Import useForm from react-hook-form
 import { FaEdit } from "react-icons/fa";
-import {useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
   const router = useRouter();
   const { mutate: editProfile, isLoading, isSuccess } = useEditProfile();
 
@@ -84,27 +84,28 @@ export default function Page() {
             {imagePreviews.length > 0 && (
               <label htmlFor="profilePhoto" className="cursor-pointer">
                 {imagePreviews.map((src, idx) => (
-                  <Image
+                  <div
                     key={idx}
-                    src={src}
-                    className="rounded-full"
-                    height={150}
-                    width={150}
-                    alt="Profile Photo"
-                  />
+                    className="relative rounded-full overflow-hidden w-[150px] h-[150px]"
+                  >
+                    <Image src={src} fill className="object-cover" alt="df" />
+                  </div>
                 ))}
               </label>
             )}
             {imagePreviews.length < 1 && (
               <label htmlFor="profilePhoto" className="cursor-pointer">
-                <Image
-                  src={user?.profilePhoto ||
-                    "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"}
-                  className="rounded-full"
-                  height={150}
-                  width={150}
-                  alt="Profile Photo"
-                />
+                <div className="relative rounded-full overflow-hidden w-[150px] h-[150px]">
+                  <Image
+                    src={
+                      user?.profilePhoto ||
+                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                    }
+                    fill
+                    className="object-cover"
+                    alt="df"
+                  />
+                </div>
               </label>
             )}
             <input
@@ -118,6 +119,7 @@ export default function Page() {
           <div className="flex justify-between text-center">
             <div>
               <p className=" text-2xl font-bold">{user?.name}</p>
+              <p className=" text-sm text-gray-500 font-bold">{user?.email}</p>
             </div>
           </div>
         </div>

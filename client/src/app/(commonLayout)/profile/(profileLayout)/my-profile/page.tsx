@@ -24,6 +24,7 @@ import Loading from "@/src/components/loading/Loading";
 import { IUser } from "../../../../../../types";
 import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
 import ViewMyPost from "@/src/components/shared/ViewMyPosts";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 export default function Page() {
   const { user } = useContext(UserContext) as IUserProviderValues;
@@ -118,23 +119,43 @@ export default function Page() {
           </div>
           <div className="lg:flex justify-between">
             <div>
-              <div className="relative w-fit">
-                <p className="mt-3 text-2xl font-bold">{user?.name}</p>
+              <div className={`relative w-fit flex items-center ${showVerifyButton ? "gap-4":"gap-2"} mt-4`}>
+                <p className="mt-1 text-[24px] font-bold">{user?.name}</p>
                 {user?.isVerified && (
-                  <Image
+                <div className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-2 hover:bg-gray-900 transition duration-150 rounded-full">
+                <Image
+                 src={verified}
+                 height={15}
+                 width={15}
+                 className=""
+                 alt="Profile"
+               />
+               <p className="text-sm font-bold">Verified</p>
+              </div>
+                )}
+
+              {showVerifyButton && (
+                 <button  onClick={handleProfileVerify} className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-4 hover:bg-gray-900 transition duration-150 rounded-full">
+                   <Image
                     src={verified}
-                    height={20}
-                    width={20}
-                    className="absolute top-1.5 -right-2 translate-x-full"
+                    height={15}
+                    width={15}
+                    className=""
                     alt="Profile"
                   />
+                  <p className="text-sm font-bold">Get verified</p>
+                 </button>
                 )}
               </div>
-              <p className="font-medium text-gray-300">{user?.email}</p>
+              <p className="font-medium text-sm text-gray-500">{user?.email}</p>
+              <div className="flex items-center mt-2 gap-1 text-gray-500">
+              <MdOutlineLocationOn />
+              <p className="font-medium text-sm">Babugonj, Barisal</p>
+              </div>
               <div className="flex gap-4 mt-2">
                 <button
                   onClick={onFollowersOpen}
-                  className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black"
+                  className="text-gray-500 text-sm hover:border-b hover:border-b-white border-b border-b-black"
                 >
                   <span className="text-white">
                     {followersUsersData?.data.data.followers.length || 0}
@@ -143,7 +164,7 @@ export default function Page() {
                 </button>
                 <button
                   onClick={onOpen}
-                  className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black"
+                  className="text-gray-500 text-sm hover:border-b hover:border-b-white border-b border-b-black"
                 >
                   <span className="text-white">
                     {followingsUsersData?.data.data.followings.length || 0}
@@ -153,15 +174,6 @@ export default function Page() {
               </div>
             </div>
             <div className="xl:mt-auto flex gap-3 mt-2">
-              {showVerifyButton && (
-                <Button
-                  onClick={handleProfileVerify}
-                  color="success"
-                  variant="faded"
-                >
-                  Verify
-                </Button>
-              )}
               <Link href="/profile/edit-profile" className="w-full" passHref>
                 <Button
                   as="a"
