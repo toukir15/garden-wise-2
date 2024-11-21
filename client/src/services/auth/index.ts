@@ -33,6 +33,19 @@ export const userLogin = async (userData: FieldValues) => {
   }
 };
 
+export const refreshToken = async () => {
+  try {
+    const { data } = await axiosInstance.post("/auth/refresh-token");
+
+    if (data.success) {
+      cookies().set("accessToken", data?.data?.accessToken);
+    }
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const editProfile = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post("/auth/edit-profile", userData);

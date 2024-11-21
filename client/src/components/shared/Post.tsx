@@ -14,6 +14,7 @@ export default function Post({
   handlePostDelete,
   handlePostDownvote,
   handlePostUpvote,
+  handleSaveUnsave,
   setIsOpenComment,
   setOpenSharedComment,
   upvoteStatus,
@@ -43,6 +44,7 @@ export default function Post({
           handlePostDelete={handlePostDelete}
           handleEditPost={handleEditPost}
           isDropdownOpen={isDropdownOpen}
+          handleSaveUnsave={handleSaveUnsave}
           postId={postId}
           user={data.post.user}
         />

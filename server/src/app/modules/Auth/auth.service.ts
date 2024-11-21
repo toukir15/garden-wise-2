@@ -8,7 +8,7 @@ import { TLoginUser, TRegisterUser } from './auth.interface'
 import { USER_ROLE } from '../user/user.const'
 import { Connection } from '../connection/connection.model'
 import { User } from '../user/user.model'
-import { TUser } from '../user/user.interface'
+import Bookmark from '../bookmark/bookmark.model'
 
 const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
   // checking if the user is exist
@@ -29,9 +29,14 @@ const registerUser = async (payload: TRegisterUser, profilePhoto: string) => {
   payload.profilePhoto = profilePhoto
   payload.password = hash
   payload.connection = createConnection?._id
+  payload.bookmark = null
 
   //create new user
   const newUser = await User.create(payload)
+
+  // create bookmark collection 
+  const createBookmark = await Bookmark.create({user: newUser._id})
+  await User.findByIdAndUpdate(newUser._id, {bookmark: createBookmark._id})
 
   //create token and sent to the  client
   const jwtPayload = {
@@ -82,6 +87,7 @@ const loginUser = async (payload: TLoginUser) => {
     role: user?.role,
     profilePhoto: user?.profilePhoto,
     isVerified: user?.isVerified,
+    bookmark: user?.bookmark,
   }
 
   const accessToken = createToken(
@@ -159,6 +165,7 @@ const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
     role: user?.role,
     profilePhoto: user?.profilePhoto,
     isVerified: user?.isVerified,
+    bookmark: user?.bookmark,
   }
 
   const accessToken = createToken(
@@ -208,6 +215,7 @@ const refreshToken = async (token: string) => {
     role: user?.role,
     profilePhoto: user?.profilePhoto,
     isVerified: user?.isVerified,
+    bookmark: user?.bookmark,
   }
 
   const accessToken = createToken(
@@ -215,6 +223,7 @@ const refreshToken = async (token: string) => {
     config.jwt_access_secret as string,
     config.jwt_access_expires_in as string,
   )
+  console.log({accessToken})
 
   return {
     accessToken,

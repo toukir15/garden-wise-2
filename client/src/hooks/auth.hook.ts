@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
-import { changePassword, editProfile, userLogin, userRegister } from "../services/auth";
+import { changePassword, editProfile, refreshToken, userLogin, userRegister } from "../services/auth";
 
 export const useUserRegister = () => {
   return useMutation<any, Error, FieldValues>({
@@ -13,6 +13,13 @@ export const useUserLogin = () => {
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["LOGIN"],
     mutationFn: async (data) => await userLogin(data),
+  });
+};
+
+export const useRefreshToken = () => {
+  return useMutation({
+    mutationKey: ["REFRESH-TOKEN"],
+    mutationFn: async () => await refreshToken(),
   });
 };
 

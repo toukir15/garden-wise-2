@@ -14,7 +14,7 @@ const userSchema = new Schema<TUser>(
     },
     address: { type: String },
     connection: { type: Schema.ObjectId, default: null, ref: 'Connection' },
-    bookmark: { type: [Schema.ObjectId], default: [], ref: 'Post' },
+    bookmark: { type: Schema.ObjectId, default: null, ref: 'Bookmark' },
     isVerified: { type: Boolean, default: false },
   },
   { timestamps: true },

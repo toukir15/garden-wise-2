@@ -11,6 +11,7 @@ export interface IUser {
   email: string;
   profilePhoto: string;
   isVerified: boolean;
+  bookmark: string;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;

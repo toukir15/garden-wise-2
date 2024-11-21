@@ -38,7 +38,7 @@ Verify now to take advantage of all the benefits waiting for you!`,
     metadata: {
       user: String(findUser._id),
     },
-    success_url: `${config.client_url}`,
+    success_url: `${config.success_url}`,
     cancel_url: config.client_url,
   })
   return session

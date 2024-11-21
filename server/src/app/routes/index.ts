@@ -6,6 +6,7 @@ import { AuthRouter } from '../modules/Auth/auth.route'
 import { PaymentRouter } from '../modules/payment/payment.route'
 import { DashboardRoute } from '../modules/dashboard/dashboard.route'
 import { CommentRouter } from '../modules/comment/comment.route'
+import { BookmarkRouter } from '../modules/bookmark/bookmark.route'
 
 const router = express.Router()
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/payments',
     route: PaymentRouter,
+  },
+  {
+    path: '/bookmarks',
+    route: BookmarkRouter,
   },
 ]
 

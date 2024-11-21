@@ -87,7 +87,7 @@ export default function Sidebar() {
       <div className="flex flex-col h-screen justify-between py-4">
         <div>
           <div className="w-8 h-8 ml-4">
-            {/* {logo && (
+            {logo && (
               <Image
                 src={logo}
                 width={40}
@@ -96,7 +96,7 @@ export default function Sidebar() {
                 className="mb-2"
                 priority
               />
-            )} */}
+            )}
           </div>
 
           {/* Navigation Links */}

@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs'
 import AppError from '../../errors/AppError'
 import { Connection } from '../connection/connection.model'
 
+
 const createUserIntoDB = async (payload: TUser) => {
   // check user is exist or not
   const isUserExist = await User.findOne({ email: payload.email })
@@ -21,6 +22,7 @@ const createUserIntoDB = async (payload: TUser) => {
   }
   payload.password = hash
   const result = await User.create(payload)
+
   return result
 }
 

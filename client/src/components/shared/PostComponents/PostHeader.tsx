@@ -9,6 +9,7 @@ export const PostHeader = ({
   setPostId,
   handlePostDelete,
   handleEditPost,
+  handleSaveUnsave,
   isDropdownOpen,
   postId,
   user,
@@ -35,6 +36,7 @@ export const PostHeader = ({
         isOpen={isDropdownOpen && postId === data._id}
         postId={data._id}
         postUserId={postUserId}
+        handleSaveUnsave={handleSaveUnsave}
       />
     </div>
   );

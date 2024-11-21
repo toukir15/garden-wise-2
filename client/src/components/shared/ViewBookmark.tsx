@@ -26,8 +26,9 @@ import SharePostModal from "../modal/SharePostModal";
 import { useFollowUser } from "@/src/hooks/connection.hook";
 import MobileFollowSugg from "../MobileFollowSugg";
 import { FiAlertCircle } from "react-icons/fi";
+import { useGetBookmarks } from "@/src/hooks/bookmark.hook";
 
-export default function ViewPost() {
+export default function ViewBookmark() {
   // Local state
   const [postId, setPostId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -61,10 +62,7 @@ export default function ViewPost() {
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   // Get posts hook
-  const { data: postsData, isLoading: isPostsDataLoading } = useGetPosts({
-    queryTerm,
-    searchTerm,
-  });
+  const { data: postsData, isLoading: isPostsDataLoading } = useGetBookmarks();
 
   // Upvote mutation hook
   const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm});
@@ -113,10 +111,6 @@ export default function ViewPost() {
     );
   };
 
-  const handleSaveUnsave = (bookmarkId:string, postId:string) => {
-    console.log(bookmarkId, postId)
-  }
-
   // Infinite Scroll Logic
   // const handleScroll = () => {
   //   const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
@@ -134,7 +128,7 @@ export default function ViewPost() {
   return (
     <div>
       {/* NO DATA AVAILABLE MESSAGE */}
-      {postsData?.data?.data?.length < 1 && (
+      {postsData?.data?.data?.posts.length < 1 && (
        <div className="flex justify-center items-center mt-32 text-center">
        <div>
          <FiAlertCircle  size={40} className="text-gray-400 mx-auto" /> {/* Icon for alert */}
@@ -155,7 +149,7 @@ export default function ViewPost() {
 
       {/* Render Posts */}
       <div>
-        {postsData?.data?.data?.map((data: TPost, key: number) => {
+        {postsData?.data?.data?.posts.map((data: TPost, key: number) => {
           const images = data?.post?.images || [];
           const upvoteStatus = checkVoteStatus(data.isShared, data, userId, "upvote");
           const downvoteStatus = checkVoteStatus(data.isShared, data, userId, "downvote");
@@ -170,7 +164,6 @@ export default function ViewPost() {
                     isDropdownOpen,
                     toggleDropdown,
                     setPostId,
-                    handleSaveUnsave,
                     handlePostDelete,
                     handlePostDownvote,
                     handlePostUpvote,

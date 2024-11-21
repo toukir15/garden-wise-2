@@ -7,7 +7,6 @@ import { Vote } from '../vote/vote.model'
 import { TPost } from './post.interface'
 import Post from './post.model'
 import { Comment } from '../comment/comment.model'
-import { TUser } from '../user/user.interface'
 import {
   createBaseQuery,
   filterPostsForUnverifiedUser,

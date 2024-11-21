@@ -13,4 +13,5 @@ export type TRegisterUser = {
   profilePhoto: string
   connection: Types.ObjectId
   role: keyof typeof USER_ROLE
+  bookmark: null
 }

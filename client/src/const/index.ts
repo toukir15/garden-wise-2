@@ -17,10 +17,6 @@ export const items = [
     label: "Edit",
   },
   {
-    key: "save",
-    label: "Save",
-  },
-  {
     key: "delete",
     label: "Delete",
   },
@@ -33,7 +29,7 @@ export const sidebarLinks = [
   { icon: ImSearch, label: "Explore", size: 10 },
   { icon: IoNotifications, label: "Notification", size: 20 },
   { icon: MdMessage, label: "Message", size: 20 },
-  { icon: IoIosBookmark, label: "Bookmark", size: 20 },
+  { href: "/bookmark",icon: IoIosBookmark, label: "Bookmark", size: 20 },
   { icon: FaUsers, label: "Communities", size: 20 },
   { icon: MdDiamond, label: "Premium", size: 20 },
   { href: "/profile/my-profile", icon: RiUserFill, label: "Profile", size: 20 },
