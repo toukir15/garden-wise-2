@@ -144,8 +144,30 @@ const changePassword = async (
   )
   return null
 }
-const forgetPassword = async () => {
-  await sendEmail('toukir486@gmail.com')
+const forgetPassword = async (email: string) => {
+
+  const findUser = await User.findOne({email: email})
+  if(!findUser){
+    throw new AppError(httpStatus.BAD_REQUEST, "User does not exist!")
+  }
+
+  const jwtPayload = {
+    _id: findUser?._id.toString(),
+    name: findUser?.name,
+    email: findUser.email,
+    role: findUser?.role,
+    profilePhoto: findUser?.profilePhoto,
+    isVerified: findUser?.isVerified,
+    bookmark: findUser?.bookmark,
+  }
+
+  const token = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  )
+
+  await sendEmail(findUser.email, token)
 }
 
 const editProfile = async (payload: any, profilePhoto: any, userId: string) => {

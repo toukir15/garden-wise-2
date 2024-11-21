@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import config from '../config'
 
-export const sendEmail = async (email: string) => {
+export const sendEmail = async (email: string, token: string) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -24,7 +24,7 @@ export const sendEmail = async (email: string) => {
           <h2 style="color: #4CAF50;">Garden-Wise Password Reset</h2>
           <p>Hello,</p>
           <p>You requested to reset your password. Please click the link below to reset it:</p>
-          <a href="https://example.com/reset-password?email=${encodeURIComponent('toukir486@gmail.com')}" 
+          <a href="http://localhost:3000/profile/forget-password?token=${encodeURIComponent(token)}" 
              style="display: inline-block; padding: 10px 15px; color: white; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
              Reset Password
           </a>
