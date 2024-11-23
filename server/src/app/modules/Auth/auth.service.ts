@@ -144,7 +144,38 @@ const changePassword = async (
   )
   return null
 }
-const forgetPassword = async (email: string) => {
+
+const forgetPassword = async (
+  userData: JwtPayload,
+  payload: { newPassword: string },
+) => {
+
+  // checking if the user is exist
+  const user = await User.findOne({ email: userData?.email })
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!')
+  }
+
+  //hash new password
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  )
+  await User.findOneAndUpdate(
+    {
+      email: userData.email,
+      role: userData?.role,
+    },
+    {
+      password: newHashedPassword,
+      passwordChangedAt: new Date(),
+    },
+  )
+  return null
+}
+
+const sendForgetEmail = async (email: string) => {
 
   const findUser = await User.findOne({email: email})
   if(!findUser){
@@ -166,7 +197,6 @@ const forgetPassword = async (email: string) => {
     config.jwt_access_secret as string,
     config.jwt_access_expires_in as string,
   )
-
   await sendEmail(findUser.email, token)
 }
 
@@ -246,5 +276,6 @@ export const AuthServices = {
   changePassword,
   refreshToken,
   editProfile,
-  forgetPassword,
+  sendForgetEmail,
+  forgetPassword
 }

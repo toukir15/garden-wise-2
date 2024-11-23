@@ -7,11 +7,27 @@ import {
   ModalHeader,
 } from "@nextui-org/modal";
 import { Button, Checkbox, Select, SelectItem } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { BaseSyntheticEvent, useEffect, useState } from "react";
 import { FaRegImage } from "react-icons/fa";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+interface PostModalProps {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: (event?: BaseSyntheticEvent) => void; // Accept optional event
+  handleSubmit: any;
+  register: any;
+  onSubmit: (data: any) => void;
+  errors: any;
+  categories: any[];
+  description: string;
+  setDescription: (value: string) => void;
+  imagePreviews: string[];
+  handleFileChange: (event: any) => void;
+}
+
 
 export default function PostModal({
   isOpen,
@@ -26,7 +42,7 @@ export default function PostModal({
   setDescription,
   imagePreviews,
   handleFileChange,
-}: any) {
+}: PostModalProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -93,7 +109,7 @@ export default function PostModal({
             {imagePreviews.length > 0 && (
               <div className="flex flex-col md:flex-row w-full md:items-center mb-2">
                 <div className="flex w-full flex-wrap gap-3">
-                  {imagePreviews.map((src: string, idx: string) => (
+                  {imagePreviews.map((src: string, idx: number) => (
                     <div
                       key={idx}
                       className="h-28 w-28 border border-dashed p-2"

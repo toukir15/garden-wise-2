@@ -25,7 +25,6 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { toast } from "sonner";
 import { PostContext } from "@/src/context/post.provider";
 import { useRouter } from "next/navigation";
-import defaultImage from "../../../public/default.webp";
 
 export default function Sidebar() {
   const { data: followingsUsersData } = useGetFollowings();

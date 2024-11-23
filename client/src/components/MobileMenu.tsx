@@ -17,7 +17,7 @@ export default function MobileMenu() {
       <GoSearch onClick={()=> setIsSearchbarOpen(!isSearchbarOpen)} className="text-[30px]" />
       <BiMessageSquareDetail className="text-[30px]" />
       <RiNotification4Line className="text-[30px]" />
-    <Link href={"/profile"}>
+    <Link href={"/profile/my-profile"}>
         <FaRegUser className="text-[27px]" />
     </Link>
   </div>

@@ -14,27 +14,29 @@ const router = express.Router()
 router.post(
   '/register',
   multerUpload.single('file'),
-  // validateRequest(AuthValidation.registerValidationSchema),
   AuthControllers.registerUser,
 )
 router.post(
   '/login',
-  // validateRequest(AuthValidation.loginValidationSchema),
   AuthControllers.loginUser,
 )
 
 router.patch(
   '/change-password',
   auth(USER_ROLE.user, USER_ROLE.admin),
-  // validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.changePassword,
 )
 
-router.post(
+router.patch(
   '/forget-password',
   auth(USER_ROLE.user, USER_ROLE.admin),
-  // validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.forgetPassword,
+)
+
+router.post(
+  '/send-forget-email',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  AuthControllers.sendForgetEmail,
 )
 
 router.post(

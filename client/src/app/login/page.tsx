@@ -30,14 +30,13 @@ export default function LoginPage() {
 
   // Form submission handler
   const onSubmit: SubmitHandler<TLoginData> = (data) => {
-  
     handleUserLogin(data);
   };
 
   // Side effects for login success or error handling
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Logged in successfully!", {  duration: 2000 });
+      toast.success("Logged in successfully!", { duration: 2000 });
       router.push("/");
     }
 
@@ -49,9 +48,10 @@ export default function LoginPage() {
   }, [isSuccess, isError, error, router]);
 
   return (
-    <div className="h-screen flex justify-center items-center">
+    <div className="h-screen flex justify-center items-center px-4">
       <GWForm onSubmit={onSubmit} resolver={zodResolver(loginValidationSchema)}>
-        <div className="bg-[#121212] w-[600px] shadow-lg py-[80px] rounded-2xl flex justify-center items-center flex-col">
+        <div className="xl:bg-[#121212] w-[400px] xl:w-[600px] shadow-lg py-[80px] rounded-2xl flex justify-center items-center flex-col">
+          {/* Logo */}
           <Image
             src={logo}
             width={200}
@@ -59,7 +59,7 @@ export default function LoginPage() {
             alt="logo"
             className="w-16 mb-4"
           />
-          <h3 className="text-3xl font-medium mb-12 text-white">GardenWise</h3>
+          <h3 className="text-3xl font-medium mb-8 xl:mb-12 text-white">GardenWise</h3>
 
           {/* Email Field */}
           <div className="flex flex-col w-4/5 md:w-3/5 mb-6">
@@ -71,14 +71,17 @@ export default function LoginPage() {
             <GWInput name="password" label="Password" type="password" />
           </div>
 
+          {/* Login Button */}
           <Button
             type="submit"
             color="success"
-            className="py-[10px] px-12 rounded-xl font-bold mt-2"
+            className="w-4/5   md:w-3/5 py-[10px] px-12 rounded-xl font-bold mt-2"
             disabled={isLoading} // Disable button during loading
           >
             {isLoading ? "Logging in..." : "Login"}
           </Button>
+
+          {/* Sign-Up Link */}
           <p className="text-[#b5b4b4] mt-3 md:mt-4">
             Don&apos;t have an account?{" "}
             <Link

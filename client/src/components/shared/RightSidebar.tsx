@@ -1,6 +1,6 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { Input, Spinner } from "@nextui-org/react";
+import React, { useContext } from "react";
+import { Input } from "@nextui-org/react";
 import { IoSearchSharp } from "react-icons/io5";
 import { PostContext } from "@/src/context/post.provider";
 import FollowUserList from "./RightSidebar/FollowUserList";

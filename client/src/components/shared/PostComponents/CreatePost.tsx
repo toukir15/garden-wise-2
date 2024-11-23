@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useDisclosure } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
@@ -8,11 +9,13 @@ import Loading from "../../loading/Loading";
 import PostModal from "../../modal/PostModal";
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { useCreatePostForm } from "../../hooks/useCreatePostForm";
+import { BaseSyntheticEvent } from "react";
 
 export default function CreatePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isClient, setIsClient] = useState(false);
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
+
   const {
     description,
     setDescription,
@@ -29,6 +32,12 @@ export default function CreatePost() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Adapt onClose to handle BaseSyntheticEvent if required
+  const handleModalClose = (event?: BaseSyntheticEvent) => {
+    event?.preventDefault(); // Optional: Prevent default if event is passed
+    onClose(); // Call the actual onClose function
+  };
 
   if (!isClient) return null;
 
@@ -66,10 +75,10 @@ export default function CreatePost() {
         <PostModal
           isOpen={isOpen}
           onOpen={onOpen}
-          onClose={onClose}
+          onClose={handleModalClose} 
           handleSubmit={handleSubmit}
           register={register}
-          onSubmit={(data) => onSubmit(data, onClose)}
+          onSubmit={(data: any) => onSubmit(data)}
           errors={errors}
           categories={categories}
           description={description}

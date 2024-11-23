@@ -2,7 +2,6 @@
 import {
   IUserProviderValues,
   UserContext,
-  useUser,
 } from "@/src/context/user.provider";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
@@ -10,15 +9,16 @@ import Link from "next/link";
 import { useContext } from "react";
 import "react-quill/dist/quill.snow.css";
 
-export default function page() {
+export default function Page() {
   const { user } = useContext(UserContext) as IUserProviderValues;
 
   return (
-    <section className="flex justify-center flex-col items-center h-screen   ">
-      <div className=" w-fit">
-        <div className="p-8 flex flex-col justify-center items-center w-[500px] gap-4 border-gray-600">
+    <section className="flex justify-center flex-col items-center h-screen p-4 md:p-8">
+      <div className="w-full max-w-md">
+        <div className="p-6 md:p-8 flex flex-col justify-center items-center gap-4 rounded-lg shadow-md">
           <div>
-            <div className="relative rounded-full overflow-hidden w-[150px] h-[150px]">
+          <div className="flex justify-center">
+          <div className="relative flex justify-center rounded-full overflow-hidden w-28 h-28 md:w-36 md:h-36">
               <Image
                 src={
                   user?.profilePhoto ||
@@ -26,21 +26,20 @@ export default function page() {
                 }
                 fill
                 className="object-cover"
-                alt="df"
+                alt="User Profile"
               />
             </div>
-            <div className="flex justify-between text-center">
-              <div>
-                <p className=" text-2xl font-bold">{user?.name}</p>
-                <p className="font-medium text-sm text-gray-400">
-                  {user?.email}
-                </p>
-              </div>
+          </div>
+            <div className="flex flex-col text-center mt-2 xl:mt-4">
+              <p className="text-xl md:text-2xl font-bold">{user?.name}</p>
+              <p className="font-medium text-sm text-gray-500">
+                {user?.email}
+              </p>
             </div>
           </div>
         </div>
         <Link
-          className="w-full font-bold"
+          className="block mt-2 xl:mt-6"
           href={"/profile/edit-profile-details"}
         >
           <Button
@@ -52,19 +51,19 @@ export default function page() {
             Edit Profile
           </Button>
         </Link>
-        <div className="flex mt-8 w-full gap-6">
-          <Link className="w-full font-bold" href={"/profile/change-password"}>
+        <div className="flex flex-col md:flex-row mt-5 xl:mt-6 gap-4">
+          <Link className="flex-1" href={"/profile/change-password"}>
             <Button
               type="button"
               size="lg"
-              className="w-full"
               color="success"
               variant="faded"
+              className="w-full font-bold"
             >
               Change Password
             </Button>
           </Link>
-          <Link className="w-full font-bold" href={"/profile"}>
+          <Link className="flex-1" href={"/profile"}>
             <Button
               type="button"
               size="lg"

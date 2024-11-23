@@ -6,7 +6,7 @@ import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { UserLink } from "./PostComponents/UserLink";
 import PostActions from "./PostComponents/PostActions";
 import { PostHeader } from "./PostComponents/PostHeader";
-import { PostContent } from "./PostComponents/PostContent";
+import PostDescription from "./PostComponents/PostDescription";
 dayjs.extend(relativeTime);
 
 // Main Component
@@ -53,7 +53,9 @@ export default function SharedPost({
         user={data.sharedUser}
       />
       
-      <PostContent description={data.description} />
+      <PostDescription
+          description={data.description}
+        />
 
       <div className="mx-6 border border-gray-600 p-2 mt-2 rounded-lg">
         <UserLink
@@ -65,9 +67,8 @@ export default function SharedPost({
           createdAt={data.post.createdAt}
           isShared={data.isShared}
         />
-        <PostContent
-          description={data.post.description}
-        />
+       
+         <PostDescription description={data.post?.description} />
 
         <div className="flex w-[90%] mx-auto justify-center pt-4 pb-4">
           <LightGalleryImageView images={images} />

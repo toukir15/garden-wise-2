@@ -34,7 +34,6 @@ export const userLogin = async (userData: FieldValues) => {
 };
 
 export const refreshToken = async () => {
-  console.log("first")
   try {
     const { data } = await axiosInstance.post("/auth/refresh-token");
 
@@ -43,7 +42,6 @@ export const refreshToken = async () => {
     }
     return data;
   } catch (error: any) {
-    console.log(error)
     throw new Error(error);
   }
 };
@@ -62,6 +60,15 @@ export const editProfile = async (userData: FieldValues) => {
   }
 };
 
+export const sendForgetEmail = async () => {
+  try {
+    const { data } = await axiosInstance.post("/auth/send-forget-email");
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const changePassword = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.patch("/auth/change-password", userData);
@@ -70,6 +77,31 @@ export const changePassword = async (userData: FieldValues) => {
     throw new Error(error);
   }
 };
+
+export const forgetPassword = async (passwordData: FieldValues) => {
+  try {
+    const response = await fetch("http://localhost:5000/api/v1/auth/forget-password", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: passwordData.token, // Replace YOUR_TOKEN_HERE with your token variable
+      },
+      body: JSON.stringify({newPassword: passwordData.newPassword}),
+    });
+
+    if (!response.ok) {
+      // Extract error details if the response is not ok
+      const errorDetails = await response.json();
+      throw new Error(errorDetails.message || "Failed to update password");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message || "An error occurred while resetting the password");
+  }
+};
+
 
 export const getCurrentUser = async () => {
   const accessToken = cookies().get("accessToken")?.value;

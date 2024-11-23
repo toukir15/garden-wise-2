@@ -1,5 +1,5 @@
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import LightGalleryImageView from "./PostComponents/LightGalleryImageView";
 import PostDescription from "./PostComponents/PostDescription";
 import PostActions from "./PostComponents/PostActions";
@@ -53,7 +53,7 @@ export default function Post({
       <div className="flex w-[85%] mx-auto justify-center pt-4">
         <LightGalleryImageView images={data.post.images} />
       </div>
-      <div className="w-[75%] mx-auto">
+      <div className="xl:w-[75%] mx-auto">
         <PostActions
           data={data}
           upvoteStatus={upvoteStatus}

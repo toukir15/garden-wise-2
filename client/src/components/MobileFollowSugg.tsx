@@ -3,10 +3,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
-import { IUser } from '../../../types';
 import Image from 'next/image';
 import { useGetFollowSuggetionUsers } from '@/src/hooks/user.hook';
 import { Button } from '@nextui-org/button';
+import { IUser } from '../../types';
 
 export default function MobileFollowSugg({handleFollowRequest, loadingUserId}:any) {
     const { data: followSuggetionUsersData, isLoading } =
