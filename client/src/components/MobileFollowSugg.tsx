@@ -36,11 +36,11 @@ export default function MobileFollowSugg({handleFollowRequest, loadingUserId}:an
                      alt="User profile photo"
                    />
                  </div>
-                 <p className="font-medium text-gray-300">{user.name}</p>
+                 <p className="font-bold mt-[4px] text-sm md:text-medium text-gray-300">{user.name}</p>
                  <p className="font-medium text-sm text-gray-400">
                    {user.email.slice(0, 12)}...
                  </p>
-                 {loadingUserId !== user._id && (
+                 {/* {loadingUserId !== user._id && ( */}
                    <Button
                      variant="solid"
                      color="success"
@@ -48,11 +48,12 @@ export default function MobileFollowSugg({handleFollowRequest, loadingUserId}:an
                      radius="none"
                      size="sm"
                      onClick={() => handleFollowRequest(user)}
+                     isLoading={loadingUserId === user._id }
                    >
-                     Follow
+                   {loadingUserId !== user._id && "Follow"}  
                    </Button>
-                 )}
-                 {loadingUserId === user._id && (
+                 {/* )} */}
+                 {/* {loadingUserId === user._id && (
                    <Button
                      variant="solid"
                      color="success"
@@ -62,7 +63,7 @@ export default function MobileFollowSugg({handleFollowRequest, loadingUserId}:an
                    >
                      Following...
                    </Button>
-                 )}
+                 )} */}
                </div>
              </SwiperSlide>
            ))}

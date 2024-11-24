@@ -120,7 +120,7 @@ export default function Page() {
           <div className="lg:flex justify-between">
             <div>
               <div className={`relative w-fit flex items-center ${showVerifyButton ? "gap-4":"gap-2"} mt-4`}>
-                <p className="mt-1 text-[24px] font-bold">{user?.name}</p>
+                <p className="mt-1 text-[20px] xl:text-[24px] font-bold">{user?.name}</p>
                 {user?.isVerified && (
                 <div className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-2 hover:bg-gray-900 transition duration-150 rounded-full">
                 <Image

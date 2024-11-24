@@ -130,6 +130,7 @@ export default function Page() {
                 variant="faded"
                 type="submit"
                 disabled={isLoading}
+                isLoading={isLoading}
               >
                 {isLoading ? "Saving..." : "Save Password"}
               </Button>

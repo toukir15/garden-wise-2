@@ -19,72 +19,84 @@ export default function Page() {
   } = useGetMonthlyPayments();
 
   return (
-    <div>
+    <div className="p-4">
       <div>
-        <h2 className="text-2xl font-medium py-4">User Activity</h2>
-        {isUserActivityLoading ? (
-          <p>Loading user activity data...</p>
-        ) : userActivityError ? (
-          <p>Error loading user activity data: {userActivityError.message}</p>
-        ) : (
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={userActivityData?.data.data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="upvotes" fill="#8884d8" name="Upvotes" />
-              <Bar dataKey="downvotes" fill="#82ca9d" name="Downvotes" />
-              <Bar dataKey="posts" fill="#ffc658" name="Posts Created" />
-              <Bar dataKey="comments" fill="#ff7300" name="Comments Made" />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
+        <h2 className="xl:text-2xl text-xl font-medium py-4">User Activity</h2>
+        <div className="overflow-x-auto">
+          {isUserActivityLoading ? (
+            <p>Loading user activity data...</p>
+          ) : userActivityError ? (
+            <p>Error loading user activity data: {userActivityError.message}</p>
+          ) : (
+            <div className="min-w-[800px]">
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={userActivityData?.data.data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="upvotes" fill="#8884d8" name="Upvotes" />
+                  <Bar dataKey="downvotes" fill="#82ca9d" name="Downvotes" />
+                  <Bar dataKey="posts" fill="#ffc658" name="Posts Created" />
+                  <Bar dataKey="comments" fill="#ff7300" name="Comments Made" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Grid Layout for Posts and Payments Sections */}
-      <div className="grid grid-cols-2 mt-8 gap-6">
+      <div className="xl:grid xl:grid-cols-2 mt-8 gap-6">
         {/* Posts Section */}
         <div>
-          <h2 className="text-2xl font-medium py-4">Monthly Posts</h2>
-          {isUserActivityLoading ? (
-            <p>Loading monthly posts data...</p>
-          ) : userActivityError ? (
-            <p>Error loading monthly posts data: {userActivityError.message}</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={userActivityData?.data.data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="posts" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
+          <h2 className="text-xl xl:text-2xl font-medium py-4">Monthly Posts</h2>
+          <div className="overflow-x-auto">
+            {isUserActivityLoading ? (
+              <p>Loading monthly posts data...</p>
+            ) : userActivityError ? (
+              <p>Error loading monthly posts data: {userActivityError.message}</p>
+            ) : (
+              <div className="min-w-[650px]">
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={userActivityData?.data.data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="posts" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Payments Section */}
         <div>
-          <h2 className="text-2xl font-medium py-4">Monthly Payments</h2>
-          {isMonthlyPaymentsLoading ? (
-            <p>Loading monthly payments data...</p>
-          ) : monthlyPaymentsError ? (
-            <p>Error loading monthly payments data: {monthlyPaymentsError.message}</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={monthlyPaymentsData?.data.data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="payments" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
+          <h2 className="text-xl xl:text-2xl font-medium py-4">Monthly Payments</h2>
+          <div className="overflow-x-auto">
+            {isMonthlyPaymentsLoading ? (
+              <p>Loading monthly payments data...</p>
+            ) : monthlyPaymentsError ? (
+              <p>Error loading monthly payments data: {monthlyPaymentsError.message}</p>
+            ) : (
+              <div className="min-w-[650px]">
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={monthlyPaymentsData?.data.data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="payments" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

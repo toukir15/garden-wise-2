@@ -63,7 +63,7 @@ export default function Page() {
               Change Password
             </Button>
           </Link>
-          <Link className="flex-1" href={"/profile"}>
+          <Link className="flex-1" href={"/profile/my-profile"}>
             <Button
               type="button"
               size="lg"

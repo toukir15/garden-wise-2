@@ -9,22 +9,19 @@ import {
   useDeletePost,
   useDownvote,
   useEditPost,
-  useGetPosts,
   useSharePost,
   useUpvote,
 } from "@/src/hooks/post.hook";
 import ViewComment from "./PostComponents/ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
-import { IUser, TPost } from "../../../types";
+import { TPost } from "../../../types";
 import ComponentLoading from "../loading/ComponentLoading";
 import { PostContext } from "@/src/context/post.provider";
 import SharedPost from "./SharedPost";
 import Post from "./Post";
 import EditPostModal from "../modal/EditPostModal";
 import SharePostModal from "../modal/SharePostModal";
-import { useFollowUser } from "@/src/hooks/connection.hook";
-import MobileFollowSugg from "../MobileFollowSugg";
 import { FiAlertCircle } from "react-icons/fi";
 import { useGetBookmarks } from "@/src/hooks/bookmark.hook";
 
@@ -36,7 +33,6 @@ export default function ViewBookmark() {
   const [isOpenSharedComment, setOpenSharedComment] = useState(false);
   const [description, setDescription] = useState<string>("");
   const [editPostDescription, setEditPostDescription] = useState("");
-  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   // const [page, setPage] = useState(1);
 
   // Refs
@@ -97,20 +93,6 @@ export default function ViewBookmark() {
     handleEdit({ postId, payload });
   };
 
-  const { mutate: handleFollow } = useFollowUser();
-  const handleFollowRequest = (user: Partial<IUser>) => {
-    if (!user._id) return;
-    setLoadingUserId(user._id);
-    handleFollow(
-      { user: user },
-      {
-        onSettled: () => {
-          setLoadingUserId(null);
-        },
-      }
-    );
-  };
-
   // Infinite Scroll Logic
   // const handleScroll = () => {
   //   const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
@@ -129,7 +111,7 @@ export default function ViewBookmark() {
     <div>
       {/* NO DATA AVAILABLE MESSAGE */}
       {postsData?.data?.data?.posts.length < 1 && (
-       <div className="flex justify-center items-center mt-32 text-center">
+       <div className="flex justify-center items-center mt-20 xl:mt-40 text-center">
        <div>
          <FiAlertCircle  size={40} className="text-gray-400 mx-auto" /> {/* Icon for alert */}
          <p className="text-gray-500 text-lg mt-4">No posts available.</p>
@@ -140,12 +122,6 @@ export default function ViewBookmark() {
 
       {/* POSTS LOADING... */}
       {isPostsDataLoading && <ComponentLoading />}
-
-      {/* MOBILE FOLLOW SUGGESTION */}
-      <MobileFollowSugg
-        handleFollowRequest={handleFollowRequest}
-        loadingUserId={loadingUserId}
-      />
 
       {/* Render Posts */}
       <div>

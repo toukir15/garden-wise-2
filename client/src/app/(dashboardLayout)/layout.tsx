@@ -4,7 +4,6 @@ import { Layout, Menu, Breadcrumb, theme } from "antd";
 import { useState } from "react";
 import { FaChartPie, FaRegUser } from "react-icons/fa";
 import Link from "next/link";
-import { GoHomeFill } from "react-icons/go";
 import { MdPayment } from "react-icons/md";
 import { GrAppsRounded } from "react-icons/gr";
 import logo from "../../../public/plant.png";
@@ -64,8 +63,10 @@ export default function RootLayout({
         }}
       >
         {/* Logo Section */}
-        <Link href={"/"} className="flex items-center gap-1 px-2 py-4">
-          {/* <Image src={logo} width={30} height={30} alt="logo" /> */}
+        <Link href={"/"} className="flex justify-center items-center gap-1 px-2 py-4">
+          <div>
+          <Image src={logo} className="xl:h-[30px] h-[25px] w-[25px] xl:w-[30px]" alt="logo" />
+          </div>
           {/* Conditionally render text based on the collapsed state */}
           {!collapsed && (
             <span className="text-xl font-medium relative top-1 text-white">

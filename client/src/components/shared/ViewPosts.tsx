@@ -4,7 +4,13 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import "lightgallery/css/lightgallery.css";
-import { useDisclosure } from "@nextui-org/react";
+import {
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
 import {
   useDeletePost,
   useDownvote,
@@ -26,6 +32,8 @@ import SharePostModal from "../modal/SharePostModal";
 import { useFollowUser } from "@/src/hooks/connection.hook";
 import MobileFollowSugg from "../MobileFollowSugg";
 import { FiAlertCircle } from "react-icons/fi";
+import ViewCom from "./PostComponents/ViewCom";
+import { Button, Modal } from "antd";
 
 export default function ViewPost() {
   // Local state
@@ -36,13 +44,14 @@ export default function ViewPost() {
   const [description, setDescription] = useState<string>("");
   const [editPostDescription, setEditPostDescription] = useState("");
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+
   // const [page, setPage] = useState(1);
 
   // Refs
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // Hook
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
 
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -50,6 +59,12 @@ export default function ViewPost() {
     isOpen: isEditOpen,
     onOpen: editOnOpen,
     onOpenChange: editOnOpenChange,
+  } = useDisclosure();
+
+  const {
+    isOpen: isCommentOpen,
+    onOpen: commentOnOpen,
+    onOpenChange: commentOnOpenChange,
   } = useDisclosure();
 
   // Context
@@ -67,32 +82,32 @@ export default function ViewPost() {
   });
 
   // Upvote mutation hook
-  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm});
+  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
   const handlePostUpvote = (voteId: string, postId: string) => {
     handleUpvote({ voteId, postId, userId });
   };
 
   // Downvote mutation hook
-  const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm});
+  const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm });
   const handlePostDownvote = (voteId: string, postId: string) => {
     handleDownvote({ voteId, postId, userId });
   };
 
   // Share post mutation hook
-  const { mutate: handleSharePost } = useSharePost({ queryTerm, searchTerm});
+  const { mutate: handleSharePost } = useSharePost({ queryTerm, searchTerm });
   const handlePostShare = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSharePost({ description, postId });
   };
 
   // Delete post mutation hook
-  const { mutate: handleDelete } = useDeletePost({ queryTerm, searchTerm});
+  const { mutate: handleDelete } = useDeletePost({ queryTerm, searchTerm });
   const handlePostDelete = (postId: string) => {
     handleDelete({ postId });
   };
 
   // Edit post mutation hook
-  const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm});
+  const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm });
   const handlePostEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = { description: editPostDescription };
@@ -113,14 +128,13 @@ export default function ViewPost() {
     );
   };
 
-  const handleSaveUnsave = (bookmarkId:string, postId:string) => {
-  }
+  const handleSaveUnsave = (bookmarkId: string, postId: string) => {};
 
   // Infinite Scroll Logic
   // const handleScroll = () => {
   //   const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
   //   if (bottom && postsData?.data?.data?.length && !isPostsDataLoading) {
-  //     setPage((prev) => prev + 1);  
+  //     setPage((prev) => prev + 1);
   //   }
   // };
 
@@ -129,18 +143,21 @@ export default function ViewPost() {
   //   return () => window.removeEventListener("scroll", handleScroll);
   // }, [postsData]);
 
-
   return (
     <div>
       {/* NO DATA AVAILABLE MESSAGE */}
       {postsData?.data?.data?.length < 1 && (
-       <div className="flex justify-center items-center mt-32 text-center">
-       <div>
-         <FiAlertCircle  size={40} className="text-gray-400 mx-auto" /> {/* Icon for alert */}
-         <p className="text-gray-500 text-lg mt-4">No posts available.</p>
-         <p className="text-sm text-gray-400 mt-2">It looks like there are no posts right now. Please check back later!</p>
-       </div>
-     </div>
+        <div className="flex justify-center items-center mt-32 text-center">
+          <div>
+            <FiAlertCircle size={40} className="text-gray-400 mx-auto" />{" "}
+            {/* Icon for alert */}
+            <p className="text-gray-500 text-lg mt-4">No posts available.</p>
+            <p className="text-sm text-gray-400 mt-2">
+              It looks like there are no posts right now. Please check back
+              later!
+            </p>
+          </div>
+        </div>
       )}
 
       {/* POSTS LOADING... */}
@@ -156,8 +173,18 @@ export default function ViewPost() {
       <div>
         {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data?.post?.images || [];
-          const upvoteStatus = checkVoteStatus(data.isShared, data, userId, "upvote");
-          const downvoteStatus = checkVoteStatus(data.isShared, data, userId, "downvote");
+          const upvoteStatus = checkVoteStatus(
+            data.isShared,
+            data,
+            userId,
+            "upvote"
+          );
+          const downvoteStatus = checkVoteStatus(
+            data.isShared,
+            data,
+            userId,
+            "downvote"
+          );
           return (
             <div key={key}>
               {/* Render Post or SharedPost depending on data */}
@@ -227,8 +254,9 @@ export default function ViewPost() {
           setEditPostDescription={setEditPostDescription}
         />
 
+
         {(isOpenComment || isOpenSharedComment) && (
-          <ViewComment
+          <ViewCom
             postId={postId}
             setOpenSharedComment={setOpenSharedComment}
             setIsOpenComment={setIsOpenComment}

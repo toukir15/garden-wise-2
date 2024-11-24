@@ -13,12 +13,9 @@ import { toast } from "sonner";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import { logout } from "@/src/services/auth";
 import { useRouter } from "next/navigation";
-import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
-import ViewMyPost from "@/src/components/shared/ViewMyPosts";
-import { useGetBookmarks } from "@/src/hooks/bookmark.hook";
 import ViewBookmark from "@/src/components/shared/ViewBookmark";
-import { IoBookmark } from "react-icons/io5";
 import { FaRegBookmark } from "react-icons/fa";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 export default function page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -66,83 +63,98 @@ export default function page() {
   const { data: followersUsersData } = useGetFollowers();
 
   return (
-    <section className="flex flex-col border border-gray-600">
+    <section className="flex flex-col border min-h-screen border-gray-600">
       <div className="p-4 gap-4 border-b border-gray-600">
-        <div className="relative w-[150px] h-[150px]">
-          <Image
-            src={
-              user?.profilePhoto ||
-              "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-            }
-            fill
-            className="object-cover rounded-full"
-            alt="Profile"
-          />
-        </div>
-        <div className="lg:flex justify-between">
-          <div>
-            <div className="relative w-fit">
-              <p className="mt-3 text-2xl font-bold">{user?.name}</p>
-              {user?.isVerified && (
-                <Image
-                  src={verified}
-                  height={20}
-                  width={20}
-                  className="absolute top-1.5 -right-2 translate-x-full"
-                  alt="Profile"
-                />
-              )}
-            </div>
-            <p className="font-medium text-gray-300">{user?.email}</p>
-            <div className="flex gap-4 mt-2">
-              <button
-                onClick={onFollowersOpen}
-                className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black"
-              >
-                <span className="text-white">
-                  {followersUsersData?.data.data.followers.length || 0}
-                </span>{" "}
-                Followers
-              </button>
-              <button
-                onClick={onOpen}
-                className="text-gray-400 hover:border-b hover:border-b-white border-b border-b-black"
-              >
-                <span className="text-white">
-                  {followingsUsersData?.data.data.followings.length || 0}
-                </span>{" "}
-                Following
-              </button>
-            </div>
+          <div className="relative w-[150px] h-[150px]">
+            <Image
+              src={
+                user?.profilePhoto ||
+                "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+              }
+              fill
+              className="object-cover rounded-full"
+              alt="Profile"
+            />
           </div>
-          <div className="xl:mt-auto flex gap-3 mt-2">
-            {showVerifyButton && (
+          <div className="lg:flex justify-between">
+            <div>
+              <div className={`relative w-fit flex items-center ${showVerifyButton ? "gap-4":"gap-2"} mt-4`}>
+                <p className="mt-1 text-[20px] xl:text-[24px] font-bold">{user?.name}</p>
+                {user?.isVerified && (
+                <div className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-2 hover:bg-gray-900 transition duration-150 rounded-full">
+                <Image
+                 src={verified}
+                 height={15}
+                 width={15}
+                 className=""
+                 alt="Profile"
+               />
+               <p className="text-sm font-bold">Verified</p>
+              </div>
+                )}
+
+              {showVerifyButton && (
+                 <button  onClick={handleProfileVerify} className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-4 hover:bg-gray-900 transition duration-150 rounded-full">
+                   <Image
+                    src={verified}
+                    height={15}
+                    width={15}
+                    className=""
+                    alt="Profile"
+                  />
+                  <p className="text-sm font-bold">Get verified</p>
+                 </button>
+                )}
+              </div>
+              <p className="font-medium text-sm text-gray-500">{user?.email}</p>
+              <div className="flex items-center mt-2 gap-1 text-gray-500">
+              <MdOutlineLocationOn />
+              <p className="font-medium text-sm">Babugonj, Barisal</p>
+              </div>
+              <div className="flex gap-4 mt-2">
+                <button
+                  onClick={onFollowersOpen}
+                  className="text-gray-500 text-sm hover:border-b hover:border-b-white border-b border-b-black"
+                >
+                  <span className="text-white">
+                    {followersUsersData?.data.data.followers.length || 0}
+                  </span>{" "}
+                  Followers
+                </button>
+                <button
+                  onClick={onOpen}
+                  className="text-gray-500 text-sm hover:border-b hover:border-b-white border-b border-b-black"
+                >
+                  <span className="text-white">
+                    {followingsUsersData?.data.data.followings.length || 0}
+                  </span>{" "}
+                  Following
+                </button>
+              </div>
+            </div>
+            <div className="xl:mt-auto flex gap-3 mt-2">
+              <Link href="/profile/edit-profile" className="w-full" passHref>
+                <Button
+                  as="a"
+                  color="success"
+                  className="w-full"
+                  variant="faded"
+                >
+                  Edit Profile
+                </Button>
+              </Link>
               <Button
-                onClick={handleProfileVerify}
-                color="success"
+                type="button"
+                className="w-full"
+                onClick={handleLogout}
+                color="danger"
                 variant="faded"
               >
-                Verify
+                Logout
               </Button>
-            )}
-            <Link href="/profile/edit-profile" passHref>
-              <Button color="success" className="w-full" variant="faded">
-                Edit Profile
-              </Button>
-            </Link>
-
-            <Button
-              type="button"
-              className="w-full"
-              onClick={handleLogout}
-              color="danger"
-              variant="faded"
-            >
-              Logout
-            </Button>
+            </div>
           </div>
         </div>
-      </div>
       <h2 className="py-4 text-center text-xl font-medium border-b border-gray-600 sticky top-0 z-[999] bg-black/30 backdrop-blur-md flex justify-center items-center gap-2">
       <FaRegBookmark />
       <span>Bookmark posts</span>

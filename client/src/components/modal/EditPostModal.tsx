@@ -35,7 +35,7 @@ export default function EditPostModal({
       onOpenChange={editOnOpenChange}
     >
       <form onSubmit={handlePostEdit}>
-        <ModalContent className="absolute top-0 xl:top-8 -translate-x-4">
+        <ModalContent className="absolute top-0 xl:top-8 xl:-translate-x-8">
           {(onClose) => (
             <>
               <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">

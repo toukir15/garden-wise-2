@@ -24,7 +24,6 @@ type TSignupData = {
 export default function SignupPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [toastId, setToastId] = useState<string | null>(null); // Manage toast ID in state
   const router = useRouter();
 
   // Use mutation for registering the user
@@ -39,8 +38,6 @@ export default function SignupPage() {
   const onSubmit: SubmitHandler<TSignupData> = (data) => {
     const formData = new FormData();
     // Show loading toast and store its ID
-    const id = toast.loading("Signing up...");
-    setToastId(id as string);
 
     formData.append("data", JSON.stringify(data));
     if (files.length > 0) {
@@ -53,17 +50,19 @@ export default function SignupPage() {
 
   // Handle side effects when success or error occurs
   useEffect(() => {
-    if (!isLoading && toastId) {
+    if (!isLoading) {
       if (isSuccess) {
-        toast.success("Signed up successfully!", { id: toastId });
+        toast.success("Signed up successfully!", { duration: 2000 });
         router.push("/login");
       }
 
       if (isError) {
-        toast.error("Registration failed. Please try again.", { id: toastId });
+        toast.error("Registration failed. Please try again.", {
+          duration: 2000,
+        });
       }
     }
-  }, [isLoading, isSuccess, isError, toastId, router]);
+  }, [isLoading, isSuccess, isError, router]);
 
   // Handle file changes for image preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,9 +158,10 @@ export default function SignupPage() {
             type="submit"
             color="success"
             className="w-4/5 md:w-3/5 py-[10px] px-12 rounded-xl font-bold mt-2"
-            disabled={isLoading} // Disable button during loading
+            disabled={isLoading}
+            isLoading={isLoading}
           >
-             {isLoading ? "Signing Up..." : "Sign Up"}
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </Button>
 
           <p className="text-[#b5b4b4] mt-3 md:mt-4">

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { SubmitHandler } from "react-hook-form";
 import GWInput from "@/src/components/form/GWInput";
 import GWForm from "@/src/components/form/GWForm";
-import { useUserLogin } from "@/src/hooks/auth.hook";
+import { useSendForgetEmail, useUserLogin } from "@/src/hooks/auth.hook";
 import { loginValidationSchema } from "@/src/schemas/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -32,6 +32,12 @@ export default function LoginPage() {
   const onSubmit: SubmitHandler<TLoginData> = (data) => {
     handleUserLogin(data);
   };
+
+  const { mutate: sendForgetEmail } = useSendForgetEmail();
+  const handleForgetPassword = () => {
+    sendForgetEmail();
+  };
+
 
   // Side effects for login success or error handling
   useEffect(() => {
@@ -75,14 +81,21 @@ export default function LoginPage() {
           <Button
             type="submit"
             color="success"
-            className="w-4/5   md:w-3/5 py-[10px] px-12 rounded-xl font-bold mt-2"
+            className="w-4/5 md:w-3/5 py-[10px] px-12 rounded-xl font-bold mt-2"
             disabled={isLoading} // Disable button during loading
+            isLoading={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
           </Button>
 
+          <div className="md:w-fit mt-4 text-gray-400 hover:text-white transition duration-100">
+            <button onClick={handleForgetPassword} className="hover:border-b border-b border-b-[#121212] hover:border-b-white ">
+              Forget password?
+            </button>
+          </div>
+
           {/* Sign-Up Link */}
-          <p className="text-[#b5b4b4] mt-3 md:mt-4">
+          <p className="text-[#b5b4b4] mt-2">
             Don&apos;t have an account?{" "}
             <Link
               href={`/register`}
@@ -91,6 +104,7 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
+     
         </div>
       </GWForm>
     </div>

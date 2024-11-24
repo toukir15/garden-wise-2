@@ -16,7 +16,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 interface PostModalProps {
   isOpen: boolean;
   onOpen: () => void;
-  onClose: (event?: BaseSyntheticEvent) => void; // Accept optional event
+  onClose: (event?: BaseSyntheticEvent) => void; 
   handleSubmit: any;
   register: any;
   onSubmit: (data: any) => void;
@@ -27,7 +27,6 @@ interface PostModalProps {
   imagePreviews: string[];
   handleFileChange: (event: any) => void;
 }
-
 
 export default function PostModal({
   isOpen,
@@ -51,22 +50,21 @@ export default function PostModal({
 
   if (!isClient) return null;
 
-   const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: any) => {
     onSubmit(data);
     onClose();
   };
 
-
   return (
     <Modal
-      className="bg-[#121212] absolute z-[999]"
+      className="w-full h-full xl:h-auto absolute xl:-translate-x-8 z-[999]"
       isOpen={isOpen}
       size="2xl"
       onOpenChange={(open) => (open ? onOpen() : onClose())}
     >
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <ModalContent className="absolute top-0 xl:top-8 -translate-x-4">
-          <ModalHeader className="flex text-center flex-col gap-1 border-b border-gray-600">
+      <ModalContent className="absolute top-0 overflow-y-auto xl:top-8 sm:w-full sm:h-full xl:max-w-2xl  sm:rounded-none xl:rounded-md">
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <ModalHeader className="flex justify-center gap-1 border-b border-gray-600">
             Create post
           </ModalHeader>
           <ModalBody>
@@ -152,8 +150,8 @@ export default function PostModal({
               Post
             </Button>
           </ModalFooter>
-        </ModalContent>
-      </form>
+        </form>
+      </ModalContent>
     </Modal>
   );
 }

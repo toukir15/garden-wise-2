@@ -8,7 +8,7 @@ const PostDescription: React.FC<PostDescriptionProps> = ({ description }) => {
   const [isReadMore, setIsReadMore] = useState(false);
 
   return (
-    <div className="mx-4 list-disc prose text-gray-200 break-words">
+    <div className="mx-4 xl:text-medium text-sm list-disc prose text-gray-200 break-words">
       {description.length > 500 && !isReadMore ? (
         <div>
           <div dangerouslySetInnerHTML={{ __html: description.slice(0, 500) }} />
