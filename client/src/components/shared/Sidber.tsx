@@ -85,26 +85,25 @@ export default function Sidebar() {
       {isLoading && <Loading />}
       <div className="flex flex-col h-screen justify-between py-4">
         <div>
-          <div className="w-8 h-8 ml-4">
+          <Link href={"/"} className="w-8 h-8">
             {logo && (
               <Image
                 src={logo}
-                width={40}
-                height={40}
                 alt="logo"
-                className="mb-2"
+                className="mb-2 w-9 h-9 ml-3"
                 priority
               />
             )}
-          </div>
+          </Link>
 
           {/* Navigation Links */}
-          <div>
+          <div className="mt-3">
             {sidebarLinks.map(({ href, icon, label, size }, index) => (
               <div key={index}>
                 {label === "Premium" ? (
                   <SidebarButton
                     onClick={handleVerifyPosts}
+                    href={href}
                     icon={icon}
                     label={label}
                     size={size}
@@ -145,7 +144,7 @@ export default function Sidebar() {
             </Button>
           </div>
         </div>
-        <div >
+        <div>
           <div className="px-1 rounded-lg">
             <Link
               href="/profile/my-profile"

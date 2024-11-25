@@ -29,6 +29,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 export default function Page() {
   const { user } = useContext(UserContext) as IUserProviderValues;
   const { postCount } = useContext(PostContext);
+  const [isClient, setIsClient] = useState(false);
   const {
     mutate: handlePayment,
     data,
@@ -102,6 +103,12 @@ export default function Page() {
     return <Loading />;
   }
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
   return (
     <>
       <section className="flex flex-col">
@@ -119,38 +126,45 @@ export default function Page() {
           </div>
           <div className="lg:flex justify-between">
             <div>
-              <div className={`relative w-fit flex items-center ${showVerifyButton ? "gap-4":"gap-2"} mt-4`}>
-                <p className="mt-1 text-[20px] xl:text-[24px] font-bold">{user?.name}</p>
+              <div
+                className={`relative w-fit flex items-center ${showVerifyButton ? "gap-4" : "gap-2"} mt-4`}
+              >
+                <p className="mt-1 text-[20px] xl:text-[24px] font-bold">
+                  {user?.name}
+                </p>
                 {user?.isVerified && (
-                <div className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-2 hover:bg-gray-900 transition duration-150 rounded-full">
-                <Image
-                 src={verified}
-                 height={15}
-                 width={15}
-                 className=""
-                 alt="Profile"
-               />
-               <p className="text-sm font-bold">Verified</p>
-              </div>
+                  <div className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-2 hover:bg-gray-900 transition duration-150 rounded-full">
+                    <Image
+                      src={verified}
+                      height={15}
+                      width={15}
+                      className=""
+                      alt="Profile"
+                    />
+                    <p className="text-sm font-bold">Verified</p>
+                  </div>
                 )}
 
-              {showVerifyButton && (
-                 <button  onClick={handleProfileVerify} className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-4 hover:bg-gray-900 transition duration-150 rounded-full">
-                   <Image
-                    src={verified}
-                    height={15}
-                    width={15}
-                    className=""
-                    alt="Profile"
-                  />
-                  <p className="text-sm font-bold">Get verified</p>
-                 </button>
+                {showVerifyButton && (
+                  <button
+                    onClick={handleProfileVerify}
+                    className="flex relative top-[2] w-fit h-fit items-center gap-1 border px-4 hover:bg-gray-900 transition duration-150 rounded-full"
+                  >
+                    <Image
+                      src={verified}
+                      height={15}
+                      width={15}
+                      className=""
+                      alt="Profile"
+                    />
+                    <p className="text-sm font-bold">Get verified</p>
+                  </button>
                 )}
               </div>
               <p className="font-medium text-sm text-gray-500">{user?.email}</p>
               <div className="flex items-center mt-2 gap-1 text-gray-500">
-              <MdOutlineLocationOn />
-              <p className="font-medium text-sm">Babugonj, Barisal</p>
+                <MdOutlineLocationOn />
+                <p className="font-medium text-sm">Babugonj, Barisal</p>
               </div>
               <div className="flex gap-4 mt-2">
                 <button

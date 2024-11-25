@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import verified from "../../../../../../public/verified.png"
+import verified from "../../../../../../public/verified.png";
 import { useGetVisitProfilePosts } from "@/src/hooks/post.hook";
 import {
   useGetViewProfileFollowers,
@@ -24,7 +24,7 @@ export default function Page() {
     data,
     isLoading: isPaymentLoading,
   } = useCreatePayment();
-  const [isClient, setIsClient] = useState(false); // Track client-side rendering
+  const [isClient, setIsClient] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
@@ -43,20 +43,20 @@ export default function Page() {
   } = useGetVisitProfilePosts(postUser._id);
 
   useEffect(() => {
-    setIsClient(true); 
+    setIsClient(true);
   }, []);
-
 
   useEffect(() => {
     if (data?.data?.data?.url) {
       router.push(data.data.data.url);
     }
   }, [data, router]);
-  
-  const { data: followingsUsersData } = useGetViewProfileFollowings(postUser._id);
+
+  const { data: followingsUsersData } = useGetViewProfileFollowings(
+    postUser._id
+  );
   const { data: followersUsersData } = useGetViewProfileFollowers(postUser._id);
   const { mutate: handleUnfollow } = useUnfollowUser();
-
 
   const handleUnfollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
@@ -95,13 +95,15 @@ export default function Page() {
             <div>
               <div className="relative w-fit">
                 <p className="mt-3 text-2xl font-bold">{postUser?.name}</p>
-                 {postUser?.isVerified && <Image
+                {postUser?.isVerified && (
+                  <Image
                     src={verified}
                     height={20}
                     width={20}
                     className="absolute top-1.5 -right-2 translate-x-full"
                     alt="Profile"
-                  />}
+                  />
+                )}
               </div>
               <p className="font-medium text-gray-300">{postUser?.email}</p>
               <div className="flex gap-4 mt-2">
