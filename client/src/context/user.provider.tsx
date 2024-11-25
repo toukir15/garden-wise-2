@@ -19,21 +19,24 @@ export interface IUserProviderValues {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   postUser: any;
   setPostUser: Dispatch<SetStateAction<any>>;
-  logo: string ;
+  logo: string;
 }
 
 // Create context with IUserProviderValues type
-export const UserContext = createContext<IUserProviderValues | undefined>(undefined);
+export const UserContext = createContext<IUserProviderValues | undefined>(
+  undefined
+);
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const accessToken = Cookies.get("accessToken");
-  const logo = "https://res.cloudinary.com/dnbxtcqiw/image/upload/v1731868478/l4huf2sovt-1731868475596-file-plant.png"
+  const logo =
+    "https://res.cloudinary.com/dnbxtcqiw/image/upload/v1731868478/l4huf2sovt-1731868475596-file-plant.png";
 
   // Function to fetch and set the current user
   const handleUser = async () => {
-    const user = await getCurrentUser();
+    const user: any = await getCurrentUser();
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
@@ -53,7 +56,15 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, isLoading, setIsLoading, postUser, setPostUser, logo }}
+      value={{
+        user,
+        setUser,
+        isLoading,
+        setIsLoading,
+        postUser,
+        setPostUser,
+        logo,
+      }}
     >
       {children}
     </UserContext.Provider>

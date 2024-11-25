@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { BsThreeDots } from "react-icons/bs";
 import { IUser } from "../../../../types";
+import { useRouter } from "next/navigation";
 
 interface FollowUserCardProps {
   user: IUser;
@@ -14,8 +15,18 @@ export default function FollowUserCard({
   isLoading,
   onFollow,
 }: FollowUserCardProps) {
+  const router = useRouter();
+  const handlePostUser = (postUser: any) => {
+    localStorage.setItem("user-profile", JSON.stringify(postUser));
+    router.push("/profile/user-profile");
+  };
   return (
-    <div className={`py-3 border-b hover:bg-[#080808] transition duration-150 border-gray-900`}>
+    <div
+      onClick={() => {
+        handlePostUser(user);
+      }}
+      className={`py-3 border-b cursor-pointer hover:bg-[#080808] transition duration-150 border-gray-900`}
+    >
       <div className="flex gap-2 px-2 items-center">
         {/* Profile Photo */}
         <div>

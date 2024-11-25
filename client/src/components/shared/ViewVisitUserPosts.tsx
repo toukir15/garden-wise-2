@@ -24,7 +24,10 @@ import SharePostModal from "../modal/SharePostModal";
 import EditPostModal from "../modal/EditPostModal";
 import { FiAlertCircle } from "react-icons/fi";
 
-export default function ViewVisitUser({ postsData, isPostsDataLoading }: any) {
+export default function ViewVisitUserPosts({
+  postsData,
+  isPostsDataLoading,
+}: any) {
   // local state
   const [postId, setPostId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

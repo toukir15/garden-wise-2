@@ -16,7 +16,8 @@ import FollowFollowingListModal from "@/src/components/modal/FollowFollowingList
 import { useDisclosure } from "@nextui-org/modal";
 import Loading from "@/src/components/loading/Loading";
 import { IUser } from "../../../../../../types";
-import ViewMyPost from "@/src/components/shared/ViewMyPosts";
+import { MdOutlineLocationOn } from "react-icons/md";
+import ViewVisitUserPosts from "@/src/components/shared/ViewVisitUserPosts";
 
 export default function Page() {
   const {
@@ -74,6 +75,7 @@ export default function Page() {
   if (isPaymentLoading) {
     return <Loading />;
   }
+
   if (!isClient) return null;
 
   return (
@@ -95,6 +97,13 @@ export default function Page() {
             <div>
               <div className="relative w-fit">
                 <p className="mt-3 text-2xl font-bold">{postUser?.name}</p>
+                <p className="font-medium text-sm text-gray-500">
+                  {postUser?.email}
+                </p>
+                <div className="flex items-center mt-2 gap-1 text-gray-500">
+                  <MdOutlineLocationOn />
+                  <p className="font-medium text-sm">Babugonj, Barisal</p>
+                </div>
                 {postUser?.isVerified && (
                   <Image
                     src={verified}
@@ -105,7 +114,6 @@ export default function Page() {
                   />
                 )}
               </div>
-              <p className="font-medium text-gray-300">{postUser?.email}</p>
               <div className="flex gap-4 mt-2">
                 <button
                   onClick={onFollowersOpen}
@@ -129,7 +137,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <ViewMyPost
+        <ViewVisitUserPosts
           postsData={postsData}
           isPostsDataLoading={isPostsDataLoading}
         />

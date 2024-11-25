@@ -25,9 +25,10 @@ export const UserLink = ({
       href={isOwner ? "/profile/my-profile" : "/profile/user-profile"}
       className="flex gap-2 items-center p-2 cursor-pointer w-fit text-start"
     >
-
       <div>
-        <div className={`relative ${isShared ? "xl:h-9 h-8 xl:w-9 w-8 ": "xl:h-10 h-9 xl:w-10 w-9 "} `}>
+        <div
+          className={`relative ${isShared ? "xl:h-9 h-8 xl:w-9 w-8 " : "xl:h-10 h-9 xl:w-10 w-9 "} `}
+        >
           <Image
             src={user.profilePhoto}
             alt="profile photo"
