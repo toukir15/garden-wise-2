@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import verified from "../../../../../../public/verified.png";
+import verified from "../../../../public/verified.png";
 import { useGetVisitProfilePosts } from "@/src/hooks/post.hook";
 import {
   useGetViewProfileFollowers,
@@ -15,11 +15,11 @@ import {
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
 import Loading from "@/src/components/loading/Loading";
-import { IUser } from "../../../../../../types";
 import { MdOutlineLocationOn } from "react-icons/md";
 import ViewVisitUserPosts from "@/src/components/shared/ViewVisitUserPosts";
+import { IUser } from "../../../../types";
 
-export default function Page() {
+export default function VisitUserProfile() {
   const {
     mutate: handlePayment,
     data,

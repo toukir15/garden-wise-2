@@ -20,7 +20,11 @@ export const createBaseQuery = (
 }
 
 export const getSortOrderPipeline = (queryTerm: string): PipelineStage[] => {
-  if (queryTerm === 'recent') {
+  if (
+    queryTerm === 'recent' ||
+    queryTerm === 'premium' ||
+    queryTerm === 'popular'
+  ) {
     return [{ $sort: { createdAt: -1 } }]
   }
   return []

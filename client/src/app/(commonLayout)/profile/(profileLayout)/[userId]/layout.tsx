@@ -1,10 +1,8 @@
-/* eslint-disable prettier/prettier */
 import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/src/config/site";
 import FollowRequest from "@/src/components/shared/RightSidebar";
 import Sidebar from "@/src/components/shared/Sidber";
-import MobileMenu from "@/src/components/MobileMenu";
 import RightSidebar from "@/src/components/shared/RightSidebar";
 
 export const metadata: Metadata = {
@@ -25,29 +23,29 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <div className="flex lg:container gap-4 mx-auto ">
-        <div className="hidden xl:block w-[19%]">
-          <div className="fixed">
-            <Sidebar />
-          </div>
-        </div>
-        <div className="w-full xl:w-[62%] border border-gray-600 min-h-screen">
-          {children}
-        </div>
-        <div className="hidden xl:block w-[23%] h-fit pt-4 rounded-lg">
-          <div className="fixed">
-            <RightSidebar />
-          </div>
+    <div className="flex flex-col gap-4 xl:flex-row xl:container mx-auto h-screen">
+      {/* Sidebar - visible on extra large screens */}
+      <div className="w-full xl:w-[19%] hidden xl:block">
+        <div className="fixed">
+          <Sidebar />
         </div>
       </div>
-      <MobileMenu />
-    </>
+
+      {/* Main content area */}
+      <div className="w-full xl:w-[62%] ">{children}</div>
+
+      {/* FollowRequest - visible on extra large screens */}
+      <div className="w-full xl:w-[23%] h-fit pt-4 rounded-lg hidden xl:block">
+        <div className="fixed">
+          <RightSidebar />
+        </div>
+      </div>
+    </div>
   );
 }

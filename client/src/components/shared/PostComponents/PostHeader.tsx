@@ -3,7 +3,6 @@ import { UserLink } from "./UserLink";
 
 export const PostHeader = ({
   data,
-  isOwner,
   handleUserClick,
   toggleDropdown,
   setPostId,
@@ -19,7 +18,6 @@ export const PostHeader = ({
     <div className="flex w-full justify-between">
       <UserLink
         user={user}
-        isOwner={isOwner}
         handleUserClick={handleUserClick}
         category={data.post.category}
         isPremium={data.post.isPremium}

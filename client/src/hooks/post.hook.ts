@@ -42,10 +42,8 @@ export const useGetPosts = ({
   queryTerm: string;
   searchTerm: string;
 }) => {
-
-  return useQuery(
-    ["posts", queryTerm, searchTerm],
-    () => getPosts(queryTerm, searchTerm)
+  return useQuery(["posts", queryTerm, searchTerm], () =>
+    getPosts(queryTerm, searchTerm)
   );
 };
 

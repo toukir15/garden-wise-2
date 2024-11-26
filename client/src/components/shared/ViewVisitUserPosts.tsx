@@ -23,6 +23,8 @@ import Post from "./Post";
 import SharePostModal from "../modal/SharePostModal";
 import EditPostModal from "../modal/EditPostModal";
 import { FiAlertCircle } from "react-icons/fi";
+import NoResults from "./NoResult";
+import ProfilePostLoading from "../loading/ProfilePostLoading";
 
 export default function ViewVisitUserPosts({
   postsData,
@@ -125,20 +127,16 @@ export default function ViewVisitUserPosts({
 
   return (
     <>
-      {isPostsDataLoading && <ComponentLoading />}
+      {isPostsDataLoading && <ProfilePostLoading />}
       {postsData?.data?.data?.length < 1 && (
-        <div className="flex justify-center items-center mt-32 text-center">
-          <div>
-            <FiAlertCircle size={40} className="text-gray-400 mx-auto" />{" "}
-            <p className="text-gray-500 text-lg mt-4">No posts available.</p>
-            <p className="text-sm text-gray-400 mt-2">
-              It looks like there are no posts right now. Please check back
-              later!
-            </p>
-          </div>
-        </div>
+        <NoResults
+          message="No posts available."
+          description=" It looks like there are no posts right now. Please check back
+                later!"
+          height={"h-[calc(100vh-400px)]"}
+        />
       )}
-      <div className="w-full">
+      <div className="w-full h-[calc(100vh-310px)]">
         {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
           const upvoteStatus = checkVoteStatus(

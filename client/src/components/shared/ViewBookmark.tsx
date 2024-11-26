@@ -24,6 +24,7 @@ import EditPostModal from "../modal/EditPostModal";
 import SharePostModal from "../modal/SharePostModal";
 import { FiAlertCircle } from "react-icons/fi";
 import { useGetBookmarks } from "@/src/hooks/bookmark.hook";
+import NoResults from "./NoResult";
 
 export default function ViewBookmark() {
   // Local state
@@ -39,7 +40,7 @@ export default function ViewBookmark() {
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // Hook
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
 
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -61,32 +62,32 @@ export default function ViewBookmark() {
   const { data: postsData, isLoading: isPostsDataLoading } = useGetBookmarks();
 
   // Upvote mutation hook
-  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm});
+  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
   const handlePostUpvote = (voteId: string, postId: string) => {
     handleUpvote({ voteId, postId, userId });
   };
 
   // Downvote mutation hook
-  const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm});
+  const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm });
   const handlePostDownvote = (voteId: string, postId: string) => {
     handleDownvote({ voteId, postId, userId });
   };
 
   // Share post mutation hook
-  const { mutate: handleSharePost } = useSharePost({ queryTerm, searchTerm});
+  const { mutate: handleSharePost } = useSharePost({ queryTerm, searchTerm });
   const handlePostShare = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSharePost({ description, postId });
   };
 
   // Delete post mutation hook
-  const { mutate: handleDelete } = useDeletePost({ queryTerm, searchTerm});
+  const { mutate: handleDelete } = useDeletePost({ queryTerm, searchTerm });
   const handlePostDelete = (postId: string) => {
     handleDelete({ postId });
   };
 
   // Edit post mutation hook
-  const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm});
+  const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm });
   const handlePostEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = { description: editPostDescription };
@@ -97,7 +98,7 @@ export default function ViewBookmark() {
   // const handleScroll = () => {
   //   const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
   //   if (bottom && postsData?.data?.data?.length && !isPostsDataLoading) {
-  //     setPage((prev) => prev + 1);  
+  //     setPage((prev) => prev + 1);
   //   }
   // };
 
@@ -106,18 +107,16 @@ export default function ViewBookmark() {
   //   return () => window.removeEventListener("scroll", handleScroll);
   // }, [postsData]);
 
-
   return (
     <div>
       {/* NO DATA AVAILABLE MESSAGE */}
       {postsData?.data?.data?.posts.length < 1 && (
-       <div className="flex justify-center items-center mt-20 xl:mt-40 text-center">
-       <div>
-         <FiAlertCircle  size={40} className="text-gray-400 mx-auto" /> {/* Icon for alert */}
-         <p className="text-gray-500 text-lg mt-4">No posts available.</p>
-         <p className="text-sm text-gray-400 mt-2">It looks like there are no posts right now. Please check back later!</p>
-       </div>
-     </div>
+        <NoResults
+          message="No posts available."
+          description=" It looks like there are no Bookmark posts right now. Please check back
+                later!"
+          height="h-[calc(100vh-400px)]"
+        />
       )}
 
       {/* POSTS LOADING... */}
@@ -127,8 +126,18 @@ export default function ViewBookmark() {
       <div>
         {postsData?.data?.data?.posts.map((data: TPost, key: number) => {
           const images = data?.post?.images || [];
-          const upvoteStatus = checkVoteStatus(data.isShared, data, userId, "upvote");
-          const downvoteStatus = checkVoteStatus(data.isShared, data, userId, "downvote");
+          const upvoteStatus = checkVoteStatus(
+            data.isShared,
+            data,
+            userId,
+            "upvote"
+          );
+          const downvoteStatus = checkVoteStatus(
+            data.isShared,
+            data,
+            userId,
+            "downvote"
+          );
           return (
             <div key={key}>
               {/* Render Post or SharedPost depending on data */}

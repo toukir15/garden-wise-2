@@ -24,8 +24,7 @@ export default function Post({
   setEditPostDescription,
   postId,
 }: any) {
-  const { setPostUser, user } = useContext(UserContext) as IUserProviderValues;
-  const isPostOwner = user?._id === data?.post.user._id;
+  const { setPostUser } = useContext(UserContext) as IUserProviderValues;
   const handleUserClick = (postUser: any) => setPostUser(postUser);
   const handleEditPost = () => {
     editOnOpen();
@@ -37,7 +36,6 @@ export default function Post({
       <div className="flex justify-between">
         <PostHeader
           data={data}
-          isOwner={isPostOwner}
           handleUserClick={handleUserClick}
           toggleDropdown={toggleDropdown}
           setPostId={setPostId}

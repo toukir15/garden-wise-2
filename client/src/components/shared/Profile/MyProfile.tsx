@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "sonner";
 import { logout } from "@/src/services/auth";
-import verified from "../../../../../../public/verified.png";
+import verified from "../../../../public/verified.png";
 import { useGetMyPosts } from "@/src/hooks/post.hook";
 import {
   useGetFollowers,
@@ -21,13 +21,12 @@ import {
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
 import Loading from "@/src/components/loading/Loading";
-import { IUser } from "../../../../../../types";
 import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
 import ViewMyPost from "@/src/components/shared/ViewMyPosts";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { IUser } from "../../../../types";
 
-export default function Page() {
-  const { user } = useContext(UserContext) as IUserProviderValues;
+export default function MyProfile({ user }: any) {
   const { postCount } = useContext(PostContext);
   const [isClient, setIsClient] = useState(false);
   const {
@@ -99,10 +98,6 @@ export default function Page() {
     );
   };
 
-  if (isPaymentLoading) {
-    return <Loading />;
-  }
-
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -111,6 +106,7 @@ export default function Page() {
 
   return (
     <>
+      {isPaymentLoading && <Loading />}
       <section className="flex flex-col">
         <div className="p-4 gap-4 border-b border-gray-600">
           <div className="relative w-[150px] h-[150px]">

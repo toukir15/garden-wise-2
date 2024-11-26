@@ -40,7 +40,9 @@ export const getPosts = async (queryTerm: string, searchTerm: string) => {
 
 export const getVisitProfilePost = async (id: string) => {
   try {
-    const { data } = await axiosInstance.get(`/posts/visit-profile-posts/${id}`);
+    const { data } = await axiosInstance.get(
+      `/posts/visit-profile-posts/${id}`
+    );
     return { data };
   } catch (error: any) {
     throw new Error(error);

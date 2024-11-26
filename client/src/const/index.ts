@@ -32,5 +32,5 @@ export const sidebarLinks = [
   { href: "/bookmark", icon: IoIosBookmark, label: "Bookmark", size: 20 },
   { icon: FaUsers, label: "Communities", size: 20 },
   { href: "/", icon: MdDiamond, label: "Premium", size: 20 },
-  { href: "/profile/my-profile", icon: RiUserFill, label: "Profile", size: 20 },
+  { href: "/profile", icon: RiUserFill, label: "Profile", size: 20 },
 ];

@@ -79,11 +79,11 @@ export const getPostsFromDB = async (
   query: Record<string, unknown>,
   user: JwtPayload,
 ) => {
-  const searchTerm = (query?.searchTerm as string) || '';
-  const queryTerm = (query?.queryTerm as string) || '';
+  const searchTerm = (query?.searchTerm as string) || ''
+  const queryTerm = (query?.queryTerm as string) || ''
 
-  const baseQuery = createBaseQuery(searchTerm, queryTerm, user);
-  const sortPipeline = getSortOrderPipeline(queryTerm);
+  const baseQuery = createBaseQuery(searchTerm, queryTerm, user)
+  const sortPipeline = getSortOrderPipeline(queryTerm)
 
   const pipeline: PipelineStage[] = [
     { $match: baseQuery },
@@ -100,27 +100,25 @@ export const getPostsFromDB = async (
         createdAt: 1,
       },
     },
-  ];
+  ]
 
   // Execute aggregation
-  let result = await Post.aggregate(pipeline).exec();
+  let result = await Post.aggregate(pipeline).exec()
 
   // Populate fields
-  await Post.populate(result, populateOptions);
+  await Post.populate(result, populateOptions)
 
   // Apply additional filters for unverified users
   if (!user.isVerified) {
-    result = filterPostsForUnverifiedUser(result, user);
+    result = filterPostsForUnverifiedUser(result, user)
   }
-
   // Sort by popularity if the query term is 'popular'
-  if (queryTerm === 'popular') {
-    result = sortPopularPosts(result);
+  if (queryTerm === 'popular' || searchTerm || queryTerm === 'premium') {
+    result = sortPopularPosts(result)
   }
 
-  return result;
-};
-
+  return result
+}
 
 const getVisitProfilePostsFromDB = async (userId: string) => {
   const result = await Post.find({

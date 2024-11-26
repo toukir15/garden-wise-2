@@ -34,6 +34,7 @@ import MobileFollowSugg from "../MobileFollowSugg";
 import { FiAlertCircle } from "react-icons/fi";
 import ViewCom from "./PostComponents/ViewCom";
 import { Button, Modal } from "antd";
+import NoResults from "./NoResult";
 
 export default function ViewPost() {
   // Local state
@@ -147,17 +148,12 @@ export default function ViewPost() {
     <div>
       {/* NO DATA AVAILABLE MESSAGE */}
       {postsData?.data?.data?.length < 1 && (
-        <div className="flex justify-center items-center mt-32 text-center">
-          <div>
-            <FiAlertCircle size={40} className="text-gray-400 mx-auto" />{" "}
-            {/* Icon for alert */}
-            <p className="text-gray-500 text-lg mt-4">No posts available.</p>
-            <p className="text-sm text-gray-400 mt-2">
-              It looks like there are no posts right now. Please check back
-              later!
-            </p>
-          </div>
-        </div>
+        <NoResults
+          message="No posts available."
+          height="h-[calc(100vh-140px)]"
+          description=" It looks like there are no posts right now. Please check back
+                later!"
+        />
       )}
 
       {/* POSTS LOADING... */}
@@ -253,7 +249,6 @@ export default function ViewPost() {
           editPostDescription={editPostDescription}
           setEditPostDescription={setEditPostDescription}
         />
-
 
         {(isOpenComment || isOpenSharedComment) && (
           <ViewCom

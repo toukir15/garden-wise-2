@@ -33,19 +33,17 @@ export default function RootLayout({
       {/* Sidebar - visible on extra large screens */}
       <div className="w-full xl:w-[19%] hidden xl:block">
         <div className="fixed">
-        <Sidebar />
+          <Sidebar />
         </div>
       </div>
 
       {/* Main content area */}
-      <div className="w-full xl:w-[62%]">
-        {children}
-      </div>
+      <div className="w-full xl:w-[62%]">{children}</div>
 
       {/* FollowRequest - visible on extra large screens */}
       <div className="w-full xl:w-[23%] h-fit pt-4 rounded-lg hidden xl:block">
         <div className="fixed">
-        <RightSidebar />
+          <RightSidebar />
         </div>
       </div>
     </div>

@@ -10,6 +10,11 @@ router.get(
   auth(USER_ROLE.user, USER_ROLE.admin),
   UserControllers.getFollowSuggetionUsers,
 )
+router.get(
+  '/:userId',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  UserControllers.getUser,
+)
 // router.get('/:userId', UserControllers.getUsers)
 router.post('/:id', UserControllers.updateUser)
 

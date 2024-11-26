@@ -4,9 +4,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import "lightgallery/css/lightgallery.css";
-import {
-  useDisclosure,
-} from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import {
   useDeletePost,
   useDownvote,
@@ -25,8 +23,10 @@ import Post from "../shared/Post";
 import { FiAlertCircle } from "react-icons/fi";
 import SharePostModal from "../modal/SharePostModal";
 import EditPostModal from "../modal/EditPostModal";
+import ProfilePostLoading from "../loading/ProfilePostLoading";
+import NoResults from "./NoResult";
 
-export default function ViewMyPost({postsData, isPostsDataLoading}: any) {
+export default function ViewMyPost({ postsData, isPostsDataLoading }: any) {
   // local state
   const [postId, setPostId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -39,7 +39,7 @@ export default function ViewMyPost({postsData, isPostsDataLoading}: any) {
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // hook
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
 
   // modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -72,8 +72,6 @@ export default function ViewMyPost({postsData, isPostsDataLoading}: any) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
 
   const upvoteCount = postsData?.data.data.reduce(
     (accumulator: number, currentValue: TPost) => {
@@ -126,14 +124,15 @@ export default function ViewMyPost({postsData, isPostsDataLoading}: any) {
 
   return (
     <>
-      {isPostsDataLoading && <ComponentLoading />}
-      {postsData?.data?.data?.length < 1 &&   <div className="flex justify-center items-center mt-32 text-center">
-    <div>
-      <FiAlertCircle  size={40} className="text-gray-400 mx-auto" /> {/* Icon for alert */}
-      <p className="text-gray-500 text-lg mt-4">No posts available.</p>
-      <p className="text-sm text-gray-400 mt-2">It looks like there are no posts right now. Please check back later!</p>
-    </div>
-  </div> } 
+      {isPostsDataLoading && <ProfilePostLoading />}
+      {postsData?.data?.data?.length < 1 && (
+        <NoResults
+          message="No posts available."
+          description=" It looks like there are no posts right now. Please check back
+                later!"
+          height="h-[calc(100vh-400px)]"
+        />
+      )}
       <div className="w-full">
         {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
@@ -151,71 +150,73 @@ export default function ViewMyPost({postsData, isPostsDataLoading}: any) {
           );
           return (
             <div key={key}>
-            {!data.isShared && (
-            <Post
-            {...{
-              data,
-              navbarRef,
-              isDropdownOpen,
-              toggleDropdown,
-              setPostId,
-              handlePostDelete,
-              handlePostDownvote,
-              handlePostUpvote,
-              setIsOpenComment,
-              setOpenSharedComment,
-              upvoteStatus,
-              images,
-              downvoteStatus,
-              onOpen,
-              editOnOpen,
-              setEditPostDescription,
-              postId,
-            }} 
-          />
-            )}
+              {!data.isShared && (
+                <Post
+                  {...{
+                    data,
+                    navbarRef,
+                    isDropdownOpen,
+                    toggleDropdown,
+                    setPostId,
+                    handlePostDelete,
+                    handlePostDownvote,
+                    handlePostUpvote,
+                    setIsOpenComment,
+                    setOpenSharedComment,
+                    upvoteStatus,
+                    images,
+                    downvoteStatus,
+                    onOpen,
+                    editOnOpen,
+                    setEditPostDescription,
+                    postId,
+                  }}
+                />
+              )}
 
-            {data.isShared && (
-            <SharedPost {...{
-              data,
-              isDropdownOpen,
-              toggleDropdown,
-              setPostId,
-              handlePostDelete,
-              handlePostDownvote,
-              handlePostUpvote,
-              setIsOpenComment,
-              setOpenSharedComment,
-              upvoteStatus,
-              images,
-              downvoteStatus,
-              onOpen,
-              editOnOpen,
-              setEditPostDescription,
-              postId,
-            }} />
-            )}
-          </div>
+              {data.isShared && (
+                <SharedPost
+                  {...{
+                    data,
+                    isDropdownOpen,
+                    toggleDropdown,
+                    setPostId,
+                    handlePostDelete,
+                    handlePostDownvote,
+                    handlePostUpvote,
+                    setIsOpenComment,
+                    setOpenSharedComment,
+                    upvoteStatus,
+                    images,
+                    downvoteStatus,
+                    onOpen,
+                    editOnOpen,
+                    setEditPostDescription,
+                    postId,
+                  }}
+                />
+              )}
+            </div>
           );
         })}
 
-       {/* share post  */}
-       <SharePostModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        handlePostShare={handlePostShare}
-        description={description}
-        setDescription={setDescription}
-      />
+        {/* share post  */}
+        <SharePostModal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          handlePostShare={handlePostShare}
+          description={description}
+          setDescription={setDescription}
+        />
 
         {/* edit post  */}
         <EditPostModal
-        isEditOpen={isEditOpen}
-        editOnOpenChange={editOnOpenChange}
-        handlePostEdit={handlePostEdit}
-        editPostDescription={editPostDescription}
-        setEditPostDescription={setEditPostDescription}
-      />
+          isEditOpen={isEditOpen}
+          editOnOpenChange={editOnOpenChange}
+          handlePostEdit={handlePostEdit}
+          editPostDescription={editPostDescription}
+          setEditPostDescription={setEditPostDescription}
+        />
 
         {(isOpenComment || isOpenSharedComment) && (
           <ViewComment

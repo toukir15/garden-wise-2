@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Spinner } from "@nextui-org/react";
 import { useGetFollowSuggetionUsers } from "@/src/hooks/user.hook";
 import { useFollowUser } from "@/src/hooks/connection.hook";
 import FollowUserCard from "./FollowUserCard";
 import { IUser } from "../../../../types";
+import FollowSuggetionLoading from "../../loading/FollowSuggetionLoading";
 
 export default function FollowUserList() {
   const { data: followSuggetionUsersData, isLoading } =
@@ -25,13 +25,7 @@ export default function FollowUserList() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center">
-        <div className="absolute top-40 h-fit">
-          <Spinner color="success" />
-        </div>
-      </div>
-    );
+    return <FollowSuggetionLoading />;
   }
 
   return (

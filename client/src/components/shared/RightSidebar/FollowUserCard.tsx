@@ -16,16 +16,16 @@ export default function FollowUserCard({
   onFollow,
 }: FollowUserCardProps) {
   const router = useRouter();
+
   const handlePostUser = (postUser: any) => {
     localStorage.setItem("user-profile", JSON.stringify(postUser));
-    router.push("/profile/user-profile");
+    router.push(`/profile/${postUser._id}`);
   };
+
   return (
     <div
-      onClick={() => {
-        handlePostUser(user);
-      }}
-      className={`py-3 border-b cursor-pointer hover:bg-[#080808] transition duration-150 border-gray-900`}
+      onClick={() => handlePostUser(user)}
+      className="py-3 border-b cursor-pointer hover:bg-[#080808] transition duration-150 border-gray-900"
     >
       <div className="flex gap-2 px-2 items-center">
         {/* Profile Photo */}
@@ -48,12 +48,18 @@ export default function FollowUserCard({
           </div>
 
           {isLoading ? (
-            <button className="bg-green-600 hover:bg-green-500 transition duration-150 px-6 text-white text-xs py-[3px] rounded-full">
+            <button
+              onClick={(e) => e.stopPropagation()} // Prevent navigation
+              className="bg-green-600 hover:bg-green-500 transition duration-150 px-6 text-white text-xs py-[3px] rounded-full"
+            >
               <BsThreeDots />
             </button>
           ) : (
             <button
-              onClick={() => onFollow(user)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onFollow(user);
+              }}
               className="bg-green-600 hover:bg-green-500 transition duration-150 text-white text-xs py-[3px] px-3 rounded-full"
             >
               Follow

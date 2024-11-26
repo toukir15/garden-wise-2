@@ -6,7 +6,6 @@ import { LuDot } from "react-icons/lu";
 
 export const UserLink = ({
   user,
-  isOwner,
   handleUserClick,
   isPremium,
   createdAt,
@@ -22,7 +21,7 @@ export const UserLink = ({
         handleUserClick(user);
         handlePostUser(user);
       }}
-      href={isOwner ? "/profile/my-profile" : "/profile/user-profile"}
+      href={`/profile/${user._id}`}
       className="flex gap-2 items-center p-2 cursor-pointer w-fit text-start"
     >
       <div>

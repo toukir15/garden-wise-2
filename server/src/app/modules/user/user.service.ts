@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs'
 import AppError from '../../errors/AppError'
 import { Connection } from '../connection/connection.model'
 
-
 const createUserIntoDB = async (payload: TUser) => {
   // check user is exist or not
   const isUserExist = await User.findOne({ email: payload.email })
@@ -45,11 +44,25 @@ const getFollowSuggetionUsersFromDB = async (userId: string) => {
 
   // Fetch users that are NOT in the followers and followings arrays
   const usersNotConnected = await User.find({
-    _id: { $nin: [ ...followings, userId] },
+    _id: { $nin: [...followings, userId] },
   })
 
   // Return the result
   return usersNotConnected
+}
+
+const getUserFromDB = async (userId: string) => {
+  console.log(userId)
+
+  // Find the user by ID
+  const findUser = await User.findById(userId)
+
+  if (!findUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User not found')
+  }
+
+  const result = await User.findById(userId)
+  return result
 }
 
 const updateUserIntoDB = async (id: string) => {
@@ -65,4 +78,5 @@ export const UserServices = {
   createUserIntoDB,
   getFollowSuggetionUsersFromDB,
   updateUserIntoDB,
+  getUserFromDB,
 }

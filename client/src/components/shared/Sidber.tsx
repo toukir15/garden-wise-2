@@ -98,39 +98,44 @@ export default function Sidebar() {
 
           {/* Navigation Links */}
           <div className="mt-3">
-            {sidebarLinks.map(({ href, icon, label, size }, index) => (
-              <div key={index}>
-                {label === "Premium" ? (
-                  <SidebarButton
-                    onClick={handleVerifyPosts}
-                    href={href}
-                    icon={icon}
-                    label={label}
-                    size={size}
-                  />
-                ) : index === 4 ? (
-                  <>
+            {sidebarLinks.map(({ href, icon, label, size }, index) => {
+              if (label == "Profile") {
+                href = href + `/${user?._id}`;
+              }
+              return (
+                <div key={index}>
+                  {label === "Premium" ? (
                     <SidebarButton
-                      onClick={onFollowersOpen}
-                      icon={BsFillPeopleFill}
-                      label={`Followers (${followersUsersData?.data?.data?.followers?.length || 0})`}
+                      onClick={handleVerifyPosts}
+                      href={href}
+                      icon={icon}
+                      label={label}
+                      size={size}
                     />
+                  ) : index === 4 ? (
+                    <>
+                      <SidebarButton
+                        onClick={onFollowersOpen}
+                        icon={BsFillPeopleFill}
+                        label={`Followers (${followersUsersData?.data?.data?.followers?.length || 0})`}
+                      />
+                      <SidebarButton
+                        onClick={onFollowingsOpen}
+                        icon={BsFillPeopleFill}
+                        label={`Followings (${followingsUsersData?.data?.data?.followings?.length || 0})`}
+                      />
+                    </>
+                  ) : (
                     <SidebarButton
-                      onClick={onFollowingsOpen}
-                      icon={BsFillPeopleFill}
-                      label={`Followings (${followingsUsersData?.data?.data?.followings?.length || 0})`}
+                      href={href}
+                      icon={icon}
+                      label={label}
+                      size={size}
                     />
-                  </>
-                ) : (
-                  <SidebarButton
-                    href={href}
-                    icon={icon}
-                    label={label}
-                    size={size}
-                  />
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
 
             {/* Post Button */}
             <Button
@@ -147,7 +152,7 @@ export default function Sidebar() {
         <div>
           <div className="px-1 rounded-lg">
             <Link
-              href="/profile/my-profile"
+              href={`/profile/${user?._id}`}
               className="flex items-center gap-3"
             >
               <div>
