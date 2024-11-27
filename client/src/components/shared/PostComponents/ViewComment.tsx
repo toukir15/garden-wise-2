@@ -9,27 +9,20 @@ import { PostContext } from "@/src/context/post.provider";
 import CommentEditForm from "./CommentEditForm";
 dayjs.extend(relativeTime);
 
-export default function ViewComment({
-  postId,
-  setIsOpenComment,
-  setOpenSharedComment,
-}: {
-  postId: string;
-  setIsOpenComment: React.Dispatch<React.SetStateAction<boolean>>;
-  setOpenSharedComment: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const {editComment} = useContext(PostContext)
+export default function ViewComment() {
+  const { editComment, setIsOpenComment, setOpenSharedComment, postId } =
+    useContext(PostContext);
   return (
     <button
       onClick={() => {
         setIsOpenComment(false);
         setOpenSharedComment(false);
       }}
-      className="fixed top-0 left-0 w-screen h-screen bg-[#000000ba] z-50 "
+      className="fixed top-0 xl:left-0 w-screen h-screen bg-[#000000ba] z-[99]"
     >
       <button
         onClick={(e) => e.stopPropagation()}
-        className="w-[95%] md:w-[600px] lg:w-[660px] bg-[#121212] rounded-md absolute right-[51%] translate-x-1/2 top-[18%] md:top-[12%] cursor-default flex flex-col justify-between "
+        className="w-full h-full xl:h-fit md:w-[600px] lg:w-[660px] bg-[#121212] rounded-md absolute right-[51%] translate-x-1/2 top-[0%] md:top-[12%] cursor-default flex flex-col justify-between "
       >
         {/* hade and body  */}
         <div className="w-full">
@@ -50,8 +43,8 @@ export default function ViewComment({
             <Comment postId={postId} />
           </div>
           <div>
-           {!editComment && <CommentForm postId={postId} />}
-           {editComment && <CommentEditForm postId={postId}  />}
+            {!editComment && <CommentForm postId={postId} />}
+            {editComment && <CommentEditForm postId={postId} />}
           </div>
         </div>
       </button>

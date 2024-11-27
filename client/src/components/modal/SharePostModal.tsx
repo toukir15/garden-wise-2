@@ -1,26 +1,30 @@
-import { Button } from '@nextui-org/button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
-import React from 'react';
+import { Button } from "@nextui-org/button";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/modal";
+import React, { useContext } from "react";
 
 // Dynamically import ReactQuill to avoid SSR issues
-import dynamic from 'next/dynamic';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import dynamic from "next/dynamic";
+import { PostContext } from "@/src/context/post.provider";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface SharePostModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   handlePostShare: (e: React.FormEvent<HTMLFormElement>) => void;
-  description: string;
-  setDescription: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SharePostModal: React.FC<SharePostModalProps> = ({
   isOpen,
   onOpenChange,
   handlePostShare,
-  description,
-  setDescription
 }) => {
+  const { setDescription, description } = useContext(PostContext);
   return (
     <Modal
       className="bg-[#121212]"
@@ -43,7 +47,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({
                     className="text-white custom-quill sm:h-[100px] lg:h-[150px]"
                     value={description}
                     onChange={setDescription}
-                    style={{ height: "100px" }} // Default height for small devices
+                    style={{ height: "100px" }}
                   />
                 </div>
               </ModalBody>

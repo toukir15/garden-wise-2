@@ -67,7 +67,7 @@ const forgetPassword = catchAsync(async (req, res) => {
 })
 
 const sendForgetEmail = catchAsync(async (req, res) => {
-  const result = await AuthServices.sendForgetEmail(req.user.email)
+  const result = await AuthServices.sendForgetEmail(req.body.email)
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -107,5 +107,5 @@ export const AuthControllers = {
   refreshToken,
   editProfile,
   sendForgetEmail,
-  forgetPassword
+  forgetPassword,
 }

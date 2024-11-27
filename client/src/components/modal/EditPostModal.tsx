@@ -6,27 +6,27 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import React from "react";
+import React, { useContext } from "react";
 
 // Dynamically import ReactQuill to avoid SSR issues
 import dynamic from "next/dynamic";
+import { PostContext } from "@/src/context/post.provider";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface EditPostModalProps {
   isEditOpen: boolean;
   editOnOpenChange: (isOpen: boolean) => void;
   handlePostEdit: (e: React.FormEvent<HTMLFormElement>) => void;
-  editPostDescription: string;
-  setEditPostDescription: (description: string) => void;
+  // editPostDescription: string;
 }
 
 export default function EditPostModal({
   isEditOpen,
   editOnOpenChange,
   handlePostEdit,
-  editPostDescription,
-  setEditPostDescription,
 }: EditPostModalProps) {
+  const { setEditPostDescription, editPostDescription } =
+    useContext(PostContext);
   return (
     <Modal
       className="bg-[#121212]"

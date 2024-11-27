@@ -19,12 +19,14 @@ interface IChangePasswordForm {
 export default function Page() {
   const { user } = useContext(UserContext) as IUserProviderValues;
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<IChangePasswordForm>();
+
   const {
     mutate: handleChangePassword,
     isSuccess,
@@ -49,17 +51,23 @@ export default function Page() {
     }
   }, [isSuccess, router]);
 
-  const { mutate: sendForgetEmail } = useSendForgetEmail();
-  const handleForgetPassword = () => {
-    sendForgetEmail();
-  };
+  const { mutate: sendForgetEmail, isSuccess: isSendForgetEmailSuccess } =
+    useSendForgetEmail();
+
+  useEffect(() => {
+    if (isSendForgetEmailSuccess) {
+      toast.success("Check your email and change the password!", {
+        duration: 2000,
+      });
+    }
+  }, [isSendForgetEmailSuccess]);
 
   const newPassword = watch("newPassword");
 
   return (
     <section className="flex justify-center flex-col items-center h-screen px-4 sm:px-6 md:px-8">
       <div className="w-full max-w-md md:max-w-lg lg:max-w-xl">
-        <div className=" p-3 xl:p-6 flex flex-col justify-center items-center gap-6 rounded-lg shadow-lg">
+        <div className="p-3 xl:p-6 flex flex-col justify-center items-center gap-6 rounded-lg shadow-lg">
           <div className="relative rounded-full overflow-hidden w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40">
             <Image
               src={
@@ -80,7 +88,7 @@ export default function Page() {
             </p>
           </div>
         </div>
-        <div className=" xl:mt-6">
+        <div className="xl:mt-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <PasswordInput
               label="Current Password"
@@ -148,11 +156,6 @@ export default function Page() {
               </Link>
             </div>
           </form>
-          <div className="text-center w-full mt-6 text-gray-400 hover:text-white transition duration-200">
-            <button onClick={handleForgetPassword} className="border-b">
-              Forget password
-            </button>
-          </div>
         </div>
       </div>
     </section>

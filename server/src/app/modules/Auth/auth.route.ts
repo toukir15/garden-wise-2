@@ -16,10 +16,7 @@ router.post(
   multerUpload.single('file'),
   AuthControllers.registerUser,
 )
-router.post(
-  '/login',
-  AuthControllers.loginUser,
-)
+router.post('/login', AuthControllers.loginUser)
 
 router.patch(
   '/change-password',
@@ -33,11 +30,7 @@ router.patch(
   AuthControllers.forgetPassword,
 )
 
-router.post(
-  '/send-forget-email',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AuthControllers.sendForgetEmail,
-)
+router.post('/send-forget-email', AuthControllers.sendForgetEmail)
 
 router.post(
   '/edit-profile',

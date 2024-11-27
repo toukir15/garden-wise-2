@@ -4,31 +4,26 @@ import LightGalleryImageView from "./PostComponents/LightGalleryImageView";
 import PostDescription from "./PostComponents/PostDescription";
 import PostActions from "./PostComponents/PostActions";
 import { PostHeader } from "./PostComponents/PostHeader";
+import { PostContext } from "@/src/context/post.provider";
 
 export default function Post({
   data,
   navbarRef,
-  isDropdownOpen,
-  toggleDropdown,
-  setPostId,
   handlePostDelete,
   handlePostDownvote,
-  handlePostUpvote,
   handleSaveUnsave,
-  setIsOpenComment,
-  setOpenSharedComment,
   upvoteStatus,
   downvoteStatus,
   onOpen,
   editOnOpen,
-  setEditPostDescription,
   postId,
 }: any) {
   const { setPostUser } = useContext(UserContext) as IUserProviderValues;
   const handleUserClick = (postUser: any) => setPostUser(postUser);
+  const { setPostId, setEditPostDescription } = useContext(PostContext);
   const handleEditPost = () => {
     editOnOpen();
-    setEditPostDescription(data.description);
+    setEditPostDescription(data.post.description);
     setPostId(data._id);
   };
   return (
@@ -37,11 +32,8 @@ export default function Post({
         <PostHeader
           data={data}
           handleUserClick={handleUserClick}
-          toggleDropdown={toggleDropdown}
-          setPostId={setPostId}
           handlePostDelete={handlePostDelete}
           handleEditPost={handleEditPost}
-          isDropdownOpen={isDropdownOpen}
           handleSaveUnsave={handleSaveUnsave}
           postId={postId}
           user={data.post.user}
@@ -56,11 +48,7 @@ export default function Post({
           data={data}
           upvoteStatus={upvoteStatus}
           downvoteStatus={downvoteStatus}
-          setPostId={setPostId}
-          handlePostUpvote={handlePostUpvote}
           handlePostDownvote={handlePostDownvote}
-          setIsOpenComment={setIsOpenComment}
-          setOpenSharedComment={setOpenSharedComment}
           onOpen={onOpen}
         />
       </div>

@@ -1,8 +1,5 @@
 "use client";
-import {
-  IUserProviderValues,
-  UserContext,
-} from "@/src/context/user.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,24 +14,22 @@ export default function Page() {
       <div className="w-full max-w-md">
         <div className="p-6 md:p-8 flex flex-col justify-center items-center gap-4 rounded-lg shadow-md">
           <div>
-          <div className="flex justify-center">
-          <div className="relative flex justify-center rounded-full overflow-hidden w-28 h-28 md:w-36 md:h-36">
-              <Image
-                src={
-                  user?.profilePhoto ||
-                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-                }
-                fill
-                className="object-cover"
-                alt="User Profile"
-              />
+            <div className="flex justify-center">
+              <div className="relative flex justify-center rounded-full overflow-hidden w-28 h-28 md:w-36 md:h-36">
+                <Image
+                  src={
+                    user?.profilePhoto ||
+                    "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                  }
+                  fill
+                  className="object-cover"
+                  alt="User Profile"
+                />
+              </div>
             </div>
-          </div>
             <div className="flex flex-col text-center mt-2 xl:mt-4">
               <p className="text-xl md:text-2xl font-bold">{user?.name}</p>
-              <p className="font-medium text-sm text-gray-500">
-                {user?.email}
-              </p>
+              <p className="font-medium text-sm text-gray-500">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -63,7 +58,7 @@ export default function Page() {
               Change Password
             </Button>
           </Link>
-          <Link className="flex-1" href={"/profile/my-profile"}>
+          <Link className="flex-1" href={`/profile/${user?._id}`}>
             <Button
               type="button"
               size="lg"

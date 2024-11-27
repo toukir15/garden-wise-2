@@ -13,13 +13,15 @@ export default function PostFilter() {
   const { isSearchbarOpen } = useContext(PostContext);
   const { queryTerm, setQueryTerm } = useContext(PostContext);
   const router = useRouter();
-  
-  const {user} = useContext(UserContext) as IUserProviderValues
+
+  const { user } = useContext(UserContext) as IUserProviderValues;
   const handleVerifyPosts = () => {
     if (!user?.isVerified) {
-      toast.warning("Verify user to access premium content!", {duration: 2000});
-      router.push("/profile/my-profile")
-      return
+      toast.warning("Verify user to access premium content!", {
+        duration: 2000,
+      });
+      router.push(`/profile/${user!._id}`);
+      return;
     }
     setQueryTerm("premium");
   };

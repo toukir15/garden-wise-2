@@ -1,19 +1,19 @@
+import { useContext } from "react";
 import { PostDropdown } from "./PostDropdown";
 import { UserLink } from "./UserLink";
+import { PostContext } from "@/src/context/post.provider";
 
 export const PostHeader = ({
   data,
   handleUserClick,
-  toggleDropdown,
-  setPostId,
   handlePostDelete,
   handleEditPost,
   handleSaveUnsave,
-  isDropdownOpen,
   postId,
   user,
 }: any) => {
   const postUserId = data.isShared ? data.sharedUser._id : data.post.user._id;
+  const { isDropdownOpen, toggleDropdown, setPostId } = useContext(PostContext);
   return (
     <div className="flex w-full justify-between">
       <UserLink
@@ -28,7 +28,6 @@ export const PostHeader = ({
           toggleDropdown();
           setPostId(data._id);
         }}
-        setPostId={setPostId}
         handlePostDelete={handlePostDelete}
         handleEdit={handleEditPost}
         isOpen={isDropdownOpen && postId === data._id}

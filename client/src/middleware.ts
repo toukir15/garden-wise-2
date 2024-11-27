@@ -7,43 +7,43 @@ const AuthRoutes = ["/login", "/register"];
 type Role = keyof typeof roleBasedRoutes;
 
 const roleBasedRoutes = {
-  ADMIN: [/^\/admin/],
+  ADMIN: [/^\/admin/], // Matches all routes under "/admin"
 };
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const user = await getCurrentUser();
 
-  // Safely check if the user object exists
+  // Allow access to public routes (login/register)
+  if (AuthRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Redirect unauthenticated users to login
   if (!user || !user._id) {
-    // Allow access to login and register pages even if not authenticated
-    if (AuthRoutes.includes(pathname)) {
-      return NextResponse.next();
-    }
-    // Redirect unauthenticated users to login
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // If the user is authenticated, allow access to the root `/` route
+  // Allow access to the root `/` route for authenticated users
   if (pathname === "/") {
     return NextResponse.next();
   }
 
-  // Handle role-based routes (e.g., admin routes)
-  if (user?.role && roleBasedRoutes[user?.role as Role]) {
-    const routes = roleBasedRoutes[user?.role as Role];
-
-    // If the user has the correct role for the route, allow access
-    if (routes.some((route) => pathname.match(route))) {
+  // Handle role-based access
+  if (pathname.startsWith("/admin")) {
+    // Allow access only if the user has the "ADMIN" role
+    if (user?.role === "admin") {
       return NextResponse.next();
     }
+    // Redirect unauthorized users to home
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // If the user is authenticated but not authorized for the route, redirect to home
-  return NextResponse.redirect(new URL("/", request.url));
+  // Default: allow access to other routes
+  return NextResponse.next();
 }
 
 // Define paths that should be checked by middleware
 export const config = {
-  matcher: [ "/", "/login", "/register"],
+  matcher: ["/", "/admin/:path*", "/login", "/register"],
 };

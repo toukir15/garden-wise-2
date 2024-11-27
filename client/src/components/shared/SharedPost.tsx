@@ -7,29 +7,24 @@ import { UserLink } from "./PostComponents/UserLink";
 import PostActions from "./PostComponents/PostActions";
 import { PostHeader } from "./PostComponents/PostHeader";
 import PostDescription from "./PostComponents/PostDescription";
+import { PostContext } from "@/src/context/post.provider";
 dayjs.extend(relativeTime);
 
 // Main Component
 export default function SharedPost({
   data,
-  isDropdownOpen,
-  toggleDropdown,
-  setPostId,
   handlePostDelete,
   handlePostDownvote,
-  handlePostUpvote,
-  setIsOpenComment,
-  setOpenSharedComment,
   upvoteStatus,
   images,
   downvoteStatus,
   onOpen,
   editOnOpen,
-  setEditPostDescription,
   postId,
 }: any) {
   const { setPostUser, user } = useContext(UserContext) as IUserProviderValues;
   const isSharedPostOwner = user?._id === data?.sharedUser._id;
+  const { setPostId, setEditPostDescription } = useContext(PostContext);
   const isPostOwner = user?._id === data?.post.user._id;
   const handleUserClick = (postUser: any) => setPostUser(postUser);
   const handleEditPost = () => {
@@ -40,22 +35,17 @@ export default function SharedPost({
 
   return (
     <div key={data._id} className="mt-4 shadow-md border-b border-gray-600">
-       <PostHeader
+      <PostHeader
         data={data}
         isOwner={isSharedPostOwner}
         handleUserClick={handleUserClick}
-        toggleDropdown={toggleDropdown}
-        setPostId={setPostId}
         handlePostDelete={handlePostDelete}
         handleEditPost={handleEditPost}
-        isDropdownOpen={isDropdownOpen}
         postId={postId}
         user={data.sharedUser}
       />
-      
-      <PostDescription
-          description={data.description}
-        />
+
+      <PostDescription description={data.description} />
 
       <div className="mx-6 border border-gray-600 p-2 mt-2 rounded-lg">
         <UserLink
@@ -67,8 +57,8 @@ export default function SharedPost({
           createdAt={data.post.createdAt}
           isShared={data.isShared}
         />
-       
-         <PostDescription description={data.post?.description} />
+
+        <PostDescription description={data.post?.description} />
 
         <div className="flex w-[90%] mx-auto justify-center pt-4 pb-4">
           <LightGalleryImageView images={images} />
@@ -79,11 +69,7 @@ export default function SharedPost({
         data={data}
         upvoteStatus={upvoteStatus}
         downvoteStatus={downvoteStatus}
-        setPostId={setPostId}
-        handlePostUpvote={handlePostUpvote}
         handlePostDownvote={handlePostDownvote}
-        setIsOpenComment={setIsOpenComment}
-        setOpenSharedComment={setOpenSharedComment}
         onOpen={onOpen}
       />
     </div>

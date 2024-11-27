@@ -10,16 +10,23 @@ dayjs.extend(relativeTime);
 
 export default function Comment({ postId }: { postId: string }) {
   const { data: postData, isLoading, error } = useGetPost(postId);
-  const {user} = useContext(UserContext) as IUserProviderValues
+  const { user } = useContext(UserContext) as IUserProviderValues;
   const userId = user?._id;
 
-  if (isLoading) return <div className="h-[450px] flex justify-center items-center"><ComponentLoading/></div>;
+  if (isLoading)
+    return (
+      <div className="h-[450px] flex justify-center items-center">
+        <ComponentLoading />
+      </div>
+    );
   if (error) return <div>Error fetching post data</div>;
 
-  const comments = postData?.data.isShared ? postData?.data.comments : postData?.data.post.comments;
+  const comments = postData?.data.isShared
+    ? postData?.data.comments
+    : postData?.data.post.comments;
 
   return (
-    <div className="h-[450px] overflow-y-auto comment_scroll">
+    <div className="h-[calc(100vh-108px)] xl:h-[450px] overflow-y-auto comment_scroll">
       {comments?.map((comment: any) => (
         <CommentItem
           key={comment._id}

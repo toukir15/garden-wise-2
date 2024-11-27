@@ -4,13 +4,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import "lightgallery/css/lightgallery.css";
-import {
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import {
   useDeletePost,
   useDownvote,
@@ -31,25 +25,20 @@ import EditPostModal from "../modal/EditPostModal";
 import SharePostModal from "../modal/SharePostModal";
 import { useFollowUser } from "@/src/hooks/connection.hook";
 import MobileFollowSugg from "../MobileFollowSugg";
-import { FiAlertCircle } from "react-icons/fi";
-import ViewCom from "./PostComponents/ViewCom";
-import { Button, Modal } from "antd";
 import NoResults from "./NoResult";
 
 export default function ViewPost() {
-  // Local state
-  const [postId, setPostId] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isOpenComment, setIsOpenComment] = useState(false);
-  const [isOpenSharedComment, setOpenSharedComment] = useState(false);
-  const [description, setDescription] = useState<string>("");
-  const [editPostDescription, setEditPostDescription] = useState("");
-  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-
-  // const [page, setPage] = useState(1);
-
   // Refs
   const navbarRef = useRef<HTMLDivElement>(null);
+  // Local state
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+  const {
+    postId,
+    isOpenComment,
+    isOpenSharedComment,
+    description,
+    editPostDescription,
+  } = useContext(PostContext);
 
   // Hook
   const { user } = useContext(UserContext) as IUserProviderValues;
@@ -62,31 +51,16 @@ export default function ViewPost() {
     onOpenChange: editOnOpenChange,
   } = useDisclosure();
 
-  const {
-    isOpen: isCommentOpen,
-    onOpen: commentOnOpen,
-    onOpenChange: commentOnOpenChange,
-  } = useDisclosure();
-
   // Context
   const { queryTerm, searchTerm } = useContext(PostContext);
 
   const userId = user!?._id;
-
-  // Dropdown toggle function
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   // Get posts hook
   const { data: postsData, isLoading: isPostsDataLoading } = useGetPosts({
     queryTerm,
     searchTerm,
   });
-
-  // Upvote mutation hook
-  const { mutate: handleUpvote } = useUpvote({ queryTerm, searchTerm });
-  const handlePostUpvote = (voteId: string, postId: string) => {
-    handleUpvote({ voteId, postId, userId });
-  };
 
   // Downvote mutation hook
   const { mutate: handleDownvote } = useDownvote({ queryTerm, searchTerm });
@@ -128,21 +102,6 @@ export default function ViewPost() {
       }
     );
   };
-
-  const handleSaveUnsave = (bookmarkId: string, postId: string) => {};
-
-  // Infinite Scroll Logic
-  // const handleScroll = () => {
-  //   const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
-  //   if (bottom && postsData?.data?.data?.length && !isPostsDataLoading) {
-  //     setPage((prev) => prev + 1);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [postsData]);
 
   return (
     <div>
@@ -189,21 +148,13 @@ export default function ViewPost() {
                   {...{
                     data,
                     navbarRef,
-                    isDropdownOpen,
-                    toggleDropdown,
-                    setPostId,
-                    handleSaveUnsave,
                     handlePostDelete,
                     handlePostDownvote,
-                    handlePostUpvote,
-                    setIsOpenComment,
-                    setOpenSharedComment,
                     upvoteStatus,
                     images,
                     downvoteStatus,
                     onOpen,
                     editOnOpen,
-                    setEditPostDescription,
                     postId,
                   }}
                 />
@@ -211,20 +162,13 @@ export default function ViewPost() {
                 <SharedPost
                   {...{
                     data,
-                    isDropdownOpen,
-                    toggleDropdown,
-                    setPostId,
                     handlePostDelete,
                     handlePostDownvote,
-                    handlePostUpvote,
-                    setIsOpenComment,
-                    setOpenSharedComment,
                     upvoteStatus,
                     images,
                     downvoteStatus,
                     onOpen,
                     editOnOpen,
-                    setEditPostDescription,
                     postId,
                   }}
                 />
@@ -238,25 +182,15 @@ export default function ViewPost() {
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           handlePostShare={handlePostShare}
-          description={description}
-          setDescription={setDescription}
         />
 
         <EditPostModal
           isEditOpen={isEditOpen}
           editOnOpenChange={editOnOpenChange}
           handlePostEdit={handlePostEdit}
-          editPostDescription={editPostDescription}
-          setEditPostDescription={setEditPostDescription}
         />
 
-        {(isOpenComment || isOpenSharedComment) && (
-          <ViewCom
-            postId={postId}
-            setOpenSharedComment={setOpenSharedComment}
-            setIsOpenComment={setIsOpenComment}
-          />
-        )}
+        {(isOpenComment || isOpenSharedComment) && <ViewComment />}
       </div>
     </div>
   );

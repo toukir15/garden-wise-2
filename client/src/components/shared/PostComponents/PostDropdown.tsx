@@ -17,19 +17,22 @@ export const PostDropdown = ({
 }: any) => {
   const { user } = useContext(UserContext) as IUserProviderValues;
   const { data: bookmarksData } = useGetBookmarks();
-  const bookmarkId =bookmarksData?.data.data._id
+  const bookmarkId = bookmarksData?.data.data._id;
   const checkSave = bookmarksData?.data.data.posts.some(
     (post: { _id: string }) => post._id === postId
   );
 
-  const {mutate: updateBookmark} = useUpdateBookmark()
-  const handleSaveUnsave = (bookmarkId:string, postId:string, label: string) => {
-    updateBookmark({bookmarkId, postId})
-    if(label == "Save"){
-      toast.success("Saved bookmark!", {duration: 2000})
+  const { mutate: updateBookmark } = useUpdateBookmark();
+  const handleSaveUnsave = (
+    bookmarkId: string,
+    postId: string,
+    label: string
+  ) => {
+    updateBookmark({ bookmarkId, postId });
+    if (label == "Save") {
+      toast.success("Saved bookmark!", { duration: 2000 });
     }
-  }
-
+  };
 
   // Dynamically adjust dropdown items
   const filterItems = items
@@ -53,23 +56,24 @@ export const PostDropdown = ({
       {isOpen && (
         <div className="rounded bg-white shadow-sm z-50 w-40 absolute flex flex-col -left-[170px]">
           <Dropdown>
-          {[
+            {[
               <DropdownMenu aria-label="Post Actions" items={filterItems}>
-              {(item) => (
-                <DropdownItem
-                  onClick={() => {
-                    if (item.key === "delete") handlePostDelete(postId);
-                    if (item.key === "edit") handleEdit();
-                    if (item.key === "save") handleSaveUnsave(bookmarkId, postId, item.label)
-                  }}
-                  key={item.key}
-                  color={item.key === "delete" ? "danger" : "default"}
-                >
-                  {item.label}
-                </DropdownItem>
-              )}
-            </DropdownMenu>
-          ]}
+                {(item) => (
+                  <DropdownItem
+                    onClick={() => {
+                      if (item.key === "delete") handlePostDelete(postId);
+                      if (item.key === "edit") handleEdit();
+                      if (item.key === "save")
+                        handleSaveUnsave(bookmarkId, postId, item.label);
+                    }}
+                    key={item.key}
+                    color={item.key === "delete" ? "danger" : "default"}
+                  >
+                    {item.label}
+                  </DropdownItem>
+                )}
+              </DropdownMenu>,
+            ]}
           </Dropdown>
         </div>
       )}

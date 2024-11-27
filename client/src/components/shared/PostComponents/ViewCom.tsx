@@ -18,7 +18,7 @@ export default function ViewCom({
   setIsOpenComment: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenSharedComment: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const {editComment} = useContext(PostContext)
+  const { editComment } = useContext(PostContext);
   return (
     <button
       onClick={() => {
@@ -50,8 +50,8 @@ export default function ViewCom({
             <Comment postId={postId} />
           </div>
           <div>
-           {!editComment && <CommentForm postId={postId} />}
-           {editComment && <CommentEditForm postId={postId}  />}
+            {!editComment && <CommentForm postId={postId} />}
+            {editComment && <CommentEditForm postId={postId} />}
           </div>
         </div>
       </button>

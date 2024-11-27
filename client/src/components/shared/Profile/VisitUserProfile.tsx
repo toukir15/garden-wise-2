@@ -100,10 +100,12 @@ export default function VisitUserProfile() {
                 <p className="font-medium text-sm text-gray-500">
                   {postUser?.email}
                 </p>
-                <div className="flex items-center mt-2 gap-1 text-gray-500">
-                  <MdOutlineLocationOn />
-                  <p className="font-medium text-sm">Babugonj, Barisal</p>
-                </div>
+                {postUser?.address && (
+                  <div className="flex items-center mt-2 gap-1 text-gray-500">
+                    <MdOutlineLocationOn />
+                    <p className="font-medium text-sm">{postUser?.address}</p>
+                  </div>
+                )}
                 {postUser?.isVerified && (
                   <Image
                     src={verified}

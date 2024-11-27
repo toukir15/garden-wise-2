@@ -99,9 +99,21 @@ export default function Sidebar() {
           {/* Navigation Links */}
           <div className="mt-3">
             {sidebarLinks.map(({ href, icon, label, size }, index) => {
-              if (label == "Profile") {
+              if (label === "Profile") {
                 href = href + `/${user?._id}`;
               }
+
+              if (index === 1 && user?.role === "admin") {
+                return (
+                  <SidebarButton
+                    href="/admin/dashboard"
+                    icon={BsFillPeopleFill}
+                    label="Dashboard"
+                    size="10"
+                  />
+                );
+              }
+
               return (
                 <div key={index}>
                   {label === "Premium" ? (
@@ -136,6 +148,8 @@ export default function Sidebar() {
                 </div>
               );
             })}
+
+            {/* Dashboard Link (Admin Only) */}
 
             {/* Post Button */}
             <Button
@@ -197,7 +211,7 @@ export default function Sidebar() {
         actionType={true}
       />
 
-      {/* followers modal  */}
+      {/* Followers Modal */}
       <FollowFollowingListModal
         isOpen={isFollowersOpen}
         onOpenChange={onFollowersOpenChange}

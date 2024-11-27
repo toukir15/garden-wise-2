@@ -25,7 +25,6 @@ export const items = [
 // Sidebar navigation links
 export const sidebarLinks = [
   { href: "/", icon: GoHomeFill, label: "Home", size: 20 },
-  { href: "/admin/dashboard", icon: FaChartPie, label: "Dashboard", size: 10 },
   { icon: ImSearch, label: "Explore", size: 10 },
   { icon: IoNotifications, label: "Notification", size: 20 },
   { icon: MdMessage, label: "Message", size: 20 },

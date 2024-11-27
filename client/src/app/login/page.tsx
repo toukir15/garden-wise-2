@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { SubmitHandler } from "react-hook-form";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 import GWInput from "@/src/components/form/GWInput";
 import GWForm from "@/src/components/form/GWForm";
 import { useSendForgetEmail, useUserLogin } from "@/src/hooks/auth.hook";
@@ -12,11 +12,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/plant.png";
 import { Button } from "@nextui-org/button";
-
-type TLoginData = {
-  email: string;
-  password: string;
-};
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,15 +24,9 @@ export default function LoginPage() {
   } = useUserLogin();
 
   // Form submission handler
-  const onSubmit: SubmitHandler<TLoginData> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     handleUserLogin(data);
   };
-
-  const { mutate: sendForgetEmail } = useSendForgetEmail();
-  const handleForgetPassword = () => {
-    sendForgetEmail();
-  };
-
 
   // Side effects for login success or error handling
   useEffect(() => {
@@ -65,7 +54,9 @@ export default function LoginPage() {
             alt="logo"
             className="w-16 mb-4"
           />
-          <h3 className="text-3xl font-medium mb-8 xl:mb-12 text-white">GardenWise</h3>
+          <h3 className="text-3xl font-medium mb-8 xl:mb-12 text-white">
+            GardenWise
+          </h3>
 
           {/* Email Field */}
           <div className="flex flex-col w-4/5 md:w-3/5 mb-6">
@@ -89,9 +80,12 @@ export default function LoginPage() {
           </Button>
 
           <div className="md:w-fit mt-4 text-gray-400 hover:text-white transition duration-100">
-            <button onClick={handleForgetPassword} className="hover:border-b border-b border-b-[#121212] hover:border-b-white ">
+            <Link
+              href={"/forget-password"}
+              className="hover:border-b border-b border-b-[#121212] hover:border-b-white "
+            >
               Forget password?
-            </button>
+            </Link>
           </div>
 
           {/* Sign-Up Link */}
@@ -104,7 +98,6 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
-     
         </div>
       </GWForm>
     </div>

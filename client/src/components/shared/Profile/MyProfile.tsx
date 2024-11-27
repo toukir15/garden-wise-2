@@ -158,10 +158,12 @@ export default function MyProfile({ user }: any) {
                 )}
               </div>
               <p className="font-medium text-sm text-gray-500">{user?.email}</p>
-              <div className="flex items-center mt-2 gap-1 text-gray-500">
-                <MdOutlineLocationOn />
-                <p className="font-medium text-sm">Babugonj, Barisal</p>
-              </div>
+              {user?.address && (
+                <div className="flex items-center mt-2 gap-1 text-gray-500">
+                  <MdOutlineLocationOn />
+                  <p className="font-medium text-sm">{user?.address}</p>
+                </div>
+              )}
               <div className="flex gap-4 mt-2">
                 <button
                   onClick={onFollowersOpen}

@@ -136,7 +136,7 @@ export default function ViewVisitUserPosts({
           height={"h-[calc(100vh-400px)]"}
         />
       )}
-      <div className="w-full h-[calc(100vh-310px)]">
+      <div className="w-full h-[calc(100vh-862px)]">
         {postsData?.data?.data?.map((data: TPost, key: number) => {
           const images = data.post.images || [];
           const upvoteStatus = checkVoteStatus(

@@ -6,44 +6,24 @@ const router = express.Router()
 
 router.get(
   '/user-activity',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.getUserActivity
+  auth(USER_ROLE.admin),
+  AdminController.getUserActivity,
 )
 
 router.get(
   '/monthly-payments',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.getMonthlyPayments
+  auth(USER_ROLE.admin),
+  AdminController.getMonthlyPayments,
 )
 
-router.get(
-  '/payments',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.getPayments
-)
+router.get('/payments', auth(USER_ROLE.admin), AdminController.getPayments)
 
-router.get(
-  '/posts',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.getPosts
-)
+router.get('/posts', auth(USER_ROLE.admin), AdminController.getPosts)
 
-router.get(
-  '/users',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.getUsers
-)
+router.get('/users', auth(USER_ROLE.admin), AdminController.getUsers)
 
-router.delete(
-  '/:userId',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.deleteUser
-)
+router.delete('/:userId', auth(USER_ROLE.admin), AdminController.deleteUser)
 
-router.patch(
-  '/:userId',
-  auth(USER_ROLE.user, USER_ROLE.admin),
-  AdminController.updateUser
-)
+router.patch('/:userId', auth(USER_ROLE.admin), AdminController.updateUser)
 
 export const DashboardRoute = router
