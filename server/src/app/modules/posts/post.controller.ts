@@ -157,5 +157,5 @@ export const PostControllers = {
   getPost,
   getMyPosts,
   updatePost,
-  getVisitProfilePosts
+  getVisitProfilePosts,
 }

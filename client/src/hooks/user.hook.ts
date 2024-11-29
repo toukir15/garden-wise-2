@@ -14,7 +14,6 @@ export const useGetUser = (userId: string) => {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: async () => {
-      console.log(userId);
       return await getUser(userId);
     },
   });

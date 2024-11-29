@@ -10,21 +10,16 @@ import React, { useContext } from "react";
 
 // Dynamically import ReactQuill to avoid SSR issues
 import dynamic from "next/dynamic";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-interface SharePostModalProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  handlePostShare: (e: React.FormEvent<HTMLFormElement>) => void;
-}
-
-const SharePostModal: React.FC<SharePostModalProps> = ({
-  isOpen,
-  onOpenChange,
-  handlePostShare,
-}) => {
-  const { setDescription, description } = useContext(PostContext);
+const SharePostModal = () => {
+  const { postFuncions, modalStates, postStates } = useContext(
+    PostContext
+  ) as IPostProviderValues;
+  const { isOpen, onOpenChange } = modalStates.sharePostModal;
+  const { setDescription, description } = postStates;
+  const { handlePostShare } = postFuncions;
   return (
     <Modal
       className="bg-[#121212]"

@@ -1,4 +1,4 @@
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { useContext } from "react";
 import { FaComment } from "react-icons/fa";
 import { FaDownLong, FaUpLong } from "react-icons/fa6";
@@ -7,25 +7,22 @@ import { IoIosShareAlt } from "react-icons/io";
 interface PostActionsProps {
   data: any;
   upvoteStatus: boolean;
-  // handlePostUpvote: Function;
-  handlePostDownvote: Function;
   downvoteStatus: boolean;
-  onOpen: Function;
 }
 
 const PostActions: React.FC<PostActionsProps> = ({
   data,
   upvoteStatus,
-  handlePostDownvote,
   downvoteStatus,
-  onOpen,
 }) => {
-  const {
-    setPostId,
-    setIsOpenComment,
-    setOpenSharedComment,
-    handlePostUpvote,
-  } = useContext(PostContext);
+  const { postFuncions, modalStates, postStates } = useContext(
+    PostContext
+  ) as IPostProviderValues;
+
+  const { onOpen } = modalStates.sharePostModal;
+  const { handlePostUpvote, handlePostDownvote } = postFuncions;
+  const { setPostId, setIsOpenComment, setOpenSharedComment } = postStates;
+
   return (
     <>
       {!data.isShared && (

@@ -16,7 +16,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 interface PostModalProps {
   isOpen: boolean;
   onOpen: () => void;
-  onClose: (event?: BaseSyntheticEvent) => void; 
+  onClose: (event?: BaseSyntheticEvent) => void;
   handleSubmit: any;
   register: any;
   onSubmit: (data: any) => void;

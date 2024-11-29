@@ -8,7 +8,7 @@ import { useDisclosure } from "@nextui-org/modal";
 import { useGetFollowers, useGetFollowings } from "@/src/hooks/connection.hook";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { toast } from "sonner";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import { logout } from "@/src/services/auth";
@@ -16,11 +16,13 @@ import { useRouter } from "next/navigation";
 import ViewBookmark from "@/src/components/shared/ViewBookmark";
 import { FaRegBookmark } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
+import MobileMenu from "@/src/components/MobileMenu";
+import LightGallery from "lightgallery/react";
 
 export default function page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { user } = useContext(UserContext) as IUserProviderValues;
-  const { postCount } = useContext(PostContext);
+  const { postStates } = useContext(PostContext) as IPostProviderValues;
   const {
     mutate: handlePayment,
     data,
@@ -50,7 +52,7 @@ export default function page() {
   };
 
   const handleProfileVerify = () => {
-    if (postCount < 1) {
+    if (postStates.postCount < 1) {
       toast.warning("To verify, the user needs at least 1 upvote", {
         duration: 2000,
       });
@@ -62,20 +64,37 @@ export default function page() {
   const { data: followingsUsersData } = useGetFollowings();
   const { data: followersUsersData } = useGetFollowers();
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
   return (
-    <section className="flex flex-col border min-h-screen border-gray-600">
+    <section className="flex flex-col xl:border min-h-screen xl:border-gray-600">
       <div className="p-4 gap-4 border-b border-gray-600">
-        <div className="relative w-[150px] h-[150px]">
-          <Image
-            src={
+        <LightGallery>
+          <a
+            href={
               user?.profilePhoto ||
               "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
             }
-            fill
-            className="object-cover rounded-full"
-            alt="Profile"
-          />
-        </div>
+          >
+            <div className="relative w-[150px] h-[150px]">
+              <Image
+                src={
+                  user?.profilePhoto ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                }
+                fill
+                className="object-cover rounded-full"
+                alt="Profile"
+              />
+            </div>
+          </a>
+        </LightGallery>
         <div className="lg:flex justify-between">
           <div>
             <div
@@ -157,11 +176,12 @@ export default function page() {
           </div>
         </div>
       </div>
-      <h2 className="py-4 text-center text-xl font-medium border-b border-gray-600 sticky top-0 z-[999] bg-black/30 backdrop-blur-md flex justify-center items-center gap-2">
+      <h2 className="xl:py-4 py-3 text-center text-medium xl:text-xl font-medium border-b border-gray-600 sticky top-0 z-[50] bg-black/30 backdrop-blur-md flex justify-center items-center gap-2">
         <FaRegBookmark />
         <span>Bookmark posts</span>
       </h2>
       <ViewBookmark />
+      <MobileMenu />
     </section>
   );
 }

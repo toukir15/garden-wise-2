@@ -5,13 +5,17 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import CommentEditForm from "./CommentEditForm";
 dayjs.extend(relativeTime);
 
 export default function ViewComment() {
-  const { editComment, setIsOpenComment, setOpenSharedComment, postId } =
-    useContext(PostContext);
+  const { postFuncions, postStates } = useContext(
+    PostContext
+  ) as IPostProviderValues;
+  const {} = postFuncions;
+  const { setIsOpenComment, setOpenSharedComment, editComment, postId } =
+    postStates;
   return (
     <button
       onClick={() => {
@@ -40,11 +44,11 @@ export default function ViewComment() {
             </button>
           </div>
           <div className="px-3">
-            <Comment postId={postId} />
+            <Comment />
           </div>
           <div>
-            {!editComment && <CommentForm postId={postId} />}
-            {editComment && <CommentEditForm postId={postId} />}
+            {!editComment && <CommentForm />}
+            {editComment && <CommentEditForm />}
           </div>
         </div>
       </button>

@@ -6,6 +6,7 @@ import { useGetUser } from "@/src/hooks/user.hook";
 import MyProfile from "@/src/components/shared/Profile/MyProfile";
 import VisitUserProfile from "@/src/components/shared/Profile/VisitUserProfile";
 import ProfileLoading from "@/src/components/loading/ProfileLoading";
+import VisitUserProfileLoading from "@/src/components/loading/VisitUserProfileLoading";
 
 export default function Page({ params }: any) {
   const { user } = useContext(UserContext) as IUserProviderValues;
@@ -13,7 +14,15 @@ export default function Page({ params }: any) {
   const { data, isLoading } = useGetUser(userId);
 
   if (isLoading) {
-    return <ProfileLoading />;
+    return (
+      <>
+        {userId === user?._id ? (
+          <ProfileLoading />
+        ) : (
+          <VisitUserProfileLoading />
+        )}
+      </>
+    );
   }
 
   return (

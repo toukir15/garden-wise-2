@@ -42,12 +42,12 @@ const createPostIntoDB = async (
   const modifyResult = {
     ...resultObject,
     post: {
-      ...resultObject.post,
+      ...resultObject?.post,
       user: {
-        _id: userObject._id,
-        name: userObject.name,
-        profilePhoto: userObject.profilePhoto,
-        email: userObject.email,
+        _id: userObject?._id,
+        name: userObject?.name,
+        profilePhoto: userObject?.profilePhoto,
+        email: userObject?.email,
       },
     },
   }

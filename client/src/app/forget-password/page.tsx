@@ -30,7 +30,6 @@ export default function ForgetEmailPage() {
   }, [isSendForgetEmailSuccess]);
 
   const onSubmit = (data: IForgetEmailForm) => {
-    console.log("Submitted Email:", data.email);
     sendForgetEmail(data);
   };
 

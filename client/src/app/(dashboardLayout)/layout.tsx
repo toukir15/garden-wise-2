@@ -8,6 +8,7 @@ import { MdPayment } from "react-icons/md";
 import { GrAppsRounded } from "react-icons/gr";
 import logo from "../../../public/plant.png";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const { Header, Content, Sider } = Layout;
 const items = [
@@ -46,7 +47,8 @@ export default function RootLayout({
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  const currentPath = usePathname();
+  const path = currentPath.split("/")[2];
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar for larger screens */}
@@ -63,9 +65,16 @@ export default function RootLayout({
         }}
       >
         {/* Logo Section */}
-        <Link href={"/"} className="flex justify-center items-center gap-1 px-2 py-4">
+        <Link
+          href={"/"}
+          className="flex justify-center items-center gap-1 px-2 py-4"
+        >
           <div>
-          <Image src={logo} className="xl:h-[30px] h-[25px] w-[25px] xl:w-[30px]" alt="logo" />
+            <Image
+              src={logo}
+              className="xl:h-[30px] h-[25px] w-[25px] xl:w-[30px]"
+              alt="logo"
+            />
           </div>
           {/* Conditionally render text based on the collapsed state */}
           {!collapsed && (
@@ -89,12 +98,14 @@ export default function RootLayout({
       <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
         {/* Header */}
         <Header style={{ padding: 0, background: colorBgContainer }} />
-        
+
         {/* Main content area */}
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="text-green-500 font-medium">{path}</span>
+            </Breadcrumb.Item>
           </Breadcrumb>
 
           {/* Main content */}

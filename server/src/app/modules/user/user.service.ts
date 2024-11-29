@@ -52,8 +52,6 @@ const getFollowSuggetionUsersFromDB = async (userId: string) => {
 }
 
 const getUserFromDB = async (userId: string) => {
-  console.log(userId)
-
   // Find the user by ID
   const findUser = await User.findById(userId)
 

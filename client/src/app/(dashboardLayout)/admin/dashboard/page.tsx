@@ -1,9 +1,24 @@
 // @ts-nocheck
 "use client";
 
-import { useGetMonthlyPayments, useGetUserActivity } from '@/src/hooks/admin.hook';
-import React from 'react';
-import { BarChart, Bar, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend, XAxis } from 'recharts';
+import ChartBarLoading from "@/src/components/loading/ChartBarLoading";
+import UserActivityBarLoading from "@/src/components/loading/UserActivityBarLoading";
+import YearButton from "@/src/components/shared/Dashboard/YearButton";
+import {
+  useGetMonthlyPayments,
+  useGetUserActivity,
+} from "@/src/hooks/admin.hook";
+import React, { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  ResponsiveContainer,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  XAxis,
+} from "recharts";
 
 export default function Page() {
   const {
@@ -21,10 +36,13 @@ export default function Page() {
   return (
     <div className="p-4">
       <div>
-        <h2 className="xl:text-2xl text-xl font-medium py-4">User Activity</h2>
-        <div className="overflow-x-auto">
+        <h2 className="xl:text-3xl text-xl font-bold text-gray-700 py-4">
+          User Activity
+        </h2>
+        <div className="overflow-x-auto mt-6">
           {isUserActivityLoading ? (
-            <p>Loading user activity data...</p>
+            // Skeleton loader for the chart
+            <UserActivityBarLoading />
           ) : userActivityError ? (
             <p>Error loading user activity data: {userActivityError.message}</p>
           ) : (
@@ -51,12 +69,17 @@ export default function Page() {
       <div className="xl:grid xl:grid-cols-2 mt-8 gap-6">
         {/* Posts Section */}
         <div>
-          <h2 className="text-xl xl:text-2xl font-medium py-4">Monthly Posts</h2>
-          <div className="overflow-x-auto">
+          <h2 className="xl:text-3xl text-xl font-bold text-gray-700 py-4">
+            Monthly Posts
+          </h2>
+          {/* <YearButton /> */}
+          <div className="overflow-x-auto mt-6">
             {isUserActivityLoading ? (
-              <p>Loading monthly posts data...</p>
+              <ChartBarLoading />
             ) : userActivityError ? (
-              <p>Error loading monthly posts data: {userActivityError.message}</p>
+              <p>
+                Error loading monthly posts data: {userActivityError.message}
+              </p>
             ) : (
               <div className="min-w-[650px]">
                 <ResponsiveContainer width="100%" height={400}>
@@ -76,12 +99,18 @@ export default function Page() {
 
         {/* Payments Section */}
         <div>
-          <h2 className="text-xl xl:text-2xl font-medium py-4">Monthly Payments</h2>
-          <div className="overflow-x-auto">
+          <h2 className="xl:text-3xl text-xl font-bold text-gray-700 py-4">
+            Monthly Payments
+          </h2>
+          {/* <YearButton /> */}
+          <div className="overflow-x-auto mt-6">
             {isMonthlyPaymentsLoading ? (
-              <p>Loading monthly payments data...</p>
+              <ChartBarLoading />
             ) : monthlyPaymentsError ? (
-              <p>Error loading monthly payments data: {monthlyPaymentsError.message}</p>
+              <p>
+                Error loading monthly payments data:{" "}
+                {monthlyPaymentsError.message}
+              </p>
             ) : (
               <div className="min-w-[650px]">
                 <ResponsiveContainer width="100%" height={400}>

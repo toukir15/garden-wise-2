@@ -33,98 +33,104 @@ const getBookmarkFromDB = async (bookmarkId: string) => {
   }
 
   const result = await Bookmark.findById(bookmarkId)
-  .populate({
-    path: 'posts',
-    populate: [
-      {
-        path: 'sharedUser',
-        model: 'User',
-        select: 'name profilePhoto',
-      },
-      {
-        path: 'votes',
-        model: 'Vote',
-        select: 'upvote downvote',
-      },
-      {
-        path: 'comments',
-        model: 'Comment',
-        select: 'text votes replies user createdAt',
-        populate: [
-          {
-            path: 'user',
-            model: 'User',
-            select: 'name profilePhoto',
-          },
-          {
-            path: 'replies.commentReplyUser',
-            model: 'User',
-            select: 'name profilePhoto',
-          },
-          {
-            path: 'replies.replyTo',
-            model: 'User',
-            select: 'name',
-          },
-          {
-            path: 'votes',
-            model: 'Vote',
-            select: 'upvote downvote',
-          },
-          {
-            path: 'replies.votes',
-            model: 'Vote',
-            select: 'upvote downvote',
-          },
-        ],
-      },
-      {
-        path: 'post.user',
-        model: 'User',
-        select: 'name profilePhoto',
-      },
-      {
-        path: 'post.comments',
-        model: 'Comment',
-        select: 'text user votes replies createdAt',
-        populate: [
-          {
-            path: 'user',
-            model: 'User',
-            select: 'name profilePhoto',
-          },
-          {
-            path: 'replies.commentReplyUser',
-            model: 'User',
-            select: 'name profilePhoto',
-          },
-          {
-            path: 'replies.replyTo',
-            model: 'User',
-            select: 'name',
-          },
-          {
-            path: 'votes',
-            model: 'Vote',
-            select: 'upvote downvote',
-          },
-          {
-            path: 'replies.votes',
-            model: 'Vote',
-            select: 'upvote downvote',
-          },
-        ],
-      },
-      {
-        path: 'post.votes',
-        model: 'Vote',
-        select: 'upvote downvote',
-      },
-    ],
-  })
-  .exec();
+    .populate({
+      path: 'posts',
+      populate: [
+        {
+          path: 'sharedUser',
+          model: 'User',
+          select: 'name profilePhoto',
+        },
+        {
+          path: 'votes',
+          model: 'Vote',
+          select: 'upvote downvote',
+        },
+        {
+          path: 'comments',
+          model: 'Comment',
+          select: 'text votes replies user createdAt',
+          populate: [
+            {
+              path: 'user',
+              model: 'User',
+              select: 'name profilePhoto',
+            },
+            {
+              path: 'replies.commentReplyUser',
+              model: 'User',
+              select: 'name profilePhoto',
+            },
+            {
+              path: 'replies.replyTo',
+              model: 'User',
+              select: 'name',
+            },
+            {
+              path: 'votes',
+              model: 'Vote',
+              select: 'upvote downvote',
+            },
+            {
+              path: 'replies.votes',
+              model: 'Vote',
+              select: 'upvote downvote',
+            },
+          ],
+        },
+        {
+          path: 'post.user',
+          model: 'User',
+          select: 'name profilePhoto',
+        },
+        {
+          path: 'post.comments',
+          model: 'Comment',
+          select: 'text user votes replies createdAt',
+          populate: [
+            {
+              path: 'user',
+              model: 'User',
+              select: 'name profilePhoto',
+            },
+            {
+              path: 'replies.commentReplyUser',
+              model: 'User',
+              select: 'name profilePhoto',
+            },
+            {
+              path: 'replies.replyTo',
+              model: 'User',
+              select: 'name',
+            },
+            {
+              path: 'votes',
+              model: 'Vote',
+              select: 'upvote downvote',
+            },
+            {
+              path: 'replies.votes',
+              model: 'Vote',
+              select: 'upvote downvote',
+            },
+          ],
+        },
+        {
+          path: 'post.votes',
+          model: 'Vote',
+          select: 'upvote downvote',
+        },
+      ],
+    })
+    .exec()
 
-return result;
+  if (!result || !result.posts) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No posts found for this bookmark')
+  }
+
+  // Reverse the posts array and return
+  result.posts.reverse() // Reverse the array in-place
+  return result
 }
 
 export const BookmarkServices = {

@@ -6,7 +6,7 @@ import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
 
 export default function Home() {
   return (
-    <section className="flex flex-col border border-gray-600 min-h-screen">
+    <section className="flex flex-col lg:border border-gray-600 min-h-screen">
       <PostFilter />
       <CreatePost />
       <ViewPost />

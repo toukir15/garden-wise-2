@@ -3,6 +3,7 @@ import Post from '../posts/post.model'
 import { User } from '../user/user.model'
 
 const getUserActivityFromDB = async () => {
+  const year = 2024
   const posts = await Post.find()
     .select('sharedUser votes isShared comments share post createdAt')
     .populate([
@@ -15,22 +16,42 @@ const getUserActivityFromDB = async () => {
   // Initialize an object to store monthly data
   const monthlyData: Record<string, any> = {}
 
+  // Prepopulate all 12 months for the given year with default data
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+
+  months.forEach(month => {
+    const monthYear = `${month} ${year}`
+    monthlyData[monthYear] = {
+      name: monthYear,
+      upvotes: 0,
+      downvotes: 0,
+      posts: 0,
+      comments: 0,
+    }
+  })
+
+  // Populate data from posts
   posts.forEach((post: any) => {
+    const postYear = new Date(post.createdAt).getFullYear()
+    if (postYear !== year) return // Skip posts not in the specified year
+
     const monthYear = new Date(post.createdAt).toLocaleString('default', {
       month: 'short',
       year: 'numeric',
     })
-
-    // Initialize entry if not present
-    if (!monthlyData[monthYear]) {
-      monthlyData[monthYear] = {
-        name: monthYear,
-        upvotes: 0,
-        downvotes: 0,
-        posts: 0,
-        comments: 0,
-      }
-    }
 
     // Aggregate data for upvotes, downvotes, and comments
     const { upvote = [], downvote = [] } = post.votes || {}
@@ -47,10 +68,11 @@ const getUserActivityFromDB = async () => {
   })
 
   // Convert object to array and sort by month
-  return Object.values(monthlyData).sort(
-    (a, b) =>
-      new Date(`1 ${a.name}`).getTime() - new Date(`1 ${b.name}`).getTime(),
-  )
+  const objArr = months.map(month => monthlyData[`${month} ${year}`])
+
+  console.dir(objArr, { depth: true })
+
+  return objArr
 }
 
 const getMonthlyPaymentsFromDB = async () => {
@@ -115,23 +137,30 @@ const getPostsFromDB = async () => {
       { path: 'post.votes', select: 'upvote downvote' },
       { path: 'post.user', select: 'name email' },
       { path: 'post.comments', select: 'text user votes replies createdAt' },
-    ]);
+    ])
 
   const posts = result.map((post: any) => ({
     _id: post._id,
-    userName: post.isShared && post.sharedUser ? post.sharedUser.name : post.post.user.name,
-    email: post.isShared && post.sharedUser ? post.sharedUser.email : post.post.user.email,
-    upvotes: post.isShared ? post.votes.upvote.length : post.post.votes.upvote.length,
-    downvotes: post.isShared ? post.votes.downvote.length : post.post.votes.downvote.length,
+    userName:
+      post.isShared && post.sharedUser
+        ? post.sharedUser.name
+        : post.post.user.name,
+    email:
+      post.isShared && post.sharedUser
+        ? post.sharedUser.email
+        : post.post.user.email,
+    upvotes: post.isShared
+      ? post.votes.upvote.length
+      : post.post.votes.upvote.length,
+    downvotes: post.isShared
+      ? post.votes.downvote.length
+      : post.post.votes.downvote.length,
     comments: post.isShared ? post.comments.length : post.post.comments.length,
     isShared: post.isShared,
-  }));
-  
+  }))
 
-  return posts;  
-};
-
-
+  return posts
+}
 
 const getUsersFromDB = async (userId: string) => {
   const result = await User.find({ _id: { $ne: userId } })

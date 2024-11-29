@@ -2,25 +2,31 @@
 import React, { useContext } from "react";
 import { Input } from "@nextui-org/react";
 import { IoSearchSharp } from "react-icons/io5";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import FollowUserList from "./RightSidebar/FollowUserList";
 import { useRouter } from "next/navigation";
 
 export default function RightSidebar() {
-  const { setSearchTerm, searchTerm } = useContext(PostContext);
+  const { postStates } = useContext(PostContext) as IPostProviderValues;
   const router = useRouter();
 
   // Function to handle the Enter key press
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const target = e.target as HTMLInputElement;
-      setSearchTerm(target.value);
+      postStates.setSearchTerm(target.value);
       router.push("/");
     }
   };
 
+  const handleValueChange = (value: string) => {
+    if (value == "") {
+      postStates.setSearchTerm("");
+    }
+  };
+
   const handleClear = () => {
-    setSearchTerm("");
+    postStates.setSearchTerm("");
   };
 
   return (
@@ -29,10 +35,11 @@ export default function RightSidebar() {
       <div>
         <Input
           onKeyDown={handleKeyDown}
+          onValueChange={handleValueChange}
+          defaultValue={postStates.searchTerm}
+          onClear={handleClear}
           isClearable
           radius="full"
-          defaultValue={searchTerm}
-          onClear={handleClear}
           placeholder="Type to search post..."
           startContent={
             <IoSearchSharp

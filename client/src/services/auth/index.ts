@@ -61,7 +61,6 @@ export const editProfile = async (userData: FieldValues) => {
 };
 
 export const sendForgetEmail = async (forgetData: any) => {
-  console.log(forgetData);
   try {
     const { data } = await axiosInstance.post(
       "/auth/send-forget-email",

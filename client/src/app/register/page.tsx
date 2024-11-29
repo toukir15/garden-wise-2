@@ -53,7 +53,7 @@ export default function SignupPage() {
     if (!isLoading) {
       if (isSuccess) {
         toast.success("Signed up successfully!", { duration: 2000 });
-        router.push("/login");
+        router.push("/");
       }
 
       if (isError) {

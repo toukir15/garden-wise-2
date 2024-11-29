@@ -1,8 +1,6 @@
 "use client";
 
-import { useCreatePayment } from "@/src/hooks/payment.hook";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import verified from "../../../../public/verified.png";
@@ -14,17 +12,12 @@ import {
 } from "@/src/hooks/connection.hook";
 import FollowFollowingListModal from "@/src/components/modal/FollowFollowingListModal";
 import { useDisclosure } from "@nextui-org/modal";
-import Loading from "@/src/components/loading/Loading";
 import { MdOutlineLocationOn } from "react-icons/md";
 import ViewVisitUserPosts from "@/src/components/shared/ViewVisitUserPosts";
 import { IUser } from "../../../../types";
+import LightGallery from "lightgallery/react";
 
 export default function VisitUserProfile() {
-  const {
-    mutate: handlePayment,
-    data,
-    isLoading: isPaymentLoading,
-  } = useCreatePayment();
   const [isClient, setIsClient] = useState(false);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -33,7 +26,6 @@ export default function VisitUserProfile() {
     onOpen: onFollowersOpen,
     onOpenChange: onFollowersOpenChange,
   } = useDisclosure();
-  const router = useRouter();
   const postUser = JSON.parse(localStorage.getItem("user-profile") || "{}");
 
   // get post hook
@@ -46,12 +38,6 @@ export default function VisitUserProfile() {
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  useEffect(() => {
-    if (data?.data?.data?.url) {
-      router.push(data.data.data.url);
-    }
-  }, [data, router]);
 
   const { data: followingsUsersData } = useGetViewProfileFollowings(
     postUser._id
@@ -72,26 +58,33 @@ export default function VisitUserProfile() {
     );
   };
 
-  if (isPaymentLoading) {
-    return <Loading />;
-  }
-
   if (!isClient) return null;
 
   return (
     <>
       <section className="flex flex-col">
         <div className="p-4 gap-4 border-b border-gray-600">
-          <div className="relative w-[150px] h-[150px]">
-            <Image
-              src={
-                postUser?.profilePhoto ||
-                "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-              }
-              fill
-              className="object-cover rounded-full"
-              alt="Profile"
-            />
+          <div>
+            <LightGallery>
+              <a
+                href={
+                  postUser?.profilePhoto ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                }
+              >
+                <div className="relative w-[150px] h-[150px]">
+                  <Image
+                    src={
+                      postUser?.profilePhoto ||
+                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                    }
+                    fill
+                    className="object-cover rounded-full"
+                    alt="Profile"
+                  />
+                </div>
+              </a>
+            </LightGallery>
           </div>
           <div className="lg:flex justify-between">
             <div>

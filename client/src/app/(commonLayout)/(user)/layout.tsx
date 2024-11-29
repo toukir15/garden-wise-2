@@ -4,6 +4,7 @@ import { siteConfig } from "@/src/config/site";
 import FollowRequest from "@/src/components/shared/RightSidebar";
 import Sidebar from "@/src/components/shared/Sidber";
 import RightSidebar from "@/src/components/shared/RightSidebar";
+import MobileMenu from "@/src/components/MobileMenu";
 
 export const metadata: Metadata = {
   title: {
@@ -46,6 +47,7 @@ export default function RootLayout({
           <RightSidebar />
         </div>
       </div>
+      {/* <MobileMenu /> */}
     </div>
   );
 }

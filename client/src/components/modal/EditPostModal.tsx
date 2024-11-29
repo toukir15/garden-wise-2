@@ -10,29 +10,22 @@ import React, { useContext } from "react";
 
 // Dynamically import ReactQuill to avoid SSR issues
 import dynamic from "next/dynamic";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-interface EditPostModalProps {
-  isEditOpen: boolean;
-  editOnOpenChange: (isOpen: boolean) => void;
-  handlePostEdit: (e: React.FormEvent<HTMLFormElement>) => void;
-  // editPostDescription: string;
-}
-
-export default function EditPostModal({
-  isEditOpen,
-  editOnOpenChange,
-  handlePostEdit,
-}: EditPostModalProps) {
-  const { setEditPostDescription, editPostDescription } =
-    useContext(PostContext);
+export default function EditPostModal() {
+  const { postFuncions, modalStates, postStates } = useContext(
+    PostContext
+  ) as IPostProviderValues;
+  const { isOpen, onOpenChange } = modalStates.editModal;
+  const { setEditPostDescription, editPostDescription } = postStates;
+  const { handlePostEdit } = postFuncions;
   return (
     <Modal
       className="bg-[#121212]"
-      isOpen={isEditOpen}
+      isOpen={isOpen}
       size="2xl"
-      onOpenChange={editOnOpenChange}
+      onOpenChange={onOpenChange}
     >
       <form onSubmit={handlePostEdit}>
         <ModalContent className="absolute top-0 xl:top-8 xl:-translate-x-8">

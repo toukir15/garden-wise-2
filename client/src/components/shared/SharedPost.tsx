@@ -7,28 +7,27 @@ import { UserLink } from "./PostComponents/UserLink";
 import PostActions from "./PostComponents/PostActions";
 import { PostHeader } from "./PostComponents/PostHeader";
 import PostDescription from "./PostComponents/PostDescription";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 dayjs.extend(relativeTime);
 
 // Main Component
 export default function SharedPost({
   data,
-  handlePostDelete,
-  handlePostDownvote,
   upvoteStatus,
   images,
   downvoteStatus,
-  onOpen,
-  editOnOpen,
-  postId,
 }: any) {
   const { setPostUser, user } = useContext(UserContext) as IUserProviderValues;
   const isSharedPostOwner = user?._id === data?.sharedUser._id;
-  const { setPostId, setEditPostDescription } = useContext(PostContext);
+  const { postStates, modalStates } = useContext(
+    PostContext
+  ) as IPostProviderValues;
+  const { onOpen } = modalStates.editModal;
+  const { setPostId, setEditPostDescription } = postStates;
   const isPostOwner = user?._id === data?.post.user._id;
   const handleUserClick = (postUser: any) => setPostUser(postUser);
   const handleEditPost = () => {
-    editOnOpen();
+    onOpen();
     setEditPostDescription(data.description);
     setPostId(data._id);
   };
@@ -39,9 +38,7 @@ export default function SharedPost({
         data={data}
         isOwner={isSharedPostOwner}
         handleUserClick={handleUserClick}
-        handlePostDelete={handlePostDelete}
         handleEditPost={handleEditPost}
-        postId={postId}
         user={data.sharedUser}
       />
 
@@ -69,8 +66,6 @@ export default function SharedPost({
         data={data}
         upvoteStatus={upvoteStatus}
         downvoteStatus={downvoteStatus}
-        handlePostDownvote={handlePostDownvote}
-        onOpen={onOpen}
       />
     </div>
   );

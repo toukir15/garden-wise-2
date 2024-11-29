@@ -23,7 +23,7 @@ import { FieldValues } from "react-hook-form";
 import { sidebarLinks } from "@/src/const";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { toast } from "sonner";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
@@ -31,15 +31,15 @@ export default function Sidebar() {
   const { data: followersUsersData } = useGetFollowers();
   const { mutate: handleUnfollow } = useUnfollowUser();
   const {
-    description,
-    setDescription,
+    createPostDescription,
+    setCreatePostDescription,
     imagePreviews,
     handleFileChange,
     register,
     handleSubmit,
     onSubmit,
     errors,
-    isLoading,
+    isCreatePostLoading,
   } = useCreatePostForm();
   const { user } = useContext(UserContext) as IUserProviderValues;
   const {
@@ -67,7 +67,7 @@ export default function Sidebar() {
       }
     );
   };
-  const { setQueryTerm } = useContext(PostContext);
+  const { postStates } = useContext(PostContext) as IPostProviderValues;
   const router = useRouter();
   const handleVerifyPosts = () => {
     if (!user?.isVerified) {
@@ -77,12 +77,12 @@ export default function Sidebar() {
       router.push("/profile/my-profile");
       return;
     }
-    setQueryTerm("premium");
+    postStates.setQueryTerm("premium");
   };
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isCreatePostLoading && <Loading />}
       <div className="flex flex-col h-screen justify-between py-4">
         <div>
           <Link href={"/"} className="w-8 h-8">
@@ -149,8 +149,6 @@ export default function Sidebar() {
               );
             })}
 
-            {/* Dashboard Link (Admin Only) */}
-
             {/* Post Button */}
             <Button
               onClick={onOpen}
@@ -182,7 +180,11 @@ export default function Sidebar() {
               </div>
               <div className="flex flex-col">
                 <div className="relative flex items-center w-fit">
-                  <p className="font-medium">{user?.name}</p>
+                  <p className="font-medium">
+                    {user!?.name?.length > 15
+                      ? `${user!?.name.slice(0, 15)}...`
+                      : user!?.name}
+                  </p>
                   {user?.isVerified && (
                     <Image
                       src={verified}
@@ -193,7 +195,11 @@ export default function Sidebar() {
                     />
                   )}
                 </div>
-                <p className="text-sm text-gray-600">{user?.email}</p>
+                <p className="text-sm text-gray-600">
+                  {user!?.email?.length > 15
+                    ? `${user!?.email.slice(0, 15)}...`
+                    : user!?.email}
+                </p>
               </div>
             </Link>
           </div>
@@ -231,8 +237,8 @@ export default function Sidebar() {
         onSubmit={(data: FieldValues) => onSubmit(data)}
         errors={errors}
         categories={categories}
-        description={description}
-        setDescription={setDescription}
+        createPostDescription={createPostDescription}
+        setCreatePostDescription={setCreatePostDescription}
         imagePreviews={imagePreviews}
         handleFileChange={handleFileChange}
       />

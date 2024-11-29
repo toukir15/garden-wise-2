@@ -28,18 +28,11 @@ export default function CreatePost() {
     isLoading,
   } = useCreatePostForm();
 
-  // Ensure client-side rendering to avoid hydration errors
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   // Adapt onClose to handle BaseSyntheticEvent if required
   const handleModalClose = (event?: BaseSyntheticEvent) => {
     event?.preventDefault(); // Optional: Prevent default if event is passed
     onClose(); // Call the actual onClose function
   };
-
-  if (!isClient) return null;
 
   return (
     <>
@@ -75,7 +68,7 @@ export default function CreatePost() {
         <PostModal
           isOpen={isOpen}
           onOpen={onOpen}
-          onClose={handleModalClose} 
+          onClose={handleModalClose}
           handleSubmit={handleSubmit}
           register={register}
           onSubmit={(data: any) => onSubmit(data)}

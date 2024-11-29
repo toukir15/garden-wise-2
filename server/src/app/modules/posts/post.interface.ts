@@ -9,7 +9,7 @@ export type TPost = {
   share: string[]
   post: {
     user: Types.ObjectId
-    description: string
+    description?: string
     images: string[]
     comments: Types.ObjectId[]
     votes: Types.ObjectId

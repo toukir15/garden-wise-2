@@ -2,11 +2,12 @@ import React, { useContext } from "react";
 import { IoSend } from "react-icons/io5";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useComment } from "@/src/hooks/comment.hook";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 
-export default function CommentForm({ postId }: { postId: string }) {
+export default function CommentForm() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const { queryTerm, searchTerm } = useContext(PostContext);
+  const { postStates } = useContext(PostContext) as IPostProviderValues;
+  const { queryTerm, searchTerm, postId } = postStates;
   const { mutate: handleComment } = useComment({ queryTerm, searchTerm });
   const { register, handleSubmit, reset } = useForm<FieldValues>();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
@@ -18,8 +19,7 @@ export default function CommentForm({ postId }: { postId: string }) {
       onSubmit={handleSubmit(onSubmit)}
       className="flex items-center border-t border-gray-600 "
     >
-      <div className="px-2">
-      </div>
+      <div className="px-2"></div>
       <input
         {...register("text")}
         type="text"

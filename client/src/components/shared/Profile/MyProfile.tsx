@@ -1,7 +1,6 @@
-"use client";
+// "use client";
 
-import { PostContext } from "@/src/context/post.provider";
-import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
@@ -25,9 +24,10 @@ import CreatePost from "@/src/components/shared/PostComponents/CreatePost";
 import ViewMyPost from "@/src/components/shared/ViewMyPosts";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { IUser } from "../../../../types";
+import LightGallery from "lightgallery/react";
 
 export default function MyProfile({ user }: any) {
-  const { postCount } = useContext(PostContext);
+  const { postStates } = useContext(PostContext) as IPostProviderValues;
   const [isClient, setIsClient] = useState(false);
   const {
     mutate: handlePayment,
@@ -51,7 +51,7 @@ export default function MyProfile({ user }: any) {
   } = useGetMyPosts();
 
   const handleProfileVerify = () => {
-    if (postCount < 1) {
+    if (postStates.postCount < 1) {
       toast.warning("To verify, the user needs at least 1 upvote", {
         duration: 2000,
       });
@@ -109,16 +109,27 @@ export default function MyProfile({ user }: any) {
       {isPaymentLoading && <Loading />}
       <section className="flex flex-col">
         <div className="p-4 gap-4 border-b border-gray-600">
-          <div className="relative w-[150px] h-[150px]">
-            <Image
-              src={
-                user?.profilePhoto ||
-                "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-              }
-              fill
-              className="object-cover rounded-full"
-              alt="Profile"
-            />
+          <div>
+            <LightGallery>
+              <a
+                href={
+                  user?.profilePhoto ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                }
+              >
+                <div className="relative w-[150px] h-[150px]">
+                  <Image
+                    src={
+                      user?.profilePhoto ||
+                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                    }
+                    fill
+                    className="object-cover rounded-full"
+                    alt="Profile"
+                  />
+                </div>
+              </a>
+            </LightGallery>
           </div>
           <div className="lg:flex justify-between">
             <div>

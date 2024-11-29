@@ -1,14 +1,15 @@
 "use client";
 import { useState, useEffect, useContext } from "react";
 import { useCreatePost } from "@/src/hooks/post.hook";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 
 export function useCreatePostForm() {
   const [description, setDescription] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const { queryTerm, searchTerm } = useContext(PostContext);
+  const { postStates } = useContext(PostContext) as IPostProviderValues;
+  const { queryTerm, searchTerm } = postStates;
   const { mutate: handleCreatePost, isLoading } = useCreatePost({
     queryTerm,
     searchTerm,
@@ -20,7 +21,7 @@ export function useCreatePostForm() {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const onSubmit: SubmitHandler<FieldValues> = (data, onClose) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const formData = new FormData();
     formData.append("data", JSON.stringify({ ...data, description }));
     files.forEach((file) => {
@@ -29,7 +30,7 @@ export function useCreatePostForm() {
 
     handleCreatePost(formData, {
       onSuccess: () => {
-        onClose(); 
+        // onClose();
       },
       onError: (error) => {
         console.error("Post creation failed:", error);

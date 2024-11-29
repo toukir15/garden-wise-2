@@ -4,38 +4,33 @@ import LightGalleryImageView from "./PostComponents/LightGalleryImageView";
 import PostDescription from "./PostComponents/PostDescription";
 import PostActions from "./PostComponents/PostActions";
 import { PostHeader } from "./PostComponents/PostHeader";
-import { PostContext } from "@/src/context/post.provider";
+import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 
 export default function Post({
   data,
   navbarRef,
-  handlePostDelete,
-  handlePostDownvote,
-  handleSaveUnsave,
   upvoteStatus,
   downvoteStatus,
-  onOpen,
-  editOnOpen,
-  postId,
 }: any) {
   const { setPostUser } = useContext(UserContext) as IUserProviderValues;
   const handleUserClick = (postUser: any) => setPostUser(postUser);
-  const { setPostId, setEditPostDescription } = useContext(PostContext);
+  const { postStates, modalStates } = useContext(
+    PostContext
+  ) as IPostProviderValues;
+  const { onOpen } = modalStates.editModal;
+  const { setPostId, setEditPostDescription } = postStates;
   const handleEditPost = () => {
-    editOnOpen();
+    onOpen();
     setEditPostDescription(data.post.description);
     setPostId(data._id);
   };
   return (
-    <div className="my-4 shadow-md border-b border-gray-600" ref={navbarRef}>
+    <div className="mt-4 shadow-md border-b border-gray-600" ref={navbarRef}>
       <div className="flex justify-between">
         <PostHeader
           data={data}
           handleUserClick={handleUserClick}
-          handlePostDelete={handlePostDelete}
           handleEditPost={handleEditPost}
-          handleSaveUnsave={handleSaveUnsave}
-          postId={postId}
           user={data.post.user}
         />
       </div>
@@ -48,8 +43,6 @@ export default function Post({
           data={data}
           upvoteStatus={upvoteStatus}
           downvoteStatus={downvoteStatus}
-          handlePostDownvote={handlePostDownvote}
-          onOpen={onOpen}
         />
       </div>
     </div>
