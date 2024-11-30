@@ -1,9 +1,10 @@
 import { Payment } from '../payment/payment.model'
 import Post from '../posts/post.model'
 import { User } from '../user/user.model'
+import { months } from './dashboard.const'
 
 const getUserActivityFromDB = async () => {
-  const year = 2024
+  const year = new Date().getFullYear()
   const posts = await Post.find()
     .select('sharedUser votes isShared comments share post createdAt')
     .populate([
@@ -15,22 +16,6 @@ const getUserActivityFromDB = async () => {
 
   // Initialize an object to store monthly data
   const monthlyData: Record<string, any> = {}
-
-  // Prepopulate all 12 months for the given year with default data
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
 
   months.forEach(month => {
     const monthYear = `${month} ${year}`

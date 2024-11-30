@@ -81,7 +81,7 @@ export default function LoginPage() {
 
           <div className="md:w-fit mt-4 text-gray-400 hover:text-white transition duration-100">
             <Link
-              href={"/forget-password"}
+              href={"/send-email"}
               className="hover:border-b border-b border-b-[#121212] hover:border-b-white "
             >
               Forget password?

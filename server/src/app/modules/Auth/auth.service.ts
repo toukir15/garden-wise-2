@@ -149,7 +149,6 @@ const forgetPassword = async (
   userData: JwtPayload,
   payload: { newPassword: string },
 ) => {
-
   // checking if the user is exist
   const user = await User.findOne({ email: userData?.email })
 
@@ -176,10 +175,9 @@ const forgetPassword = async (
 }
 
 const sendForgetEmail = async (email: string) => {
-
-  const findUser = await User.findOne({email: email})
-  if(!findUser){
-    throw new AppError(httpStatus.BAD_REQUEST, "User does not exist!")
+  const findUser = await User.findOne({ email: email })
+  if (!findUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User does not exist!')
   }
 
   const jwtPayload = {
@@ -195,7 +193,7 @@ const sendForgetEmail = async (email: string) => {
   const token = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
-    config.jwt_access_expires_in as string,
+    config.jwt_send_email_expires_in as string,
   )
   await sendEmail(findUser.email, token)
 }
@@ -277,5 +275,5 @@ export const AuthServices = {
   refreshToken,
   editProfile,
   sendForgetEmail,
-  forgetPassword
+  forgetPassword,
 }

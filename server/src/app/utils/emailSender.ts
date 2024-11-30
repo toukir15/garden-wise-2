@@ -24,7 +24,7 @@ export const sendEmail = async (email: string, token: string) => {
           <h2 style="color: #4CAF50;">Garden-Wise Password Reset</h2>
           <p>Hello,</p>
           <p>You requested to reset your password. Please click the link below to reset it:</p>
-          <a href="http://localhost:3000/profile/forget-password?token=${encodeURIComponent(token)}" 
+          <a href="http://localhost:3000/forget-password?token=${encodeURIComponent(token)}" 
              style="display: inline-block; padding: 10px 15px; color: white; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
              Reset Password
           </a>

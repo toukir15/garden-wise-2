@@ -51,17 +51,6 @@ export default function Page() {
     }
   }, [isSuccess, router]);
 
-  const { mutate: sendForgetEmail, isSuccess: isSendForgetEmailSuccess } =
-    useSendForgetEmail();
-
-  useEffect(() => {
-    if (isSendForgetEmailSuccess) {
-      toast.success("Check your email and change the password!", {
-        duration: 2000,
-      });
-    }
-  }, [isSendForgetEmailSuccess]);
-
   const newPassword = watch("newPassword");
 
   return (

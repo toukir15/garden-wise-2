@@ -13,7 +13,6 @@ import { BaseSyntheticEvent } from "react";
 
 export default function CreatePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isClient, setIsClient] = useState(false);
   const { user } = useContext(UserContext) as IUserProviderValues;
 
   const {
@@ -30,8 +29,8 @@ export default function CreatePost() {
 
   // Adapt onClose to handle BaseSyntheticEvent if required
   const handleModalClose = (event?: BaseSyntheticEvent) => {
-    event?.preventDefault(); // Optional: Prevent default if event is passed
-    onClose(); // Call the actual onClose function
+    event?.preventDefault();
+    onClose();
   };
 
   return (

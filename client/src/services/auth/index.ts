@@ -92,7 +92,7 @@ export const forgetPassword = async (passwordData: FieldValues) => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: passwordData.token, // Replace YOUR_TOKEN_HERE with your token variable
+          Authorization: passwordData.token,
         },
         body: JSON.stringify({ newPassword: passwordData.newPassword }),
       }
