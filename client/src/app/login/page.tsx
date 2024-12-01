@@ -5,13 +5,14 @@ import Image from "next/image";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import GWInput from "@/src/components/form/GWInput";
 import GWForm from "@/src/components/form/GWForm";
-import { useSendForgetEmail, useUserLogin } from "@/src/hooks/auth.hook";
+import { useUserLogin } from "@/src/hooks/auth.hook";
 import { loginValidationSchema } from "@/src/schemas/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/plant.png";
 import { Button } from "@nextui-org/button";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function LoginPage() {
     isLoading,
     isError,
     error,
+    data,
   } = useUserLogin();
 
   // Form submission handler
@@ -28,19 +30,26 @@ export default function LoginPage() {
     handleUserLogin(data);
   };
 
-  // Side effects for login success or error handling
-  useEffect(() => {
+  const handleToken = async () => {
     if (isSuccess) {
       toast.success("Logged in successfully!", { duration: 2000 });
+      const user = await jwtDecode(data?.accessToken);
+      localStorage.setItem("access-token", data?.accessToken);
+      localStorage.setItem("refresh-token", data?.refreshToken);
+      localStorage.setItem("user", JSON.stringify(user));
       router.push("/");
     }
+  };
 
+  // Side effects for login success or error handling
+  useEffect(() => {
+    handleToken();
     if (isError) {
       toast.error(`Login failed: ${error?.message || "Unknown error"}`, {
         duration: 3000,
       });
     }
-  }, [isSuccess, isError, error, router]);
+  }, [isSuccess, isError, error, router, data]);
 
   return (
     <div className="h-screen flex justify-center items-center px-4">

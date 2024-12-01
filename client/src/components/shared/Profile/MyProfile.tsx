@@ -71,6 +71,8 @@ export default function MyProfile({ user }: any) {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("access-token");
+    localStorage.removeItem("refresh-token");
     logout();
     router.push("/login");
   };
@@ -114,14 +116,14 @@ export default function MyProfile({ user }: any) {
               <a
                 href={
                   user?.profilePhoto ||
-                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-profile-vector.jpg"
                 }
               >
                 <div className="relative w-[150px] h-[150px]">
                   <Image
                     src={
                       user?.profilePhoto ||
-                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-profile-vector.jpg"
                     }
                     fill
                     className="object-cover rounded-full"

@@ -108,7 +108,7 @@ export default function SignupPage() {
           </div>
 
           {/* Profile photo Field */}
-          <div className="flex items-center gap-4 w-4/5 md:w-3/5 mb-4 xl:mb-6">
+          <div className="flex items-center gap-4 w-4/5 md:w-3/5 ">
             <div>
               <label
                 htmlFor="profilePhoto"

@@ -31,15 +31,15 @@ export default function Sidebar() {
   const { data: followersUsersData } = useGetFollowers();
   const { mutate: handleUnfollow } = useUnfollowUser();
   const {
-    createPostDescription,
-    setCreatePostDescription,
+    description,
+    setDescription,
     imagePreviews,
     handleFileChange,
     register,
     handleSubmit,
     onSubmit,
     errors,
-    isCreatePostLoading,
+    isLoading,
   } = useCreatePostForm();
   const { user } = useContext(UserContext) as IUserProviderValues;
   const {
@@ -82,7 +82,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {isCreatePostLoading && <Loading />}
+      {isLoading && <Loading />}
       <div className="flex flex-col h-screen justify-between py-4">
         <div>
           <Link href={"/"} className="w-8 h-8">
@@ -237,8 +237,8 @@ export default function Sidebar() {
         onSubmit={(data: FieldValues) => onSubmit(data)}
         errors={errors}
         categories={categories}
-        createPostDescription={createPostDescription}
-        setCreatePostDescription={setCreatePostDescription}
+        description={description}
+        setDescription={setDescription}
         imagePreviews={imagePreviews}
         handleFileChange={handleFileChange}
       />

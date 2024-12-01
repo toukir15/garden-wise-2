@@ -3,11 +3,12 @@ import { IoSend } from "react-icons/io5";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useComment } from "@/src/hooks/comment.hook";
 import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 
 export default function CommentForm() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const { postStates } = useContext(PostContext) as IPostProviderValues;
   const { queryTerm, searchTerm, postId } = postStates;
+  const { user } = useContext(UserContext) as IUserProviderValues;
   const { mutate: handleComment } = useComment({ queryTerm, searchTerm });
   const { register, handleSubmit, reset } = useForm<FieldValues>();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
