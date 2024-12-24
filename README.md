@@ -12,19 +12,20 @@ Build a supportive community where enthusiasts and professionals can connect and
 Enhance learning with premium content for advanced gardening techniques and expert guidance.
 Make gardening more accessible and enjoyable by promoting innovation and sustainable practices.
 ### Goals
-1. **Comprehensive Room Listings**: Provide a diverse range of meeting rooms with detailed descriptions, availability, and high-quality images.
-2. **User-Friendly Experience**: Design an intuitive interface for easy searching, filtering, and booking of meeting spaces.
-3. **Efficient Booking Management:**: Offer robust admin tools for managing room availability, bookings, and cancellations.
-4. **Secure Payment Processing**:  Ensure reliable and secure payment systems for hassle-free transactions.
-5. **Scalability and Performance**:  Develop a scalable platform with fast load times and responsive design to ensure smooth performance across devices.
+1. **Foster a Thriving Gardening Community**: Build an engaging platform where gardening enthusiasts and professionals can share knowledge, tips, and experiences.
+2. **Simplify Gardening Challenges**: Provide users with actionable solutions to common gardening problems through shared expertise and resources.
+3. **Promote Knowledge Sharing:**: Encourage users to post high-quality gardening content, including seasonal guides, techniques, and care tips.
+4. **Enable User Interaction**: Create a space for meaningful interactions through features like comments, likes, and content sharing.
+5. **Deliver Premium Content**: Offer exclusive access to advanced gardening techniques and expert insights for users seeking deeper knowledge.
 
 ## Features
 
-- **Room Listings**: A well-organized catalog of meeting rooms with detailed descriptions, capacity information, availability, and high-quality images.
-- **Search and Filters**: Advanced search functionality with filters for location, capacity, price range, and amenities to help users quickly find the perfect room.
-- **Admin Dashboard**: A comprehensive admin panel for room owners to manage room listings, including adding, editing, and removing rooms, as well as monitoring bookings.
-- **Secure Booking and Payments**: A secure, streamlined booking process with reliable payment gateways and multiple payment options.
-- **Responsive Design**: A fully responsive design that ensures a consistent experience across all devices, including desktops, tablets, and smartphones.
+- **News Feed**: A dynamic feed where users can explore gardening tips, seasonal guides, and shared posts from the community.
+- **Search and Filters**: Advanced search functionality with filters for topics, tags, and user interests to help users quickly discover relevant content.
+- **Admin Dashboard**: A powerful admin panel to manage posts, monitor user activities, and oversee content and payment-related activities.
+- **User Verification and Payments**:A secure payment system to verify users and provide access to exclusive premium gardening content.
+- **Responsive Design**: A fully responsive design that ensures a seamless experience across devices, including desktops, tablets, and smartphones.
+- **Token-Based Authentication**: A robust authentication system to secure user accounts, enabling safe login and role-based access control.
 
 ## Technology Stack
 
@@ -33,9 +34,8 @@ Make gardening more accessible and enjoyable by promoting innovation and sustain
   - CSS
   - Tailwind CSS
   - JavaScript
-  - React
+  - Next.js
   - TypeScript
-  - Redux
 
 - **Backend**:
   - Node.js
