@@ -5,7 +5,12 @@
 Garden Wise is a vibrant social media platform designed exclusively for gardening enthusiasts and professionals. It serves as a community hub where users can share their passion for plants, exchange gardening tips, and discover the joy of growing. Whether you’re a beginner looking for advice or an expert showcasing your garden, Garden Wise is the perfect platform to connect, learn, and inspire.
 ## Project Decription
 ### Purpose
-MeetEase is a meeting room booking platform designed to simplify the process of finding and reserving meeting spaces. Our goal is to offer a seamless and efficient booking experience for professionals, businesses, and organizations needing suitable rooms for meetings or events. With a wide selection of meeting rooms across various locations, MeetEase ensures that users can quickly find the right room tailored to their specific requirements.
+The purpose of Garden Wise is to simplify gardening for everyone by providing a centralized platform that fosters knowledge sharing, problem-solving, and inspiration within the gardening community. Whether you’re a seasoned gardener or just starting, Garden Wise aims to:
+Empower users to share tips, techniques, and seasonal gardening advice.
+Offer solutions to common gardening challenges through shared experiences and professional insights.
+Build a supportive community where enthusiasts and professionals can connect and collaborate.
+Enhance learning with premium content for advanced gardening techniques and expert guidance.
+Make gardening more accessible and enjoyable by promoting innovation and sustainable practices.
 ### Goals
 1. **Comprehensive Room Listings**: Provide a diverse range of meeting rooms with detailed descriptions, availability, and high-quality images.
 2. **User-Friendly Experience**: Design an intuitive interface for easy searching, filtering, and booking of meeting spaces.
