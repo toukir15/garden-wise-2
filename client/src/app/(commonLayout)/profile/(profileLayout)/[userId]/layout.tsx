@@ -6,10 +6,11 @@ import Sidebar from "@/src/components/shared/Sidber";
 import RightSidebar from "@/src/components/shared/RightSidebar";
 import MobileMenu from "@/src/components/MobileMenu";
 
+
 export const metadata: Metadata = {
   title: {
-    default: siteConfig?.name,
-    template: `%s - ${siteConfig?.name}`,
+    default: "GardenWise",
+    template: `%s - `,
   },
   description: siteConfig.description,
   icons: {

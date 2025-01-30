@@ -8,6 +8,7 @@ export type TUser = {
   role: 'user' | 'admin'
   profilePhoto: string
   address: string
+  conversations?: [Types.ObjectId];
   connection?: Types.ObjectId
   bookmark: Types.ObjectId
   isVerified: boolean

@@ -15,7 +15,7 @@ router.post('/register', multer_config_1.multerUpload.single('file'), auth_contr
 router.post('/login', auth_controller_1.AuthControllers.loginUser);
 router.patch('/change-password', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), auth_controller_1.AuthControllers.changePassword);
 router.patch('/forget-password', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), auth_controller_1.AuthControllers.forgetPassword);
-router.post('/send-forget-email', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), auth_controller_1.AuthControllers.sendForgetEmail);
+router.post('/send-forget-email', auth_controller_1.AuthControllers.sendForgetEmail);
 router.post('/edit-profile', multer_config_1.multerUpload.single('profilePhoto'), (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), bodyParser_1.parseBody, auth_controller_1.AuthControllers.editProfile);
 router.post('/refresh-token', (0, auth_1.default)(user_const_1.USER_ROLE.user, user_const_1.USER_ROLE.admin), auth_controller_1.AuthControllers.refreshToken);
 exports.AuthRouter = router;

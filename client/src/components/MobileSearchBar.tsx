@@ -55,7 +55,7 @@ export default function MobileSearchBar() {
               defaultValue={postStates.searchTerm}
               onClear={handleClear}
               isClearable
-              size="sm"
+              size="lg"
               radius="full"
               placeholder="Type to search post..."
               startContent={

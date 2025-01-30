@@ -33,11 +33,11 @@ const createPostIntoDB = (payload, postImages, userId) => __awaiter(void 0, void
     const result = yield post_model_1.default.create(postData);
     const resultObject = result.toObject();
     const userObject = findUser.toObject();
-    const modifyResult = Object.assign(Object.assign({}, resultObject), { post: Object.assign(Object.assign({}, resultObject.post), { user: {
-                _id: userObject._id,
-                name: userObject.name,
-                profilePhoto: userObject.profilePhoto,
-                email: userObject.email,
+    const modifyResult = Object.assign(Object.assign({}, resultObject), { post: Object.assign(Object.assign({}, resultObject === null || resultObject === void 0 ? void 0 : resultObject.post), { user: {
+                _id: userObject === null || userObject === void 0 ? void 0 : userObject._id,
+                name: userObject === null || userObject === void 0 ? void 0 : userObject.name,
+                profilePhoto: userObject === null || userObject === void 0 ? void 0 : userObject.profilePhoto,
+                email: userObject === null || userObject === void 0 ? void 0 : userObject.email,
             } }) });
     return modifyResult;
 });
@@ -85,7 +85,7 @@ const getPostsFromDB = (query, user) => __awaiter(void 0, void 0, void 0, functi
         result = (0, post_utils_1.filterPostsForUnverifiedUser)(result, user);
     }
     // Sort by popularity if the query term is 'popular'
-    if (queryTerm === 'popular') {
+    if (queryTerm === 'popular' || searchTerm || queryTerm === 'premium') {
         result = (0, post_utils_1.sortPopularPosts)(result);
     }
     return result;

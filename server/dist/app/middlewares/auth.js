@@ -32,9 +32,6 @@ const auth = (...requiredRoles) => {
         if (!user) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This user is not found !');
         }
-        if (requiredRoles && !requiredRoles.includes(role)) {
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
-        }
         req.user = decoded;
         next();
     }));

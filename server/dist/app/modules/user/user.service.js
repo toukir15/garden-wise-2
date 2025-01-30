@@ -55,6 +55,15 @@ const getFollowSuggetionUsersFromDB = (userId) => __awaiter(void 0, void 0, void
     // Return the result
     return usersNotConnected;
 });
+const getUserFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    // Find the user by ID
+    const findUser = yield user_model_1.User.findById(userId);
+    if (!findUser) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User not found');
+    }
+    const result = yield user_model_1.User.findById(userId);
+    return result;
+});
 const updateUserIntoDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.User.findByIdAndUpdate(id, { role: 'admin' }, { new: true });
     return result;
@@ -63,4 +72,5 @@ exports.UserServices = {
     createUserIntoDB,
     getFollowSuggetionUsersFromDB,
     updateUserIntoDB,
+    getUserFromDB,
 };

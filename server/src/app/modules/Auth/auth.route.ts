@@ -1,10 +1,6 @@
 import express from 'express'
 import auth from '../../middlewares/auth'
-import validateRequest, {
-  validateRequestCookies,
-} from '../../middlewares/validateRequest'
 import { AuthControllers } from './auth.controller'
-import { AuthValidation } from './auth.validation'
 import { USER_ROLE } from '../user/user.const'
 import { multerUpload } from '../../config/multer.config'
 import { parseBody } from '../../middlewares/bodyParser'

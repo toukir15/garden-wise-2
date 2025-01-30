@@ -1,5 +1,3 @@
-// "use client";
-
 import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { useCreatePayment } from "@/src/hooks/payment.hook";
 import { Button } from "@nextui-org/button";
@@ -70,10 +68,8 @@ export default function MyProfile({ user }: any) {
   }, [user]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("refresh-token");
     logout();
+    // localStorage.removeItem("user");
     router.push("/login");
   };
 

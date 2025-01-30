@@ -154,5 +154,5 @@ exports.PostControllers = {
     getPost,
     getMyPosts,
     updatePost,
-    getVisitProfilePosts
+    getVisitProfilePosts,
 };

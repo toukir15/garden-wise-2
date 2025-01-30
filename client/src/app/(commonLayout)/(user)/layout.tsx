@@ -8,8 +8,8 @@ import MobileMenu from "@/src/components/MobileMenu";
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig?.name,
-    template: `%s - ${siteConfig?.name}`,
+    default: "GardenWise",
+    template: `%s - `,
   },
   description: siteConfig.description,
   icons: {

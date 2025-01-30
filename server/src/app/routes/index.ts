@@ -2,11 +2,13 @@ import express from 'express'
 import { PostRouter } from '../modules/posts/post.route'
 import { ConnectionRouter } from '../modules/connection/connection.route'
 import { UserRouter } from '../modules/user/user.route'
-import { AuthRouter } from '../modules/Auth/auth.route'
+import { AuthRouter } from '../modules/auth/auth.route'
 import { PaymentRouter } from '../modules/payment/payment.route'
 import { DashboardRoute } from '../modules/dashboard/dashboard.route'
 import { CommentRouter } from '../modules/comment/comment.route'
 import { BookmarkRouter } from '../modules/bookmark/bookmark.route'
+import { MessageRouter } from '../modules/message/message.route'
+import { ConversationRouter } from '../modules/conversation/conversation.route'
 
 const router = express.Router()
 
@@ -34,6 +36,14 @@ const moduleRoutes = [
   {
     path: '/connections',
     route: ConnectionRouter,
+  },
+  {
+    path: '/messages',
+    route: MessageRouter,
+  },
+  {
+    path: '/conversations',
+    route: ConversationRouter,
   },
   {
     path: '/payments',

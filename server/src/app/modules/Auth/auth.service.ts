@@ -90,6 +90,7 @@ const loginUser = async (payload: TLoginUser) => {
     profilePhoto: user?.profilePhoto,
     isVerified: user?.isVerified,
     bookmark: user?.bookmark,
+    Conversations: user?.conversations
   }
 
   const accessToken = createToken(
@@ -188,6 +189,7 @@ const sendForgetEmail = async (email: string) => {
     profilePhoto: findUser?.profilePhoto,
     isVerified: findUser?.isVerified,
     bookmark: findUser?.bookmark,
+    conversations: findUser?.conversations
   }
 
   const token = createToken(
@@ -221,6 +223,7 @@ const editProfile = async (payload: any, profilePhoto: any, userId: string) => {
     profilePhoto: user?.profilePhoto,
     isVerified: user?.isVerified,
     bookmark: user?.bookmark,
+    conversations: user?.conversations
   }
 
   const accessToken = createToken(
@@ -255,6 +258,7 @@ const refreshToken = async (email: string) => {
     profilePhoto: user?.profilePhoto,
     isVerified: user?.isVerified,
     bookmark: user?.bookmark,
+    conversations: user?.conversations
   }
 
   const accessToken = createToken(

@@ -15,7 +15,9 @@ const createBaseQuery = (searchTerm, queryTerm, user) => {
 };
 exports.createBaseQuery = createBaseQuery;
 const getSortOrderPipeline = (queryTerm) => {
-    if (queryTerm === 'recent') {
+    if (queryTerm === 'recent' ||
+        queryTerm === 'premium' ||
+        queryTerm === 'popular') {
         return [{ $sort: { createdAt: -1 } }];
     }
     return [];
@@ -45,7 +47,7 @@ exports.populateOptions = [
     {
         path: 'sharedUser',
         model: 'User',
-        select: 'name profilePhoto isVerified',
+        select: 'name profilePhoto isVerified email address',
     },
     {
         path: 'votes',
@@ -60,7 +62,7 @@ exports.populateOptions = [
             {
                 path: 'user',
                 model: 'User',
-                select: 'name profilePhoto isVerified',
+                select: 'name profilePhoto isVerified email address',
             },
             {
                 path: 'replies.commentReplyUser',
@@ -87,7 +89,7 @@ exports.populateOptions = [
     {
         path: 'post.user',
         model: 'User',
-        select: 'name profilePhoto email isVerified',
+        select: 'name profilePhoto isVerified email address',
     },
     {
         path: 'post.comments',

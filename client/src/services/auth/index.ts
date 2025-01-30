@@ -2,6 +2,7 @@
 import axiosInstance from "@/src/lib/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 import { FieldValues } from "react-hook-form";
 
 export const userRegister = async (userData: FieldValues) => {
@@ -21,6 +22,7 @@ export const userLogin = async (userData: FieldValues) => {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
     }
+
     return data.data;
   } catch (error: any) {
     throw new Error(error);
@@ -128,4 +130,5 @@ export const getCurrentUser = async () => {
 export const logout = () => {
   cookies().delete("accessToken");
   cookies().delete("refreshToken");
+
 };

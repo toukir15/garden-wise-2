@@ -1,8 +1,8 @@
 import httpStatus from 'http-status'
 import config from '../../config'
 import sendResponse from '../../utils/sendResponse'
-import { AuthServices } from './auth.service'
 import { catchAsync } from '../../utils/catchAsync'
+import { AuthServices } from './auth.service'
 
 const registerUser = catchAsync(async (req, res) => {
   const userData = JSON.parse(req.body.data)

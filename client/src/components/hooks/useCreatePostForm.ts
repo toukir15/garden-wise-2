@@ -28,14 +28,7 @@ export function useCreatePostForm() {
       formData.append("file", file);
     });
 
-    handleCreatePost(formData, {
-      onSuccess: () => {
-        // onClose();
-      },
-      onError: (error) => {
-        console.error("Post creation failed:", error);
-      },
-    });
+    handleCreatePost(formData);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

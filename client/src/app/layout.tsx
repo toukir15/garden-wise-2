@@ -7,11 +7,10 @@ import { siteConfig } from "@/src/config/site";
 import { fontSans } from "@/src/config/fonts";
 import { Providers } from "../lib/providers";
 
-
 export const metadata: Metadata = {
   title: {
-    default: siteConfig?.name,
-    template: `%s - ${siteConfig?.name}`,
+    default: "GardenWise",
+    template: `%s `,
   },
   description: siteConfig.description,
   icons: {
@@ -34,14 +33,9 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <head />
-      <body
-        className={clsx(
-          " font-sans antialiased",
-          fontSans.variable
-        )}
-      >
+      <body className={clsx(" font-sans antialiased", fontSans.variable)}>
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-            <div>{children}</div>
+          <div>{children}</div>
         </Providers>
       </body>
     </html>

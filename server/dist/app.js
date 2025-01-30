@@ -28,7 +28,9 @@ const stripe = new stripe_1.default(config_1.default.stripe_cli);
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
     origin: [config_1.default.client_url],
+    credentials: true,
 }));
+app.options('*', (0, cors_1.default)());
 app.use((0, cookie_parser_1.default)());
 // Parser
 app.use(express_1.default.urlencoded({ extended: true }));

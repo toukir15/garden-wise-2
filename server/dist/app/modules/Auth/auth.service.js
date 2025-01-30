@@ -129,7 +129,7 @@ const forgetPassword = (userData, payload) => __awaiter(void 0, void 0, void 0, 
 const sendForgetEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     const findUser = yield user_model_1.User.findOne({ email: email });
     if (!findUser) {
-        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "User does not exist!");
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User does not exist!');
     }
     const jwtPayload = {
         _id: findUser === null || findUser === void 0 ? void 0 : findUser._id.toString(),
@@ -140,7 +140,7 @@ const sendForgetEmail = (email) => __awaiter(void 0, void 0, void 0, function* (
         isVerified: findUser === null || findUser === void 0 ? void 0 : findUser.isVerified,
         bookmark: findUser === null || findUser === void 0 ? void 0 : findUser.bookmark,
     };
-    const token = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
+    const token = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_send_email_expires_in);
     yield (0, emailSender_1.sendEmail)(findUser.email, token);
 });
 const editProfile = (payload, profilePhoto, userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -199,5 +199,5 @@ exports.AuthServices = {
     refreshToken,
     editProfile,
     sendForgetEmail,
-    forgetPassword
+    forgetPassword,
 };

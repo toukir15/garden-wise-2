@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FieldValues, SubmitHandler } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import GWInput from "@/src/components/form/GWInput";
 import GWForm from "@/src/components/form/GWForm";
 import { useUserLogin } from "@/src/hooks/auth.hook";
@@ -12,10 +12,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/plant.png";
 import { Button } from "@nextui-org/button";
-import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { handleSubmit, setValue } = useForm({
+    resolver: zodResolver(loginValidationSchema),
+  });
+
   const {
     mutate: handleUserLogin,
     isSuccess,
@@ -30,30 +33,31 @@ export default function LoginPage() {
     handleUserLogin(data);
   };
 
-  const handleToken = async () => {
-    if (isSuccess) {
-      toast.success("Logged in successfully!", { duration: 2000 });
-      const user = await jwtDecode(data?.accessToken);
-      localStorage.setItem("access-token", data?.accessToken);
-      localStorage.setItem("refresh-token", data?.refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      router.push("/");
-    }
-  };
-
   // Side effects for login success or error handling
   useEffect(() => {
-    handleToken();
+    if (isSuccess) {
+      router.push("/");
+    }
     if (isError) {
       toast.error(`Login failed: ${error?.message || "Unknown error"}`, {
         duration: 3000,
       });
     }
-  }, [isSuccess, isError, error, router, data]);
+  }, [isSuccess, isError, error, router]);
+
+  // Prefill fields for Admin or User login
+  const handlePrefill = (role: "admin" | "user") => {
+    const credentials = {
+      admin: { email: "admin@gmail.com", password: "123456" },
+      user: { email: "user@gmail.com", password: "123456" },
+    };
+    setValue("email", credentials[role].email);
+    setValue("password", credentials[role].password);
+  };
 
   return (
     <div className="h-screen flex justify-center items-center px-4">
-      <GWForm onSubmit={onSubmit} resolver={zodResolver(loginValidationSchema)}>
+      <GWForm onSubmit={handleSubmit(onSubmit)}>
         <div className="xl:bg-[#121212] w-[400px] xl:w-[600px] shadow-lg py-[80px] rounded-2xl flex justify-center items-center flex-col">
           {/* Logo */}
           <Image
@@ -63,9 +67,10 @@ export default function LoginPage() {
             alt="logo"
             className="w-16 mb-4"
           />
-          <h3 className="text-3xl font-medium mb-8 xl:mb-12 text-white">
+
+          <p className="text-3xl font-medium mb-8 xl:mb-12 text-white">
             GardenWise
-          </h3>
+          </p>
 
           {/* Email Field */}
           <div className="flex flex-col w-4/5 md:w-3/5 mb-6">
@@ -82,7 +87,7 @@ export default function LoginPage() {
             type="submit"
             color="success"
             className="w-4/5 md:w-3/5 py-[10px] px-12 rounded-xl font-bold mt-2"
-            disabled={isLoading} // Disable button during loading
+            disabled={isLoading}
             isLoading={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
@@ -107,6 +112,26 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
+
+          {/* Prefill Buttons */}
+          <div className="mt-6 flex gap-4">
+            <Button
+              type="submit"
+              color="warning"
+              className="px-4 py-2"
+              onPress={() => handlePrefill("admin")}
+            >
+              Login as Admin
+            </Button>
+            <Button
+              type="submit"
+              color="secondary"
+              className="px-4 py-2"
+              onPress={() => handlePrefill("user")}
+            >
+              Login as User
+            </Button>
+          </div>
         </div>
       </GWForm>
     </div>

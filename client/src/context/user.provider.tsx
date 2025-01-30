@@ -37,7 +37,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   // Function to fetch and set the current user
   const handleUser = async () => {
     const user: any = await getCurrentUser();
-    localStorage.setItem("user", JSON.stringify(user));
+    // localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
 

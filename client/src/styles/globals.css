@@ -21,6 +21,23 @@
   background: hsla(0, 7%, 8%, 0.762);
   border-radius: 10px;
 }
+
+.message_body::-webkit-scrollbar {
+  width: 6px !important;
+  height: 2px !important;
+}
+
+.message_body::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 75, 75, 0.731);
+  border-radius: 10px;
+}
+
+.message_body::-webkit-scrollbar-track {
+  background: hsla(0, 7%, 8%, 0.762);
+  border-radius: 10px;
+}
+
+
 .scroll_box::-webkit-scrollbar {
   width: 6px !important;
   height: 2px !important;
@@ -128,3 +145,7 @@
 .ant-spin-dot-item {
   background-color: #10b981 !important; /* Tailwind's green-500 */
 }
+
+strong {
+        color: white,
+ }

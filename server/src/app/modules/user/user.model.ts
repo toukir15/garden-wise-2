@@ -12,6 +12,7 @@ const userSchema = new Schema<TUser>(
       default:
         'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg',
     },
+    conversations: { type: [Schema.Types.ObjectId], ref: "Conversation", default: [] },
     address: { type: String },
     connection: { type: Schema.ObjectId, default: null, ref: 'Connection' },
     bookmark: { type: Schema.ObjectId, default: null, ref: 'Bookmark' },
@@ -20,5 +21,4 @@ const userSchema = new Schema<TUser>(
   { timestamps: true },
 )
 
-// Use models.User to check if the User model exists, and only define it if it doesn't
 export const User = models.User || model<TUser>('User', userSchema)

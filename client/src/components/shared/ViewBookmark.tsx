@@ -8,7 +8,6 @@ import ViewComment from "./PostComponents/ViewComment";
 import { checkVoteStatus } from "@/src/utils/checkVoteStatus";
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import { TPost } from "../../../types";
-import ComponentLoading from "../loading/ComponentLoading";
 import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import SharedPost from "./SharedPost";
 import Post from "./Post";

@@ -16,7 +16,9 @@ exports.AdminService = void 0;
 const payment_model_1 = require("../payment/payment.model");
 const post_model_1 = __importDefault(require("../posts/post.model"));
 const user_model_1 = require("../user/user.model");
+const dashboard_const_1 = require("./dashboard.const");
 const getUserActivityFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const year = new Date().getFullYear();
     const posts = yield post_model_1.default.find()
         .select('sharedUser votes isShared comments share post createdAt')
         .populate([
@@ -27,22 +29,26 @@ const getUserActivityFromDB = () => __awaiter(void 0, void 0, void 0, function* 
     ]);
     // Initialize an object to store monthly data
     const monthlyData = {};
+    dashboard_const_1.months.forEach(month => {
+        const monthYear = `${month} ${year}`;
+        monthlyData[monthYear] = {
+            name: monthYear,
+            upvotes: 0,
+            downvotes: 0,
+            posts: 0,
+            comments: 0,
+        };
+    });
+    // Populate data from posts
     posts.forEach((post) => {
         var _a, _b, _c, _d, _e;
+        const postYear = new Date(post.createdAt).getFullYear();
+        if (postYear !== year)
+            return; // Skip posts not in the specified year
         const monthYear = new Date(post.createdAt).toLocaleString('default', {
             month: 'short',
             year: 'numeric',
         });
-        // Initialize entry if not present
-        if (!monthlyData[monthYear]) {
-            monthlyData[monthYear] = {
-                name: monthYear,
-                upvotes: 0,
-                downvotes: 0,
-                posts: 0,
-                comments: 0,
-            };
-        }
         // Aggregate data for upvotes, downvotes, and comments
         const { upvote = [], downvote = [] } = post.votes || {};
         const postVotes = ((_a = post.post) === null || _a === void 0 ? void 0 : _a.votes) || {};
@@ -56,7 +62,9 @@ const getUserActivityFromDB = () => __awaiter(void 0, void 0, void 0, function* 
             (((_e = post.comments) === null || _e === void 0 ? void 0 : _e.length) || 0) + postComments.length;
     });
     // Convert object to array and sort by month
-    return Object.values(monthlyData).sort((a, b) => new Date(`1 ${a.name}`).getTime() - new Date(`1 ${b.name}`).getTime());
+    const objArr = dashboard_const_1.months.map(month => monthlyData[`${month} ${year}`]);
+    console.dir(objArr, { depth: true });
+    return objArr;
 });
 const getMonthlyPaymentsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     // Fetch payment data from the database
@@ -115,10 +123,18 @@ const getPostsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     ]);
     const posts = result.map((post) => ({
         _id: post._id,
-        userName: post.isShared && post.sharedUser ? post.sharedUser.name : post.post.user.name,
-        email: post.isShared && post.sharedUser ? post.sharedUser.email : post.post.user.email,
-        upvotes: post.isShared ? post.votes.upvote.length : post.post.votes.upvote.length,
-        downvotes: post.isShared ? post.votes.downvote.length : post.post.votes.downvote.length,
+        userName: post.isShared && post.sharedUser
+            ? post.sharedUser.name
+            : post.post.user.name,
+        email: post.isShared && post.sharedUser
+            ? post.sharedUser.email
+            : post.post.user.email,
+        upvotes: post.isShared
+            ? post.votes.upvote.length
+            : post.post.votes.upvote.length,
+        downvotes: post.isShared
+            ? post.votes.downvote.length
+            : post.post.votes.downvote.length,
         comments: post.isShared ? post.comments.length : post.post.comments.length,
         isShared: post.isShared,
     }));

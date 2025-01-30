@@ -1,7 +1,8 @@
 import { nextui } from "@nextui-org/theme";
+import typography from "@tailwindcss/typography";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -31,24 +32,24 @@ module.exports = {
               color: '#E5E7EB',
               "margin-top": "8px",
               "margin-bottom": "8px",
-              padding: "0px"
+              padding: "0px",
             },
             h2: {
               color: '#fff',
               "margin-top": "8px",
               "margin-bottom": "8px",
-              padding: "0px"
+              padding: "0px",
             },
             h3: {
               color: '#fff',
               "margin-top": "4px",
               "margin-bottom": "4px",
-              padding: "0px"
+              padding: "0px",
             },
             p: {
               color: '#E5E7EB',
               "margin-top": "8px",
-              "margin-bottom": "8px"
+              "margin-bottom": "8px",
             },
             ol: {
               color: '#E5E7EB',
@@ -69,7 +70,7 @@ module.exports = {
               "margin-top": "8px",
             },
             a: {
-              color: '#E5E7EB'
+              color: '#E5E7EB',
             },
           },
         },
@@ -77,8 +78,7 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [
-    nextui(),
-    require('@tailwindcss/typography')
-  ],
+  plugins: [nextui(), typography],
 };
+
+export default config;

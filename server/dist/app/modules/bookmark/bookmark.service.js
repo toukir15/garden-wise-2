@@ -128,6 +128,11 @@ const getBookmarkFromDB = (bookmarkId) => __awaiter(void 0, void 0, void 0, func
         ],
     })
         .exec();
+    if (!result || !result.posts) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'No posts found for this bookmark');
+    }
+    // Reverse the posts array and return
+    result.posts.reverse(); // Reverse the array in-place
     return result;
 });
 exports.BookmarkServices = {
