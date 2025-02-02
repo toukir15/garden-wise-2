@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./app/config"));
+const socket_index_1 = require("./app/socket/socket.index.");
 let server;
 process.on('uncaughtException', error => {
     console.error('Uncaught Exception:', error);
@@ -40,6 +41,7 @@ function bootstrap() {
             server = app_1.default.listen(config_1.default.port, () => {
                 console.log(`🚀 Application is running on port ${config_1.default.port}`);
             });
+            (0, socket_index_1.initializeSocket)(server);
         }
         catch (err) {
             console.error('Failed to connect to database:', err);

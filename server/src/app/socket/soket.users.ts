@@ -15,17 +15,14 @@ export const getFindUser = (userId: string) => {
 
 export const users = (socket: Socket) => {
   socket.on("user", (data: Omit<ActiveUser, "socketId">) => {
-    // আগের socketId থাকলে সেটাকে মুছে নতুনটা যোগ করবো
     activeUsers.forEach((user, index) => {
       if (user._id === data._id) {
-        activeUsers.splice(index, 1); // পুরোনো এন্ট্রি মুছে ফেলি
+        activeUsers.splice(index, 1);
       }
     });
 
-    // নতুন socketId সহ ইউজার যোগ করলাম
     activeUsers.push({ ...data, socketId: socket.id });
 
-    // সকল অনলাইন ইউজারদের আপডেট পাঠাচ্ছি
     socket.emit("online", activeUsers);
     socket.broadcast.emit("online", activeUsers);
   });
@@ -36,7 +33,6 @@ export const users = (socket: Socket) => {
       activeUsers.splice(index, 1);
       console.log(`User disconnected: ${socket.id}`);
 
-      // সকলে নতুন অনলাইন লিস্ট পাঠানো
       socket.broadcast.emit("online", activeUsers);
     }
   });

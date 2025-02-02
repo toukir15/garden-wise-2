@@ -3,7 +3,7 @@ import { Server } from 'http'
 import mongoose from 'mongoose'
 import app from './app'
 import config from './app/config'
-import { initializeSocket } from './app/socket/index.socket'
+import { initializeSocket } from './app/socket/socket.index.'
 
 let server: Server
 

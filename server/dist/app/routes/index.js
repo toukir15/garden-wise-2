@@ -7,11 +7,13 @@ const express_1 = __importDefault(require("express"));
 const post_route_1 = require("../modules/posts/post.route");
 const connection_route_1 = require("../modules/connection/connection.route");
 const user_route_1 = require("../modules/user/user.route");
-const auth_route_1 = require("../modules/Auth/auth.route");
+const auth_route_1 = require("../modules/auth/auth.route");
 const payment_route_1 = require("../modules/payment/payment.route");
 const dashboard_route_1 = require("../modules/dashboard/dashboard.route");
 const comment_route_1 = require("../modules/comment/comment.route");
 const bookmark_route_1 = require("../modules/bookmark/bookmark.route");
+const message_route_1 = require("../modules/message/message.route");
+const conversation_route_1 = require("../modules/conversation/conversation.route");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -37,6 +39,14 @@ const moduleRoutes = [
     {
         path: '/connections',
         route: connection_route_1.ConnectionRouter,
+    },
+    {
+        path: '/messages',
+        route: message_route_1.MessageRouter,
+    },
+    {
+        path: '/conversations',
+        route: conversation_route_1.ConversationRouter,
     },
     {
         path: '/payments',

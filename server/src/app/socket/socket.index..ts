@@ -1,14 +1,16 @@
 import { Server as SocketIOServer } from "socket.io";
 import { Server as HTTPServer } from "http";
-import { getFindUser, users } from "./users";
+import { getFindUser, users } from "./soket.users";
+import config from "../config";
 
 let io: SocketIOServer;
 
 export function initializeSocket(server: HTTPServer): SocketIOServer {
   io = new SocketIOServer(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: [config.client_url as string],
       methods: ["GET", "POST"],
+      credentials: true
     },
   });
 
@@ -20,7 +22,6 @@ export function initializeSocket(server: HTTPServer): SocketIOServer {
       const findUser = getFindUser(data.receiverId);
       socket.to(findUser?.socketId as string).emit("message", data.conversationId);
     });
-
 
     socket.on("conversation", (data) => {
       const findUser = getFindUser(data.receiverId);

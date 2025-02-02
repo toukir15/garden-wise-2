@@ -55,6 +55,10 @@ const getFollowSuggetionUsersFromDB = (userId) => __awaiter(void 0, void 0, void
     // Return the result
     return usersNotConnected;
 });
+const getUsersFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.User.find();
+    return result;
+});
 const getUserFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     // Find the user by ID
     const findUser = yield user_model_1.User.findById(userId);
@@ -73,4 +77,5 @@ exports.UserServices = {
     getFollowSuggetionUsersFromDB,
     updateUserIntoDB,
     getUserFromDB,
+    getUsersFromDB
 };
