@@ -73,51 +73,24 @@ const createMessageIntoDB = async (payload: TMessage) => {
   }
 };
 
+const getMessagesFromDB = async (conversationId: string) => {
+  const result = await Message.find({ conversationId: conversationId })
+  return result
+}
+
 const deleteMessageFromDB = async (
-  messageId: string,
-  userId: string,
-  query: TMessageDeleteQuery
 ) => {
-  // check message exist or not
-  const findMessage = await Message.findById(messageId);
-  if (!findMessage) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Message does not exist!");
-  }
 
-  let queryOption;
-  if (query?.isDeleted) {
-    queryOption = { isDeleted: true };
-  } else if (query?.isRemove) {
-    queryOption = { [`isRemove.${userId}`]: true };
-  }
-
-  const result = await Message.findByIdAndUpdate(messageId, queryOption, {
-    new: true,
-  });
-  return result;
 };
 
-const updateMessageIntoDB = async (messageId: string, newMessage: string) => {
-  const result = await Message.findByIdAndUpdate(
-    messageId,
-    {
-      text: newMessage,
-      isEdited: true,
-    },
-    { new: true }
-  );
-  return result;
+const updateMessageIntoDB = async () => {
+
 };
 
 const updateSeenStatusIntoDB = async (
-  conversationId: string,
-  receiverId: string
+
 ) => {
-  const result = await Message.updateMany(
-    { conversationId: conversationId, [`isSeen.${receiverId}`]: { $ne: true } },
-    { $set: { [`isSeen.${receiverId}`]: true } }
-  );
-  return result;
+
 };
 
 export const MessageServices = {
@@ -125,4 +98,5 @@ export const MessageServices = {
   deleteMessageFromDB,
   updateMessageIntoDB,
   updateSeenStatusIntoDB,
+  getMessagesFromDB
 };

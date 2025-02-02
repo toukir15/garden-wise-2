@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import logo from "../../../public/plant.png";
 import categories from "../../assets/json/category.json";
 import {
@@ -26,8 +26,8 @@ import { toast } from "sonner";
 import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { useRouter } from "next/navigation";
 import { FaChartPie } from "react-icons/fa6";
-import MessageModal from "../modal/MessageModal";
 import ConversationalModal from "../modal/ConversationalModal";
+import { useGetConversations } from "@/src/hooks/conversation.hook";
 
 export default function Sidebar() {
   const { data: followingsUsersData } = useGetFollowings();
@@ -52,14 +52,13 @@ export default function Sidebar() {
   } = useDisclosure();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isMessageOpen, onOpen: messageOnOpen, onClose: messageOnClose } = useDisclosure();
-
+  const { data, isLoading: isConversetionalDataLoading } = useGetConversations()
   const {
     isOpen: isFollowersOpen,
     onOpen: onFollowersOpen,
     onOpenChange: onFollowersOpenChange,
   } = useDisclosure();
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-  // const [isMessageOpen, setIsMessageOpen] = useState<boolean>(false);
   const handleUnfollowRequest = (user: Partial<IUser>) => {
     if (!user._id) return;
     setLoadingUserId(user._id);
@@ -129,7 +128,7 @@ export default function Sidebar() {
                       label={label}
                       size={size}
                     />
-                  ) : index === 4 ? (
+                  ) : index === 3 ? (
                     <>
                       <SidebarButton
                         onClick={onFollowersOpen}
@@ -156,7 +155,9 @@ export default function Sidebar() {
 
 
             <Button
-              onClick={messageOnOpen}
+              onClick={() => {
+                messageOnOpen()
+              }}
               className="sidebar-button w-full text-lg font-medium p-4 mt-6"
               variant="solid"
               color="primary"
@@ -259,17 +260,10 @@ export default function Sidebar() {
       />
       <ConversationalModal
         isOpen={isMessageOpen}
-        onOpen={messageOnClose}
         onClose={messageOnClose}
-        handleSubmit={handleSubmit}
-        register={register}
-        onSubmit={(data: FieldValues) => onSubmit(data)}
-        errors={errors}
-        categories={categories}
-        description={description}
-        setDescription={setDescription}
-        imagePreviews={imagePreviews}
-        handleFileChange={handleFileChange}
+        onOpen={messageOnOpen}
+        conversationsData={data}
+        isConversetionalDataLoading={isConversetionalDataLoading}
       />
     </>
   );

@@ -6,6 +6,11 @@ const router = express.Router()
 
 router.post('/signup', UserControllers.createUser)
 router.get(
+  '/',
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  UserControllers.getUsers,
+)
+router.get(
   '/follow-suggetion',
   auth(USER_ROLE.user, USER_ROLE.admin),
   UserControllers.getFollowSuggetionUsers,

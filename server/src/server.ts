@@ -3,6 +3,7 @@ import { Server } from 'http'
 import mongoose from 'mongoose'
 import app from './app'
 import config from './app/config'
+import { initializeSocket } from './app/socket/index.socket'
 
 let server: Server
 
@@ -30,6 +31,7 @@ async function bootstrap() {
     server = app.listen(config.port, () => {
       console.log(`🚀 Application is running on port ${config.port}`)
     })
+    initializeSocket(server)
   } catch (err) {
     console.error('Failed to connect to database:', err)
     process.exit(1)

@@ -10,6 +10,7 @@ import {
 import { IUser } from "../../types";
 import { getCurrentUser } from "../services/auth";
 import Cookies from "js-cookie";
+import { socket } from "../socket";
 
 // Define the interface for UserContext values
 export interface IUserProviderValues {
@@ -37,7 +38,6 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   // Function to fetch and set the current user
   const handleUser = async () => {
     const user: any = await getCurrentUser();
-    // localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
 
@@ -48,11 +48,11 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [accessToken]);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (user?._id) {
+      socket.emit("user", { _id: user._id })
     }
-  }, [accessToken]);
+  }, [user?._id])
+
 
   return (
     <UserContext.Provider

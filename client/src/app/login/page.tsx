@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -12,9 +12,12 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/plant.png";
 import { Button } from "@nextui-org/button";
+import { socket } from "@/src/socket";
+import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { user } = useContext(UserContext) as IUserProviderValues
   const { handleSubmit, setValue } = useForm({
     resolver: zodResolver(loginValidationSchema),
   });
@@ -32,18 +35,21 @@ export default function LoginPage() {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     handleUserLogin(data);
   };
-
   // Side effects for login success or error handling
   useEffect(() => {
     if (isSuccess) {
       router.push("/");
+    }
+    if (data?._id) {
+      socket.emit("user", { _id: data._id })
+      socket.emit("online");
     }
     if (isError) {
       toast.error(`Login failed: ${error?.message || "Unknown error"}`, {
         duration: 3000,
       });
     }
-  }, [isSuccess, isError, error, router]);
+  }, [isSuccess, isError, error, router, data]);
 
   // Prefill fields for Admin or User login
   const handlePrefill = (role: "admin" | "user") => {

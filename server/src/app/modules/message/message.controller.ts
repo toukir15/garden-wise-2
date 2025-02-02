@@ -15,15 +15,21 @@ const createMessage = catchAsync(async (req, res, next) => {
   });
 });
 
+const getMessages = catchAsync(async (req, res, next) => {
+  const result = await MessageServices.getMessagesFromDB(req.params.conversationId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Messages retrive successfully!",
+    data: result,
+  });
+});
+
 const deleteMessage = catchAsync(async (req, res, next) => {
   const messageId = req.params.messageId;
   const query = req.query;
   const userId = req.user._id;
-  const result = await MessageServices.deleteMessageFromDB(
-    messageId,
-    userId,
-    query
-  );
+  const result = await MessageServices.deleteMessageFromDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -35,10 +41,7 @@ const deleteMessage = catchAsync(async (req, res, next) => {
 const updateMessage = catchAsync(async (req, res, next) => {
   const messageId = req.params.messageId;
   const newMessage = req.body.newMessage;
-  const result = await MessageServices.updateMessageIntoDB(
-    messageId,
-    newMessage
-  );
+  const result = await MessageServices.updateMessageIntoDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -49,10 +52,7 @@ const updateMessage = catchAsync(async (req, res, next) => {
 const updateSeenStatus = catchAsync(async (req, res, next) => {
   const conversationId = req.params.conversationId;
   const receiverId = req.params.receiverId;
-  const result = await MessageServices.updateSeenStatusIntoDB(
-    conversationId,
-    receiverId
-  );
+  const result = await MessageServices.updateSeenStatusIntoDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -66,4 +66,5 @@ export const MessageControllers = {
   deleteMessage,
   updateMessage,
   updateSeenStatus,
+  getMessages
 };

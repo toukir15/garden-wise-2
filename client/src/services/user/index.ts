@@ -20,6 +20,15 @@ export const getFollowSuggetionUsers = async () => {
   }
 };
 
+export const getUsers = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/users`);
+    return { data };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const getUser = async (userId: string) => {
   try {
     const { data } = await axiosInstance.get(`/users/${userId}`);

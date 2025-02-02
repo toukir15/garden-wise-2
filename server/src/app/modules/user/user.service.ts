@@ -51,6 +51,10 @@ const getFollowSuggetionUsersFromDB = async (userId: string) => {
   return usersNotConnected
 }
 
+const getUsersFromDB = async () => {
+  const result = await User.find()
+  return result
+}
 const getUserFromDB = async (userId: string) => {
   // Find the user by ID
   const findUser = await User.findById(userId)
@@ -77,4 +81,5 @@ export const UserServices = {
   getFollowSuggetionUsersFromDB,
   updateUserIntoDB,
   getUserFromDB,
+  getUsersFromDB
 }
