@@ -6,6 +6,14 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Prevent react-remove-scroll (used by NextUI modals) from adding
+   padding-right compensation — scrollbar-gutter already reserves the space */
+[data-scroll-locked] {
+  --removed-body-scroll-bar-size: 0px !important;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
 .custom-quill .ql-editor::before {
   color: rgb(144, 144, 144) !important ;
   opacity: 1;

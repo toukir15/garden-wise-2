@@ -120,7 +120,14 @@ export default function Sidebar() {
 
               return (
                 <div key={index}>
-                  {label === "Premium" ? (
+                  {label === "Explore" ? (
+                    <SidebarButton
+                      onClick={() => postStates.setIsSearchbarOpen(true)}
+                      icon={icon}
+                      label={label}
+                      size={size}
+                    />
+                  ) : label === "Premium" ? (
                     <SidebarButton
                       onClick={handleVerifyPosts}
                       href={href}
@@ -265,6 +272,7 @@ export default function Sidebar() {
         conversationsData={data}
         isConversetionalDataLoading={isConversetionalDataLoading}
       />
+
     </>
   );
 }

@@ -75,7 +75,7 @@ export const deletePost = async (postId: string) => {
 
 export const editPost = async (
   postId: string,
-  payload: { description: string }
+  payload: { title?: string; description: string }
 ) => {
   try {
     const { data } = await axiosInstance.patch(`/posts/${postId}`, payload);

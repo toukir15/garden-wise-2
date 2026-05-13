@@ -5,6 +5,7 @@ import { TPost } from './post.interface'
 const postSchema = new Schema(
   {
     user: { type: Schema.ObjectId, required: true, ref: 'User' },
+    title: { type: String, default: '' },
     description: { type: String, default: '' },
     images: { type: [String], required: true, default: [] },
     comments: { type: [Schema.ObjectId], ref: 'Comment', default: [] },

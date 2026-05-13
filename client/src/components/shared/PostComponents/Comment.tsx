@@ -1,6 +1,6 @@
 "use client";
 import { useGetPost } from "@/src/hooks/recentPosts.hook";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
@@ -8,14 +8,38 @@ import ComponentLoading from "../../loading/ComponentLoading";
 import { CommentItem } from "./CommentItem";
 import { IPostProviderValues, PostContext } from "@/src/context/post.provider";
 import { FaRegCommentDots } from "react-icons/fa";
+import { Spinner } from "@nextui-org/spinner";
 dayjs.extend(relativeTime);
 
 export default function Comment() {
   const { postStates } = useContext(PostContext) as IPostProviderValues;
   const { postId } = postStates;
-  const { data: postData, isLoading, error } = useGetPost(postId);
+  const {
+    data: postsData,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetPost(postId);
   const { user } = useContext(UserContext) as IUserProviderValues;
   const userId = user?._id;
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading)
     return (
@@ -32,11 +56,13 @@ export default function Comment() {
       </div>
     );
 
-  const comments = postData?.data?.isShared
-    ? postData?.data.comments
-    : postData?.data?.post.comments;
+  const comments = postsData?.pages?.flatMap((page: any) =>
+    page?.data?.isShared
+      ? page?.data?.comments ?? []
+      : page?.data?.post?.comments ?? []
+  ) ?? [];
 
-  if (!comments?.length)
+  if (!comments.length)
     return (
       <div className="h-[450px] flex flex-col justify-center items-center gap-2 text-gray-500">
         <FaRegCommentDots className="text-3xl" />
@@ -54,6 +80,15 @@ export default function Comment() {
           )}
         </div>
       ))}
+
+      {/* Infinite scroll sentinel */}
+      <div ref={sentinelRef} className="h-4" />
+
+      {isFetchingNextPage && (
+        <div className="flex justify-center py-3">
+          <Spinner size="sm" color="success" />
+        </div>
+      )}
     </div>
   );
 }

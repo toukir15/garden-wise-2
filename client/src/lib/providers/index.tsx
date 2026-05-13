@@ -41,7 +41,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
         <SocketProvider>
           <PostProvider>
             <NextUIProvider navigate={router.push}>
-              <Toaster />
+              <Toaster position="top-right" />
               <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
             </NextUIProvider>
           </PostProvider>

@@ -98,12 +98,15 @@ const getVisitProfilePosts = catchAsync(async (req, res) => {
 
 const getPost = catchAsync(async (req, res) => {
   const postId = req.params.postId
-  const result = await PostServices.getPostFromDB(postId)
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 8
+  const { data, meta } = await PostServices.getPostFromDB(postId, page, limit)
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Post retrive successfully!',
-    data: result,
+    data,
+    meta,
   })
 })
 

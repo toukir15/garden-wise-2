@@ -18,7 +18,7 @@ export default function EditPostModal() {
     PostContext
   ) as IPostProviderValues;
   const { isOpen, onOpenChange } = modalStates.editModal;
-  const { setEditPostDescription, editPostDescription } = postStates;
+  const { setEditPostDescription, editPostDescription, editPostTitle, setEditPostTitle } = postStates;
   const { handlePostEdit } = postFuncions;
   return (
     <Modal
@@ -35,6 +35,15 @@ export default function EditPostModal() {
                 Edit Post
               </ModalHeader>
               <ModalBody>
+                {/* Title */}
+                <input
+                  type="text"
+                  value={editPostTitle}
+                  onChange={(e) => setEditPostTitle(e.target.value)}
+                  placeholder="Title (optional)"
+                  className="w-full bg-transparent border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 outline-none focus:border-green-500 transition-colors mt-3"
+                />
+
                 {/* Rich Text Editor */}
                 <div className="mt-3">
                   <ReactQuill

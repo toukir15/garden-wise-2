@@ -68,6 +68,14 @@ export default function PostModal({
             Create post
           </ModalHeader>
           <ModalBody>
+            {/* Title */}
+            <input
+              {...register("title")}
+              type="text"
+              placeholder="Title (optional)"
+              className="w-full bg-transparent border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 outline-none focus:border-green-500 transition-colors mt-3"
+            />
+
             {/* Category Selection */}
             <Select
               {...register("category", { required: true })}

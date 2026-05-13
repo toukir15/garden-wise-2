@@ -18,9 +18,10 @@ export default function Post({
     PostContext
   ) as IPostProviderValues;
   const { onOpen } = modalStates.editModal;
-  const { setPostId, setEditPostDescription } = postStates;
+  const { setPostId, setEditPostDescription, setEditPostTitle } = postStates;
   const handleEditPost = () => {
     onOpen();
+    setEditPostTitle(data.post.title || "");
     setEditPostDescription(data.post.description);
     setPostId(data._id);
   };
@@ -34,6 +35,11 @@ export default function Post({
           user={data.post.user}
         />
       </div>
+      {data.post?.title && (
+        <h2 className="mx-4 mt-2 text-base xl:text-lg font-semibold text-white leading-snug">
+          {data.post.title}
+        </h2>
+      )}
       <PostDescription description={data.post?.description} />
       <div className="flex w-[85%] mx-auto justify-center pt-4">
         <LightGalleryImageView images={data.post.images} />

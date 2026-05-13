@@ -4,11 +4,10 @@ import { IUserProviderValues, UserContext } from "@/src/context/user.provider";
 import React, { useContext } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import MobileSearchBar from "../MobileSearchBar";
 
 export default function PostFilter() {
   const { postStates } = useContext(PostContext) as IPostProviderValues;
-  const { queryTerm, setQueryTerm, isSearchbarOpen } = postStates;
+  const { queryTerm, setQueryTerm } = postStates;
   const router = useRouter();
 
   const { user } = useContext(UserContext) as IUserProviderValues;
@@ -25,8 +24,6 @@ export default function PostFilter() {
 
   return (
     <div className="px-4 xl:px-16 sticky top-0 border-b-[0.5px] z-[50] border-gray-600 bg-black/30 backdrop-blur-md shadow-lg rounded-lg">
-      <MobileSearchBar />
-
       <div className=" flex justify-between">
         <button
           onClick={() => setQueryTerm("recent")}

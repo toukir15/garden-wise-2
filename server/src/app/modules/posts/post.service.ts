@@ -342,7 +342,24 @@ const getMyPostsFromDB = async (userId: string, page: number = 1, limit: number 
   return { data: result, meta: { total, page, limit } }
 }
 
-const getPostFromDB = async (postId: string) => {
+const getPostFromDB = async (postId: string, page: number = 1, limit: number = 8) => {
+  const skip = (page - 1) * limit
+
+  // Get total comment count before pagination
+  const postMeta = await Post.findById(postId).select('comments isShared post.comments').lean()
+  const isShared = (postMeta as any)?.isShared
+  const total = isShared
+    ? ((postMeta as any)?.comments?.length ?? 0)
+    : ((postMeta as any)?.post?.comments?.length ?? 0)
+
+  const commentPopulate = [
+    { path: 'user', model: 'User', select: 'name profilePhoto' },
+    { path: 'replies.commentReplyUser', model: 'User', select: 'name profilePhoto' },
+    { path: 'replies.replyTo', model: 'User', select: 'name' },
+    { path: 'votes', model: 'Vote', select: 'upvote downvote' },
+    { path: 'replies.votes', model: 'Vote', select: 'upvote downvote' },
+  ]
+
   const result = await Post.findById(postId)
     .select({
       sharedUser: 1,
@@ -354,91 +371,26 @@ const getPostFromDB = async (postId: string) => {
       post: 1,
       createdAt: 1,
     })
-    .populate({
-      path: 'sharedUser',
-      model: 'User',
-      select: 'name profilePhoto',
-    })
-    .populate({
-      path: 'votes',
-      model: 'Vote',
-      select: 'upvote downvote',
-    })
+    .populate({ path: 'sharedUser', model: 'User', select: 'name profilePhoto' })
+    .populate({ path: 'votes', model: 'Vote', select: 'upvote downvote' })
     .populate({
       path: 'comments',
       model: 'Comment',
       select: 'text votes replies user createdAt',
-      populate: [
-        {
-          path: 'user',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.commentReplyUser',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.replyTo',
-          model: 'User',
-          select: 'name',
-        },
-        {
-          path: 'votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-        {
-          path: 'replies.votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-      ],
+      options: { skip, limit },
+      populate: commentPopulate,
     })
-    .populate({
-      path: 'post.user',
-      model: 'User',
-      select: 'name profilePhoto',
-    })
+    .populate({ path: 'post.user', model: 'User', select: 'name profilePhoto' })
     .populate({
       path: 'post.comments',
       model: 'Comment',
       select: 'text user votes replies createdAt',
-      populate: [
-        {
-          path: 'user',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.commentReplyUser',
-          model: 'User',
-          select: 'name profilePhoto',
-        },
-        {
-          path: 'replies.replyTo',
-          model: 'User',
-          select: 'name',
-        },
-        {
-          path: 'votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-        {
-          path: 'replies.votes',
-          model: 'Vote',
-          select: 'upvote downvote',
-        },
-      ],
+      options: { skip, limit },
+      populate: commentPopulate,
     })
-    .populate({
-      path: 'post.votes',
-      model: 'Vote',
-      select: 'upvote downvote',
-    })
-  return result
+    .populate({ path: 'post.votes', model: 'Vote', select: 'upvote downvote' })
+
+  return { data: result, meta: { total, page, limit } }
 }
 
 const deletePostFromDB = async (postId: string) => {
@@ -448,7 +400,7 @@ const deletePostFromDB = async (postId: string) => {
 
 const updatePostIntoDB = async (
   postId: string,
-  payload: { description: string },
+  payload: { title?: string; description: string },
 ) => {
   const findPost = await Post.findById(postId)
   const findPostObject = findPost?.toObject()

@@ -25,28 +25,17 @@ export const useUpvote = () => {
 
     // Optimistic update logic
     onMutate: async ({ postId, userId, commentId, replyId }) => {
-      // Cancel any outgoing queries for this specific post to prevent conflict
       await queryClient.cancelQueries(["post", postId]);
 
-      // Optimistically update the cache with the new upvote
       queryClient.setQueryData(["post", postId], (old: any) => {
-        if (!old) return old;
+        if (!old?.pages) return old;
 
-        const postData = old.data;
-
-        // Helper function to handle upvotes and downvotes
         const updateVotes = (item: any) => {
           const upvotes = item.votes.upvote;
           const downvotes = item.votes?.downvote;
-
-          // Remove the userId from downvotes if it exists
           if (downvotes.includes(userId)) {
-            item.votes.downvote = downvotes.filter(
-              (id: string) => id !== userId
-            );
+            item.votes.downvote = downvotes.filter((id: string) => id !== userId);
           }
-
-          // Toggle userId in upvotes
           if (upvotes.includes(userId)) {
             item.votes.upvote = upvotes.filter((id: string) => id !== userId);
           } else {
@@ -54,45 +43,37 @@ export const useUpvote = () => {
           }
         };
 
-        // If it's a shared post, apply voting to the post itself
-        if (postData.isShared) {
-          // Upvote/downvote the shared post
-          updateVotes(postData);
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => {
+            const postData = page?.data;
+            if (!postData) return page;
 
-          // Check if it's a comment or reply on the shared post
-          const findComment = postData.comments.find(
-            (comment: any) => comment?._id === commentId
-          );
-
-          if (findComment) {
-            if (replyId) {
-              const findReply = findComment.replies.find(
-                (reply: any) => reply?._id === replyId
-              );
-              updateVotes(findReply);
+            if (postData.isShared) {
+              updateVotes(postData);
+              const findComment = postData.comments?.find((c: any) => c?._id === commentId);
+              if (findComment) {
+                if (replyId) {
+                  const findReply = findComment.replies?.find((r: any) => r?._id === replyId);
+                  if (findReply) updateVotes(findReply);
+                } else {
+                  updateVotes(findComment);
+                }
+              }
             } else {
-              updateVotes(findComment);
+              const findComment = postData.post?.comments?.find((c: any) => c?._id === commentId);
+              if (findComment) {
+                if (replyId) {
+                  const findReply = findComment.replies?.find((r: any) => r?._id === replyId);
+                  if (findReply) updateVotes(findReply);
+                } else {
+                  updateVotes(findComment);
+                }
+              }
             }
-          }
-        } else {
-          // Regular post (not shared) - handle comments/replies
-          const findComment = postData.post.comments.find(
-            (comment: any) => comment?._id === commentId
-          );
-
-          if (findComment) {
-            if (replyId) {
-              const findReply = findComment.replies.find(
-                (reply: any) => reply?._id === replyId
-              );
-              updateVotes(findReply);
-            } else {
-              updateVotes(findComment);
-            }
-          }
-        }
-
-        return old;
+            return page;
+          }),
+        };
       });
     },
   });
@@ -115,80 +96,59 @@ export const useDownvote = () => {
     },
 
     // Optimistic update logic
-    onMutate: async ({ voteId, postId, userId, commentId, replyId }) => {
-      // Cancel any outgoing queries for this specific post to prevent conflict
+    onMutate: async ({ postId, userId, commentId, replyId }) => {
       await queryClient.cancelQueries(["post", postId]);
-      // Snapshot the previous post data (specific to postId)
       const previousPost = queryClient.getQueryData(["post", postId]);
 
-      // Optimistically update the cache with the new downvote
       queryClient.setQueryData(["post", postId], (old: any) => {
-        if (!old) return old;
+        if (!old?.pages) return old;
 
-        const postData = old.data;
-
-        // Helper function to handle upvotes and downvotes
         const updateVotes = (item: any) => {
           const upvotes = item.votes.upvote;
           const downvotes = item.votes.downvote;
-
-          // Remove the userId from upvotes if it exists
           if (upvotes.includes(userId)) {
             item.votes.upvote = upvotes.filter((id: string) => id !== userId);
           }
-
-          // Toggle userId in downvotes
           if (downvotes.includes(userId)) {
-            item.votes.downvote = downvotes.filter(
-              (id: string) => id !== userId
-            );
+            item.votes.downvote = downvotes.filter((id: string) => id !== userId);
           } else {
             item.votes.downvote.push(userId);
           }
         };
 
-        // If it's a shared post, apply voting to the post itself
-        if (postData.isShared) {
-          // Downvote the shared post
-          updateVotes(postData);
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => {
+            const postData = page?.data;
+            if (!postData) return page;
 
-          // Check if it's a comment or reply on the shared post
-          const findComment = postData.comments.find(
-            (comment: any) => comment?._id === commentId
-          );
-
-          if (findComment) {
-            if (replyId) {
-              const findReply = findComment.replies.find(
-                (reply: any) => reply?._id === replyId
-              );
-              updateVotes(findReply);
+            if (postData.isShared) {
+              updateVotes(postData);
+              const findComment = postData.comments?.find((c: any) => c?._id === commentId);
+              if (findComment) {
+                if (replyId) {
+                  const findReply = findComment.replies?.find((r: any) => r?._id === replyId);
+                  if (findReply) updateVotes(findReply);
+                } else {
+                  updateVotes(findComment);
+                }
+              }
             } else {
-              updateVotes(findComment);
+              const findComment = postData.post?.comments?.find((c: any) => c?._id === commentId);
+              if (findComment) {
+                if (replyId) {
+                  const findReply = findComment.replies?.find((r: any) => r?._id === replyId);
+                  if (findReply) updateVotes(findReply);
+                } else {
+                  updateVotes(findComment);
+                }
+              }
             }
-          }
-        } else {
-          // Regular post (not shared) - handle comments/replies
-          const findComment = postData.post.comments.find(
-            (comment: any) => comment?._id === commentId
-          );
-
-          if (findComment) {
-            if (replyId) {
-              const findReply = findComment.replies.find(
-                (reply: any) => reply?._id === replyId
-              );
-              updateVotes(findReply);
-            } else {
-              updateVotes(findComment);
-            }
-          }
-        }
-
-        return old;
+            return page;
+          }),
+        };
       });
 
-      // Return the previous post snapshot for rollback on error
       return { previousPost };
     },
   });

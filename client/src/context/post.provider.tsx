@@ -53,6 +53,8 @@ export interface IPostProviderValues {
     setDescription: Dispatch<SetStateAction<string>>;
     editPostDescription: string;
     setEditPostDescription: Dispatch<SetStateAction<string>>;
+    editPostTitle: string;
+    setEditPostTitle: Dispatch<SetStateAction<string>>;
     loadingUserId: string | null;
   };
   toggleDropdown: () => void;
@@ -99,6 +101,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
   const [isOpenSharedComment, setOpenSharedComment] = useState(false);
   const [description, setDescription] = useState<string>("");
   const [editPostDescription, setEditPostDescription] = useState("");
+  const [editPostTitle, setEditPostTitle] = useState("");
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
   // const {
   //   createPostDescription,
@@ -152,7 +155,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
   const { mutate: handleEdit } = useEditPost({ queryTerm, searchTerm });
   const handlePostEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const payload = { description: editPostDescription };
+    const payload = { title: editPostTitle, description: editPostDescription };
     handleEdit({ postId, payload });
   };
 
@@ -199,6 +202,8 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
           setDescription,
           editPostDescription,
           setEditPostDescription,
+          editPostTitle,
+          setEditPostTitle,
           loadingUserId,
         },
         createPostProps: {
