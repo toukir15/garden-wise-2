@@ -15,7 +15,7 @@ export default function UserLayout({
         </div>
       </div>
       <div className="w-full xl:w-[62%]">{children}</div>
-      <div className="w-full xl:w-[23%] h-fit pt-4 rounded-lg hidden xl:block">
+      <div className="w-full xl:w-[23%] h-fit rounded-lg hidden xl:block">
         <div className="fixed">
           <RightSidebar />
         </div>
