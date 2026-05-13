@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "label": "Vegetables",
+    "value": "vegetables"
+  },
+  {
+    "id": 2,
+    "label": "Flowers",
+    "value": "flowers"
+  },
+  {
+    "id": 3,
+    "label": "Herbs",
+    "value": "herbs"
+  },
+  {
+    "id": 4,
+    "label": "Fruits",
+    "value": "fruits"
+  },
+  {
+    "id": 5,
+    "label": "Shrubs",
+    "value": "shrubs"
+  },
+  {
+    "id": 6,
+    "label": "Trees",
+    "value": "trees"
+  },
+  {
+    "id": 7,
+    "label": "Succulents",
+    "value": "succulents"
+  },
+  {
+    "id": 8,
+    "label": "Indoor Plants",
+    "value": "indoor_plants"
+  },
+  {
+    "id": 9,
+    "label": "Outdoor Plants",
+    "value": "outdoor_plants"
+  },
+  {
+    "id": 10,
+    "label": "Landscaping",
+    "value": "landscaping"
+  },
+  {
+    "id": 11,
+    "label": "Soil & Fertilizers",
+    "value": "soil_fertilizers"
+  },
+  {
+    "id": 12,
+    "label": "Composting",
+    "value": "composting"
+  },
+  {
+    "id": 13,
+    "label": "Garden Design",
+    "value": "garden_design"
+  },
+  {
+    "id": 14,
+    "label": "Plant Diseases & Pests",
+    "value": "plant_diseases_pests"
+  },
+  {
+    "id": 15,
+    "label": "Watering & Irrigation",
+    "value": "watering_irrigation"
+  },
+  {
+    "id": 16,
+    "label": "Pruning & Trimming",
+    "value": "pruning_trimming"
+  },
+  {
+    "id": 17,
+    "label": "Container Gardening",
+    "value": "container_gardening"
+  },
+  {
+    "id": 18,
+    "label": "Seasonal Gardening (Spring, Summer, Fall, Winter)",
+    "value": "seasonal_gardening"
+  },
+  {
+    "id": 19,
+    "label": "Greenhouses",
+    "value": "greenhouses"
+  },
+  {
+    "id": 20,
+    "label": "Organic Gardening",
+    "value": "organic_gardening"
+  }
+]
