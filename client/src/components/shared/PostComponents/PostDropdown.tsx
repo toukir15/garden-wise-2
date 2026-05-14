@@ -72,7 +72,7 @@ export const PostDropdown = ({
                       if (item.key === "delete") handlePostDelete(postId);
                       if (item.key === "edit") handleEdit();
                       if (item.key === "save")
-                        handleSaveUnsave(bookmarkId, postId, item.label);
+                        handleSaveUnsave(bookmarkId ?? "", postId, item.label);
                     }}
                     key={item.key}
                     color={item.key === "delete" ? "danger" : "default"}
