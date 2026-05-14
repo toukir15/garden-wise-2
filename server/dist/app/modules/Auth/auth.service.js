@@ -79,7 +79,8 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         profilePhoto: user === null || user === void 0 ? void 0 : user.profilePhoto,
         isVerified: user === null || user === void 0 ? void 0 : user.isVerified,
         bookmark: user === null || user === void 0 ? void 0 : user.bookmark,
-        Conversations: user === null || user === void 0 ? void 0 : user.conversations
+        address: user === null || user === void 0 ? void 0 : user.address,
+        conversations: user === null || user === void 0 ? void 0 : user.conversations
     };
     const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
     const refreshToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_refresh_secret, config_1.default.jwt_refresh_expires_in);
@@ -167,6 +168,7 @@ const editProfile = (payload, profilePhoto, userId) => __awaiter(void 0, void 0,
         profilePhoto: user === null || user === void 0 ? void 0 : user.profilePhoto,
         isVerified: user === null || user === void 0 ? void 0 : user.isVerified,
         bookmark: user === null || user === void 0 ? void 0 : user.bookmark,
+        address: user === null || user === void 0 ? void 0 : user.address,
         conversations: user === null || user === void 0 ? void 0 : user.conversations
     };
     const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
@@ -190,6 +192,7 @@ const refreshToken = (email) => __awaiter(void 0, void 0, void 0, function* () {
         profilePhoto: user === null || user === void 0 ? void 0 : user.profilePhoto,
         isVerified: user === null || user === void 0 ? void 0 : user.isVerified,
         bookmark: user === null || user === void 0 ? void 0 : user.bookmark,
+        address: user === null || user === void 0 ? void 0 : user.address,
         conversations: user === null || user === void 0 ? void 0 : user.conversations
     };
     const accessToken = (0, verifyJWT_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);

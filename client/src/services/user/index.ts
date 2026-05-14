@@ -1,19 +1,9 @@
 "use server";
-import { envConfig } from "@/src/config/envConfig";
 import axiosInstance from "@/src/lib/axiosInstance";
 
-// export const getUsers = async (userId: string) => {
-//   const res = await fetch(`${envConfig.baseApi}/users/${userId}`);
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch users");
-//   }
-//   const data = res.json();
-//   return await data;
-// };
-
-export const getFollowSuggetionUsers = async () => {
+export const getFollowSuggetionUsers = async (page: number = 1, limit: number = 10) => {
   try {
-    const { data } = await axiosInstance.get(`/users/follow-suggetion`);
+    const { data } = await axiosInstance.get(`/users/follow-suggetion?page=${page}&limit=${limit}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);

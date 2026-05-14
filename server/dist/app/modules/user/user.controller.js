@@ -48,7 +48,9 @@ const getUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 
 }));
 const getFollowSuggetionUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user._id;
-    const result = yield user_service_1.UserServices.getFollowSuggetionUsersFromDB(userId);
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const result = yield user_service_1.UserServices.getFollowSuggetionUsersFromDB(userId, page, limit);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

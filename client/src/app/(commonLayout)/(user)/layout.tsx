@@ -14,9 +14,9 @@ export default function UserLayout({
           <Sidebar />
         </div>
       </div>
-      <div className="w-full xl:w-[62%]">{children}</div>
-      <div className="w-full xl:w-[23%] h-fit rounded-lg hidden xl:block">
-        <div className="fixed">
+      <div className="w-full xl:w-[62%] content-column-border">{children}</div>
+      <div className="w-full xl:w-[16%] h-fit rounded-lg hidden xl:block">
+        <div className="fixed w-[16%]">
           <RightSidebar />
         </div>
       </div>

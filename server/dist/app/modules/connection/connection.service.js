@@ -83,35 +83,39 @@ const updateUnfollowConnectionIntoDB = (unfollowUserId, userId) => __awaiter(voi
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'You already unfollow this user');
     }
 });
-const getFollowersFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    //check find user exist or not
+const getFollowersFromDB = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1], void 0, function* (userId, page = 1, limit = 10) {
+    var _a, _b, _c;
     const currentUser = yield user_model_1.User.findById(userId);
     if (!currentUser) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User does not exist!');
     }
-    const findFollowers = yield connection_model_1.Connection.findById(currentUser.connection)
-        .select({ followers: 1 })
-        .populate({
-        path: 'followers',
-        model: 'User',
-        select: 'name email profilePhoto',
-    });
-    return findFollowers;
+    const skip = (page - 1) * limit;
+    const meta = yield connection_model_1.Connection.findById(currentUser.connection).select({ followers: 1 });
+    const total = (_b = (_a = meta === null || meta === void 0 ? void 0 : meta.followers) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0;
+    const findFollowers = yield connection_model_1.Connection.findById(currentUser.connection, {
+        followers: { $slice: [skip, limit] },
+    }).populate({ path: 'followers', model: 'User', select: 'name email profilePhoto' });
+    return {
+        followers: (_c = findFollowers === null || findFollowers === void 0 ? void 0 : findFollowers.followers) !== null && _c !== void 0 ? _c : [],
+        meta: { total, page, limit },
+    };
 });
-const getFollowingsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    //check find user exist or not
+const getFollowingsFromDB = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1], void 0, function* (userId, page = 1, limit = 10) {
+    var _a, _b, _c;
     const currentUser = yield user_model_1.User.findById(userId);
     if (!currentUser) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User does not exist!');
     }
-    const findFollowings = yield connection_model_1.Connection.findById(currentUser.connection)
-        .select({ followings: 1 })
-        .populate({
-        path: 'followings',
-        model: 'User',
-        select: 'name email profilePhoto',
-    });
-    return findFollowings;
+    const skip = (page - 1) * limit;
+    const meta = yield connection_model_1.Connection.findById(currentUser.connection).select({ followings: 1 });
+    const total = (_b = (_a = meta === null || meta === void 0 ? void 0 : meta.followings) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0;
+    const findFollowings = yield connection_model_1.Connection.findById(currentUser.connection, {
+        followings: { $slice: [skip, limit] },
+    }).populate({ path: 'followings', model: 'User', select: 'name email profilePhoto' });
+    return {
+        followings: (_c = findFollowings === null || findFollowings === void 0 ? void 0 : findFollowings.followings) !== null && _c !== void 0 ? _c : [],
+        meta: { total, page, limit },
+    };
 });
 const getViewProfileFollowersFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     //check find user exist or not

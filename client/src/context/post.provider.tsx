@@ -33,6 +33,8 @@ export interface IPostProviderValues {
     setQueryTerm: Dispatch<SetStateAction<string>>;
     searchTerm: string;
     setSearchTerm: Dispatch<SetStateAction<string>>;
+    selectedCategories: string[];
+    setSelectedCategories: Dispatch<SetStateAction<string[]>>;
     postCount: number;
     setPostCount: Dispatch<SetStateAction<number>>;
     isSearchbarOpen: boolean;
@@ -91,6 +93,7 @@ export const PostContext = createContext<IPostProviderValues | undefined>(
 export const PostProvider = ({ children }: { children: ReactNode }) => {
   const [queryTerm, setQueryTerm] = useState("recent");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [postCount, setPostCount] = useState(0);
   const [isSearchbarOpen, setIsSearchbarOpen] = useState(false);
   const [editComment, setEditComment] = useState("");
@@ -182,6 +185,8 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
           setQueryTerm,
           searchTerm,
           setSearchTerm,
+          selectedCategories,
+          setSelectedCategories,
           postCount,
           setPostCount,
           setIsSearchbarOpen,

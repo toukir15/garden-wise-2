@@ -22,15 +22,8 @@ export const getMyPosts = async (page: number = 1) => {
 
 export const getPosts = async (queryTerm: string, searchTerm: string, page: number = 1) => {
   const params = new URLSearchParams();
-
-  if (queryTerm) {
-    params.append("queryTerm", queryTerm);
-  }
-
-  if (searchTerm) {
-    params.append("searchTerm", searchTerm);
-  }
-
+  if (queryTerm) params.append("queryTerm", queryTerm);
+  if (searchTerm) params.append("searchTerm", searchTerm);
   params.append("page", String(page));
   params.append("limit", "5");
 
@@ -44,9 +37,7 @@ export const getPosts = async (queryTerm: string, searchTerm: string, page: numb
 
 export const getVisitProfilePost = async (id: string, page: number = 1) => {
   try {
-    const { data } = await axiosInstance.get(
-      `/posts/visit-profile-posts/${id}?page=${page}&limit=5`
-    );
+    const { data } = await axiosInstance.get(`/posts/visit-profile-posts/${id}?page=${page}&limit=5`);
     return { data };
   } catch (error: any) {
     throw new Error(error);
@@ -55,9 +46,7 @@ export const getVisitProfilePost = async (id: string, page: number = 1) => {
 
 export const sharePost = async (postData: string, postId: string) => {
   try {
-    const { data } = await axiosInstance.post(`/posts/share-post/${postId}`, {
-      description: postData,
-    });
+    const { data } = await axiosInstance.post(`/posts/share-post/${postId}`, { description: postData });
     return { data };
   } catch (error: any) {
     throw new Error(error);
@@ -73,10 +62,7 @@ export const deletePost = async (postId: string) => {
   }
 };
 
-export const editPost = async (
-  postId: string,
-  payload: { title?: string; description: string }
-) => {
+export const editPost = async (postId: string, payload: { title?: string; description: string }) => {
   try {
     const { data } = await axiosInstance.patch(`/posts/${postId}`, payload);
     return { data };
@@ -87,9 +73,7 @@ export const editPost = async (
 
 export const upvote = async (voteId: string) => {
   try {
-    const { data } = await axiosInstance.patch(
-      `/posts/comment/upvote/${voteId}`
-    );
+    const { data } = await axiosInstance.patch(`/posts/comment/upvote/${voteId}`);
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -98,9 +82,7 @@ export const upvote = async (voteId: string) => {
 
 export const downvote = async (voteId: string) => {
   try {
-    const { data } = await axiosInstance.patch(
-      `/posts/comment/downvote/${voteId}`
-    );
+    const { data } = await axiosInstance.patch(`/posts/comment/downvote/${voteId}`);
     return data;
   } catch (error: any) {
     throw new Error(error);

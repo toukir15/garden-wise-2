@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   followUser,
   getFollowers,
@@ -49,21 +49,31 @@ export const useUnfollowUser = () => {
 };
 
 export const useGetFollowers = () => {
-  return useQuery({
-    queryKey: ["followers"],
-    queryFn: async () => {
-      return await getFollowers();
-    },
-  });
+  return useInfiniteQuery(
+    ["followers"],
+    ({ pageParam = 1 }) => getFollowers(pageParam, 10),
+    {
+      getNextPageParam: (lastPage: any) => {
+        const meta = lastPage?.data?.data?.meta;
+        if (!meta) return undefined;
+        return meta.page * meta.limit < meta.total ? meta.page + 1 : undefined;
+      },
+    }
+  );
 };
 
 export const useGetFollowings = () => {
-  return useQuery({
-    queryKey: ["followings"],
-    queryFn: async () => {
-      return await getFollowings();
-    },
-  });
+  return useInfiniteQuery(
+    ["followings"],
+    ({ pageParam = 1 }) => getFollowings(pageParam, 10),
+    {
+      getNextPageParam: (lastPage: any) => {
+        const meta = lastPage?.data?.data?.meta;
+        if (!meta) return undefined;
+        return meta.page * meta.limit < meta.total ? meta.page + 1 : undefined;
+      },
+    }
+  );
 };
 
 export const useGetViewProfileFollowers = (id: string) => {

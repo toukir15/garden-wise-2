@@ -30,12 +30,14 @@ const updateBookmark = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
 }));
 const getBookmark = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const bookmarkId = req.user.bookmark;
-    const result = yield bookmark_service_1.BookmarkServices.getBookmarkFromDB(bookmarkId);
+    const page = Number(req.query.page) || 1;
+    const { data, meta } = yield bookmark_service_1.BookmarkServices.getBookmarkFromDB(bookmarkId, page);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Bookmark retrive successfully',
-        data: result,
+        data,
+        meta,
     });
 }));
 exports.BookmarkController = {

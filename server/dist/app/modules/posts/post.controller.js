@@ -68,42 +68,50 @@ const deletePost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
 const getPosts = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query;
     const user = req.user;
-    const result = yield post_service_1.PostServices.getPostsFromDB(query, user);
+    const { data, meta } = yield post_service_1.PostServices.getPostsFromDB(query, user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Posts retrive successfully!',
-        data: result,
+        data,
+        meta,
     });
 }));
 const getMyPosts = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user._id;
-    const result = yield post_service_1.PostServices.getMyPostsFromDB(userId);
+    const page = Number(req.query.page) || 1;
+    const { data, meta } = yield post_service_1.PostServices.getMyPostsFromDB(userId, page);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'My posts retrive successfully!',
-        data: result,
+        data,
+        meta,
     });
 }));
 const getVisitProfilePosts = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.params.userId;
-    const result = yield post_service_1.PostServices.getMyPostsFromDB(userId);
+    const page = Number(req.query.page) || 1;
+    const { data, meta } = yield post_service_1.PostServices.getMyPostsFromDB(userId, page);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'My posts retrive successfully!',
-        data: result,
+        data,
+        meta,
     });
 }));
 const getPost = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const postId = req.params.postId;
-    const result = yield post_service_1.PostServices.getPostFromDB(postId);
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 8;
+    const { data, meta } = yield post_service_1.PostServices.getPostFromDB(postId, page, limit);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Post retrive successfully!',
-        data: result,
+        data,
+        meta,
     });
 }));
 const createCommentReply = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

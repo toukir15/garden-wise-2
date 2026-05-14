@@ -23,12 +23,16 @@ export default function MobileFollowSugg({
   ) as IPostProviderValues;
   const { handleFollowRequest } = postFuncions;
   const { loadingUserId } = postStates;
+  const allUsers: IUser[] = followSuggetionUsersData?.pages?.flatMap(
+    (page: any) => page?.data?.data?.users ?? []
+  ) ?? [];
+
   if (isLoading || isPostsDataLoading) {
     return <MobileFollowSuggLoading />;
   }
   return (
     <>
-      {followSuggetionUsersData?.data.data.length > 0 && (
+      {allUsers.length > 0 && (
         <div className="py-4 block xl:hidden">
           <Swiper
             slidesPerView={3}
@@ -39,7 +43,7 @@ export default function MobileFollowSugg({
             modules={[Pagination]}
             className="mySwiper w-full"
           >
-            {followSuggetionUsersData?.data.data.map((user: IUser) => (
+            {allUsers.map((user: IUser) => (
               <SwiperSlide>
                 <div className="w-32">
                   <Link href={`/profile/${user._id}`}>

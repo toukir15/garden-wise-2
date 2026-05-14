@@ -58,6 +58,8 @@ const createSharePostIntoDB = (postId, userId, payload) => __awaiter(void 0, voi
 const getPostsFromDB = (query, user) => __awaiter(void 0, void 0, void 0, function* () {
     const searchTerm = (query === null || query === void 0 ? void 0 : query.searchTerm) || '';
     const queryTerm = (query === null || query === void 0 ? void 0 : query.queryTerm) || '';
+    const page = Number(query === null || query === void 0 ? void 0 : query.page) || 1;
+    const limit = Number(query === null || query === void 0 ? void 0 : query.limit) || 5;
     const baseQuery = (0, post_utils_1.createBaseQuery)(searchTerm, queryTerm, user);
     const sortPipeline = (0, post_utils_1.getSortOrderPipeline)(queryTerm);
     const pipeline = [
@@ -88,7 +90,10 @@ const getPostsFromDB = (query, user) => __awaiter(void 0, void 0, void 0, functi
     if (queryTerm === 'popular' || searchTerm || queryTerm === 'premium') {
         result = (0, post_utils_1.sortPopularPosts)(result);
     }
-    return result;
+    const total = result.length;
+    const skip = (page - 1) * limit;
+    const paginatedData = result.slice(skip, skip + limit);
+    return { data: paginatedData, meta: { total, page, limit } };
 });
 exports.getPostsFromDB = getPostsFromDB;
 const getVisitProfilePostsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -195,13 +200,16 @@ const getVisitProfilePostsFromDB = (userId) => __awaiter(void 0, void 0, void 0,
         .sort({ createdAt: -1 });
     return result;
 });
-const getMyPostsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield post_model_1.default.find({
+const getMyPostsFromDB = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1], void 0, function* (userId, page = 1, limit = 5) {
+    const filter = {
         $or: [
             { isShared: true, sharedUser: userId },
             { isShared: false, 'post.user': userId },
         ],
-    })
+    };
+    const total = yield post_model_1.default.countDocuments(filter);
+    const skip = (page - 1) * limit;
+    const result = yield post_model_1.default.find(filter)
         .select({
         sharedUser: 1,
         description: 1,
@@ -296,10 +304,27 @@ const getMyPostsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function*
         model: 'Vote',
         select: 'upvote downvote',
     })
-        .sort({ createdAt: -1 });
-    return result;
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    return { data: result, meta: { total, page, limit } };
 });
-const getPostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* () {
+const getPostFromDB = (postId_1, ...args_1) => __awaiter(void 0, [postId_1, ...args_1], void 0, function* (postId, page = 1, limit = 8) {
+    var _a, _b, _c, _d, _e;
+    const skip = (page - 1) * limit;
+    // Get total comment count before pagination
+    const postMeta = yield post_model_1.default.findById(postId).select('comments isShared post.comments').lean();
+    const isShared = postMeta === null || postMeta === void 0 ? void 0 : postMeta.isShared;
+    const total = isShared
+        ? ((_b = (_a = postMeta === null || postMeta === void 0 ? void 0 : postMeta.comments) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0)
+        : ((_e = (_d = (_c = postMeta === null || postMeta === void 0 ? void 0 : postMeta.post) === null || _c === void 0 ? void 0 : _c.comments) === null || _d === void 0 ? void 0 : _d.length) !== null && _e !== void 0 ? _e : 0);
+    const commentPopulate = [
+        { path: 'user', model: 'User', select: 'name profilePhoto' },
+        { path: 'replies.commentReplyUser', model: 'User', select: 'name profilePhoto' },
+        { path: 'replies.replyTo', model: 'User', select: 'name' },
+        { path: 'votes', model: 'Vote', select: 'upvote downvote' },
+        { path: 'replies.votes', model: 'Vote', select: 'upvote downvote' },
+    ];
     const result = yield post_model_1.default.findById(postId)
         .select({
         sharedUser: 1,
@@ -311,91 +336,25 @@ const getPostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* ()
         post: 1,
         createdAt: 1,
     })
-        .populate({
-        path: 'sharedUser',
-        model: 'User',
-        select: 'name profilePhoto',
-    })
-        .populate({
-        path: 'votes',
-        model: 'Vote',
-        select: 'upvote downvote',
-    })
+        .populate({ path: 'sharedUser', model: 'User', select: 'name profilePhoto' })
+        .populate({ path: 'votes', model: 'Vote', select: 'upvote downvote' })
         .populate({
         path: 'comments',
         model: 'Comment',
         select: 'text votes replies user createdAt',
-        populate: [
-            {
-                path: 'user',
-                model: 'User',
-                select: 'name profilePhoto',
-            },
-            {
-                path: 'replies.commentReplyUser',
-                model: 'User',
-                select: 'name profilePhoto',
-            },
-            {
-                path: 'replies.replyTo',
-                model: 'User',
-                select: 'name',
-            },
-            {
-                path: 'votes',
-                model: 'Vote',
-                select: 'upvote downvote',
-            },
-            {
-                path: 'replies.votes',
-                model: 'Vote',
-                select: 'upvote downvote',
-            },
-        ],
+        options: { skip, limit },
+        populate: commentPopulate,
     })
-        .populate({
-        path: 'post.user',
-        model: 'User',
-        select: 'name profilePhoto',
-    })
+        .populate({ path: 'post.user', model: 'User', select: 'name profilePhoto' })
         .populate({
         path: 'post.comments',
         model: 'Comment',
         select: 'text user votes replies createdAt',
-        populate: [
-            {
-                path: 'user',
-                model: 'User',
-                select: 'name profilePhoto',
-            },
-            {
-                path: 'replies.commentReplyUser',
-                model: 'User',
-                select: 'name profilePhoto',
-            },
-            {
-                path: 'replies.replyTo',
-                model: 'User',
-                select: 'name',
-            },
-            {
-                path: 'votes',
-                model: 'Vote',
-                select: 'upvote downvote',
-            },
-            {
-                path: 'replies.votes',
-                model: 'Vote',
-                select: 'upvote downvote',
-            },
-        ],
+        options: { skip, limit },
+        populate: commentPopulate,
     })
-        .populate({
-        path: 'post.votes',
-        model: 'Vote',
-        select: 'upvote downvote',
-    });
-    return result;
+        .populate({ path: 'post.votes', model: 'Vote', select: 'upvote downvote' });
+    return { data: result, meta: { total, page, limit } };
 });
 const deletePostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield post_model_1.default.findByIdAndDelete(postId);

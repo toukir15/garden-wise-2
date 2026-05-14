@@ -4,6 +4,7 @@ const mongoose_1 = require("mongoose");
 // Define the schema for the sub-document `post`
 const postSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.ObjectId, required: true, ref: 'User' },
+    title: { type: String, default: '' },
     description: { type: String, default: '' },
     images: { type: [String], required: true, default: [] },
     comments: { type: [mongoose_1.Schema.ObjectId], ref: 'Comment', default: [] },

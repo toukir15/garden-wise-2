@@ -74,8 +74,8 @@ export default function MyProfile({ user }: any) {
     }
   }, [data, router]);
 
-  const { data: followingsUsersData } = useGetFollowings();
-  const { data: followersUsersData } = useGetFollowers();
+  const { data: followingsUsersData, fetchNextPage: fetchNextFollowings, hasNextPage: hasNextFollowings, isFetchingNextPage: isFetchingNextFollowings, isLoading: isFollowingsLoading } = useGetFollowings();
+  const { data: followersUsersData, fetchNextPage: fetchNextFollowers, hasNextPage: hasNextFollowers, isFetchingNextPage: isFetchingNextFollowers, isLoading: isFollowersLoading } = useGetFollowers();
   const { mutate: handleUnfollow } = useUnfollowUser();
 
   const handleUnfollowRequest = (user: Partial<IUser>) => {
@@ -174,7 +174,7 @@ export default function MyProfile({ user }: any) {
                   className="text-gray-500 text-sm hover:border-b hover:border-b-white border-b border-b-black"
                 >
                   <span className="text-white">
-                    {followersUsersData?.data.data.followers.length || 0}
+                    {followersUsersData?.pages?.[0]?.data?.data?.meta?.total || 0}
                   </span>{" "}
                   Followers
                 </button>
@@ -183,7 +183,7 @@ export default function MyProfile({ user }: any) {
                   className="text-gray-500 text-sm hover:border-b hover:border-b-white border-b border-b-black"
                 >
                   <span className="text-white">
-                    {followingsUsersData?.data.data.followings.length || 0}
+                    {followingsUsersData?.pages?.[0]?.data?.data?.meta?.total || 0}
                   </span>{" "}
                   Following
                 </button>
@@ -221,7 +221,11 @@ export default function MyProfile({ user }: any) {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Followings"
-        users={followingsUsersData?.data.data.followings || []}
+        data={followingsUsersData}
+        fetchNextPage={fetchNextFollowings}
+        hasNextPage={hasNextFollowings}
+        isFetchingNextPage={isFetchingNextFollowings}
+        isLoading={isFollowingsLoading}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
         actionType={true}
@@ -232,7 +236,11 @@ export default function MyProfile({ user }: any) {
         isOpen={isFollowersOpen}
         onOpenChange={onFollowersOpenChange}
         title="Followers"
-        users={followersUsersData?.data.data.followers || []}
+        data={followersUsersData}
+        fetchNextPage={fetchNextFollowers}
+        hasNextPage={hasNextFollowers}
+        isFetchingNextPage={isFetchingNextFollowers}
+        isLoading={isFollowersLoading}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
         actionType={false}

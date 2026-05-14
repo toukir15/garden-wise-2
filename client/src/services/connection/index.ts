@@ -3,9 +3,7 @@ import axiosInstance from "@/src/lib/axiosInstance";
 
 export const followUser = async (followUserId: string) => {
   try {
-    const { data } = await axiosInstance.patch(
-      `/connections/follow/${followUserId}`
-    );
+    const { data } = await axiosInstance.patch(`/connections/follow/${followUserId}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);
@@ -14,27 +12,25 @@ export const followUser = async (followUserId: string) => {
 
 export const unfollowUser = async (unfollowUserId: string) => {
   try {
-    const { data } = await axiosInstance.patch(
-      `/connections/unFollow/${unfollowUserId}`
-    );
+    const { data } = await axiosInstance.patch(`/connections/unFollow/${unfollowUserId}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);
   }
 };
 
-export const getFollowers = async () => {
+export const getFollowers = async (page: number = 1, limit: number = 10) => {
   try {
-    const { data } = await axiosInstance.get(`/connections/followers`);
+    const { data } = await axiosInstance.get(`/connections/followers?page=${page}&limit=${limit}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);
   }
 };
 
-export const getFollowings = async () => {
+export const getFollowings = async (page: number = 1, limit: number = 10) => {
   try {
-    const { data } = await axiosInstance.get(`/connections/followings`);
+    const { data } = await axiosInstance.get(`/connections/followings?page=${page}&limit=${limit}`);
     return { data };
   } catch (error: any) {
     throw new Error(error);

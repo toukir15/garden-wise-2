@@ -32,7 +32,7 @@ const updateBookmarkIntoDB = (bookmarkId, postId) => __awaiter(void 0, void 0, v
         : { $addToSet: { posts: postId } }, { new: true });
     return result;
 });
-const getBookmarkFromDB = (bookmarkId) => __awaiter(void 0, void 0, void 0, function* () {
+const getBookmarkFromDB = (bookmarkId_1, ...args_1) => __awaiter(void 0, [bookmarkId_1, ...args_1], void 0, function* (bookmarkId, page = 1, limit = 5) {
     const findBookmark = yield bookmark_model_1.default.findById(bookmarkId);
     if (!findBookmark) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Bookmark is not found!');
@@ -131,9 +131,13 @@ const getBookmarkFromDB = (bookmarkId) => __awaiter(void 0, void 0, void 0, func
     if (!result || !result.posts) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'No posts found for this bookmark');
     }
-    // Reverse the posts array and return
-    result.posts.reverse(); // Reverse the array in-place
-    return result;
+    result.posts.reverse();
+    const allPosts = result.posts;
+    const total = allPosts.length;
+    const savedPostIds = allPosts.map((p) => { var _a; return (_a = p._id) === null || _a === void 0 ? void 0 : _a.toString(); });
+    const skip = (page - 1) * limit;
+    const paginatedPosts = allPosts.slice(skip, skip + limit);
+    return { data: paginatedPosts, meta: { total, page, limit, savedPostIds } };
 });
 exports.BookmarkServices = {
     updateBookmarkIntoDB,

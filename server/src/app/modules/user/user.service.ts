@@ -25,30 +25,21 @@ const createUserIntoDB = async (payload: TUser) => {
   return result
 }
 
-const getFollowSuggetionUsersFromDB = async (userId: string) => {
-  // Find the user by ID
+const getFollowSuggetionUsersFromDB = async (userId: string, page: number = 1, limit: number = 10) => {
   const findUser = await User.findById(userId)
+  if (!findUser) throw new AppError(httpStatus.BAD_REQUEST, 'User not found')
 
-  if (!findUser) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'User not found')
-  }
-
-  // Find the connection by ID
   const findConnection = await Connection.findById(findUser.connection)
-  if (!findConnection) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Connection not found')
-  }
+  if (!findConnection) throw new AppError(httpStatus.BAD_REQUEST, 'Connection not found')
 
-  // Ensure followers and followings are arrays to avoid undefined values
   const followings = findConnection.followings || []
+  const skip = (page - 1) * limit
 
-  // Fetch users that are NOT in the followers and followings arrays
-  const usersNotConnected = await User.find({
-    _id: { $nin: [...followings, userId] },
-  })
+  const query = { _id: { $nin: [...followings, userId] } }
+  const total = await User.countDocuments(query)
+  const users = await User.find(query).skip(skip).limit(limit)
 
-  // Return the result
-  return usersNotConnected
+  return { users, meta: { total, page, limit } }
 }
 
 const getUsersFromDB = async () => {

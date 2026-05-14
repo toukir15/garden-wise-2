@@ -30,8 +30,8 @@ import ConversationalModal from "../modal/ConversationalModal";
 import { useGetConversations } from "@/src/hooks/conversation.hook";
 
 export default function Sidebar() {
-  const { data: followingsUsersData } = useGetFollowings();
-  const { data: followersUsersData } = useGetFollowers();
+  const { data: followingsUsersData, fetchNextPage: fetchNextFollowings, hasNextPage: hasNextFollowings, isFetchingNextPage: isFetchingNextFollowings, isLoading: isFollowingsLoading } = useGetFollowings();
+  const { data: followersUsersData, fetchNextPage: fetchNextFollowers, hasNextPage: hasNextFollowers, isFetchingNextPage: isFetchingNextFollowers, isLoading: isFollowersLoading } = useGetFollowers();
   const { mutate: handleUnfollow } = useUnfollowUser();
   const {
     description,
@@ -140,12 +140,12 @@ export default function Sidebar() {
                       <SidebarButton
                         onClick={onFollowersOpen}
                         icon={BsFillPeopleFill}
-                        label={`Followers (${followersUsersData?.data?.data?.followers?.length || 0})`}
+                        label={`Followers (${followersUsersData?.pages?.[0]?.data?.data?.meta?.total || 0})`}
                       />
                       <SidebarButton
                         onClick={onFollowingsOpen}
                         icon={BsFillPeopleFill}
-                        label={`Followings (${followingsUsersData?.data?.data?.followings?.length || 0})`}
+                        label={`Followings (${followingsUsersData?.pages?.[0]?.data?.data?.meta?.total || 0})`}
                       />
                     </>
                   ) : (
@@ -234,7 +234,11 @@ export default function Sidebar() {
         isOpen={isFollowingsOpen}
         onOpenChange={onFollowingsOpenChange}
         title="Followings"
-        users={followingsUsersData?.data.data.followings || []}
+        data={followingsUsersData}
+        fetchNextPage={fetchNextFollowings}
+        hasNextPage={hasNextFollowings}
+        isFetchingNextPage={isFetchingNextFollowings}
+        isLoading={isFollowingsLoading}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
         actionType={true}
@@ -245,7 +249,11 @@ export default function Sidebar() {
         isOpen={isFollowersOpen}
         onOpenChange={onFollowersOpenChange}
         title="Followers"
-        users={followersUsersData?.data.data.followers || []}
+        data={followersUsersData}
+        fetchNextPage={fetchNextFollowers}
+        hasNextPage={hasNextFollowers}
+        isFetchingNextPage={isFetchingNextFollowers}
+        isLoading={isFollowersLoading}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
         actionType={false}

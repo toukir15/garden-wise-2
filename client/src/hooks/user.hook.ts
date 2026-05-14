@@ -1,14 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getFollowSuggetionUsers, getUser } from "../services/user";
 import { getUsers } from "../services/admin";
 
 export const useGetFollowSuggetionUsers = () => {
-  return useQuery({
-    queryKey: ["follow-suggetion"],
-    queryFn: async () => {
-      return await getFollowSuggetionUsers();
-    },
-  });
+  return useInfiniteQuery(
+    ["follow-suggetion"],
+    ({ pageParam = 1 }) => getFollowSuggetionUsers(pageParam, 10),
+    {
+      getNextPageParam: (lastPage: any) => {
+        const meta = lastPage?.data?.data?.meta;
+        if (!meta) return undefined;
+        return meta.page * meta.limit < meta.total ? meta.page + 1 : undefined;
+      },
+    }
+  );
 };
 
 export const useGetUsers = () => {

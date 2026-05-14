@@ -129,7 +129,14 @@ html {
 }
 
 .sidebar-button {
-  padding: 25px 20px 25px 15px;
+  padding: 25px 28px 25px 23px !important;
+}
+
+@media (min-width: 1280px) {
+  .content-column-border {
+    border-left: 1px solid #4b5563;
+    border-right: 1px solid #4b5563;
+  }
 }
 .swiper-pagination {
   visibility: hidden !important;

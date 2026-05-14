@@ -83,39 +83,46 @@ const updateUnfollowConnectionIntoDB = async (
   }
 }
 
-const getFollowersFromDB = async (userId: string) => {
-  //check find user exist or not
+const getFollowersFromDB = async (userId: string, page: number = 1, limit: number = 10) => {
   const currentUser = await User.findById(userId)
   if (!currentUser) {
     throw new AppError(httpStatus.BAD_REQUEST, 'User does not exist!')
   }
 
-  const findFollowers = await Connection.findById(currentUser.connection)
-    .select({ followers: 1 })
-    .populate({
-      path: 'followers',
-      model: 'User',
-      select: 'name email profilePhoto',
-    })
+  const skip = (page - 1) * limit
 
-  return findFollowers
+  const meta = await Connection.findById(currentUser.connection).select({ followers: 1 })
+  const total = meta?.followers?.length ?? 0
+
+  const findFollowers = await Connection.findById(currentUser.connection, {
+    followers: { $slice: [skip, limit] },
+  }).populate({ path: 'followers', model: 'User', select: 'name email profilePhoto' })
+
+  return {
+    followers: findFollowers?.followers ?? [],
+    meta: { total, page, limit },
+  }
 }
 
-const getFollowingsFromDB = async (userId: string) => {
-  //check find user exist or not
+const getFollowingsFromDB = async (userId: string, page: number = 1, limit: number = 10) => {
   const currentUser = await User.findById(userId)
   if (!currentUser) {
     throw new AppError(httpStatus.BAD_REQUEST, 'User does not exist!')
   }
 
-  const findFollowings = await Connection.findById(currentUser.connection)
-    .select({ followings: 1 })
-    .populate({
-      path: 'followings',
-      model: 'User',
-      select: 'name email profilePhoto',
-    })
-  return findFollowings
+  const skip = (page - 1) * limit
+
+  const meta = await Connection.findById(currentUser.connection).select({ followings: 1 })
+  const total = meta?.followings?.length ?? 0
+
+  const findFollowings = await Connection.findById(currentUser.connection, {
+    followings: { $slice: [skip, limit] },
+  }).populate({ path: 'followings', model: 'User', select: 'name email profilePhoto' })
+
+  return {
+    followings: findFollowings?.followings ?? [],
+    meta: { total, page, limit },
+  }
 }
 
 const getViewProfileFollowersFromDB = async (userId: string) => {

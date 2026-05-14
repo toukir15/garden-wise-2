@@ -14,7 +14,7 @@ export default function HomeContent() {
   }
 
   return (
-    <section className="flex flex-col lg:border border-gray-600 min-h-screen">
+    <section className="flex flex-col min-h-screen">
       <PostFilter />
       <CreatePost />
       <ViewPost />

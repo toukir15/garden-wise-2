@@ -132,7 +132,7 @@ export default function VisitUserProfile() {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Followings"
-        users={followingsUsersData?.data.data.followings || []}
+        users={followingsUsersData?.data?.data?.followings || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
         actionType={false}
@@ -143,7 +143,7 @@ export default function VisitUserProfile() {
         isOpen={isFollowersOpen}
         onOpenChange={onFollowersOpenChange}
         title="Followers"
-        users={followersUsersData?.data.data.followers || []}
+        users={followersUsersData?.data?.data?.followers || []}
         loadingUserId={loadingUserId}
         handleUnfollowRequest={handleUnfollowRequest}
         actionType={false}

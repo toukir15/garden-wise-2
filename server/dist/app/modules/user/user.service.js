@@ -35,25 +35,19 @@ const createUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function
     const result = yield user_model_1.User.create(payload);
     return result;
 });
-const getFollowSuggetionUsersFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    // Find the user by ID
+const getFollowSuggetionUsersFromDB = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, ...args_1], void 0, function* (userId, page = 1, limit = 10) {
     const findUser = yield user_model_1.User.findById(userId);
-    if (!findUser) {
+    if (!findUser)
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'User not found');
-    }
-    // Find the connection by ID
     const findConnection = yield connection_model_1.Connection.findById(findUser.connection);
-    if (!findConnection) {
+    if (!findConnection)
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Connection not found');
-    }
-    // Ensure followers and followings are arrays to avoid undefined values
     const followings = findConnection.followings || [];
-    // Fetch users that are NOT in the followers and followings arrays
-    const usersNotConnected = yield user_model_1.User.find({
-        _id: { $nin: [...followings, userId] },
-    });
-    // Return the result
-    return usersNotConnected;
+    const skip = (page - 1) * limit;
+    const query = { _id: { $nin: [...followings, userId] } };
+    const total = yield user_model_1.User.countDocuments(query);
+    const users = yield user_model_1.User.find(query).skip(skip).limit(limit);
+    return { users, meta: { total, page, limit } };
 });
 const getUsersFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.User.find();
